@@ -2,6 +2,7 @@ package main
 
 import cats.implicits._
 import com.generalbytes.batm.server.extensions.extra.decent.DecentExtension
+import common.Alias.{Attempt, Identifier, Task}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -9,7 +10,7 @@ import scala.io.StdIn
 import scala.language.postfixOps
 import scala.util.{Failure, Success, Try}
 
-object Main extends App {
+object Main /*extends App*/ {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -27,9 +28,10 @@ object Main extends App {
 
     // dctd:protocol:user:password:ip:port:accountname
     val loginStr = s"dctd:http:$user:$pass:$host"
-    val result = new DecentExtension().walletBuilder(loginStr).map(_.issuePayment(address, amount))
+    val result: Attempt[Task[Identifier]] = new DecentExtension().createWallet(loginStr).map(_.issuePayment(address, amount))
+
     Try(Await.result(result.sequence, 5 seconds)) match {
-      case Success(_) => println("Success!")
+      case Success(s) => println(s"Success! $s")
       case Failure(e) => println(s"Failure: $e")
     }
   }

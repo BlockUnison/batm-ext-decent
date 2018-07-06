@@ -5,6 +5,7 @@ import java.util
 import com.generalbytes.batm.server.extensions._
 import com.generalbytes.batm.server.extensions.watchlist.IWatchList
 import common.Currency.Default
+import common.Util._
 
 import scala.collection.mutable
 
@@ -22,7 +23,7 @@ class ExtensionAdapter[T <: Currency : Default](ext: Extension[T]) extends IExte
 
   override def createRateSource(s: String): IRateSource = null
 
-  override def createWallet(s: String): IWallet = ext.walletBuilder(s).map(new WalletAdapter(_)).orNull
+  override def createWallet(s: String): IWallet = ext.createWallet(s).map(new WalletAdapter(_)).getOrThrow
 
   override def createAddressValidator(s: String): ICryptoAddressValidator = null
 
