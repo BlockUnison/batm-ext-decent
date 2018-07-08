@@ -21,7 +21,7 @@ val dependencies = Seq(
 lazy val root = (project in file("."))
   .settings(
     name := "batm-ext-decent",
-    version := "0.1",
+    version := "0.2",
     scalaVersion := "2.12.6",
     libraryDependencies ++= dependencies
   )

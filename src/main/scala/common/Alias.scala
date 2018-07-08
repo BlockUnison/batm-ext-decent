@@ -1,6 +1,6 @@
 package common
 
-import scala.concurrent.Future
+import cats.effect.IO
 
 object Alias {
   type Identifier = String
@@ -8,6 +8,6 @@ object Alias {
   type Amount = Long
   type Error = String
   type BlockNumber = Long
-  type Task[A] = Future[A]
+  type Task[A] = IO[Attempt[A]]
   type Attempt[A] = Either[Error, A]
 }
