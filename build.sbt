@@ -5,6 +5,8 @@ val jsonRpcVersion = "0.9.3"
 val monixVersion = "3.0.0-RC1"
 val http4sVersion = "0.19.0-M1"
 
+addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")
+
 val dependencies = Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
   "org.typelevel" %% "cats-effect" % "1.0.0-RC2",
@@ -16,6 +18,7 @@ val dependencies = Seq(
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0"
 )
 
 lazy val root = (project in file("."))
@@ -37,4 +40,4 @@ assemblyMergeStrategy in assembly := {
   case _ => MergeStrategy.first
 }
 
-assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = true)
+assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)

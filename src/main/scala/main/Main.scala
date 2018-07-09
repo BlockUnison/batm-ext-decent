@@ -1,18 +1,17 @@
 package main
 
+import cats.effect._
 import cats.implicits._
 import com.generalbytes.batm.server.extensions.extra.decent.DecentExtension
 import common.Alias.{Attempt, Identifier, Task}
+import common.Util
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
 import scala.io.StdIn
 import scala.language.postfixOps
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 object Main /*extends App*/ {
-
-  import scala.concurrent.ExecutionContext.Implicits.global
+  import Util._
 
   val host = "decentatm.hypersignal.xyz"
 
@@ -29,11 +28,7 @@ object Main /*extends App*/ {
     // dctd:protocol:user:password:ip:port:accountname
     val loginStr = s"dctd:http:$user:$pass:$host"
     val result: Attempt[Task[Identifier]] = new DecentExtension().createWallet(loginStr).map(_.issuePayment(address, amount))
-
-    Try(Await.result(result.sequence, 5 seconds)) match {
-      case Success(s) => println(s"Success! $s")
-      case Failure(e) => println(s"Failure: $e")
-    }
+    result.flatSequence.asInstanceOf[IO[Attempt[Identifier]]].unsafeRunTimed(Util.defaultDuration).fold("Request timeout")(_.fold(identity, identity)) |> println
   }
 
   def runClient(): Unit = {

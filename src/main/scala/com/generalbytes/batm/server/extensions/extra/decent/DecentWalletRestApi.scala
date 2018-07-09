@@ -10,7 +10,7 @@ import io.circe.Json
 import io.circe.generic.auto._
 import io.circe.syntax._
 import org.http4s._
-import org.http4s.circe.CirceEntityDecoder._
+//import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.circe.CirceEntityEncoder._
 import io.circe.parser._
 import org.http4s.client.blaze.Http1Client
@@ -22,7 +22,7 @@ case class TransactionInfo(amountLeftInWallet: Amount, txid: Identifier, blockNu
 
 case class DecentResponse(b: DecentRequest, r: TransactionInfo)
 
-trait WalletCredentials[T <: Currency]
+trait WalletCredentials[T <: Currency]    // TODO: Remove
 case class DecentWalletCredentials(username: String, password: String) extends WalletCredentials[Currency.DCT]
 
 class DecentWalletRestApi(url: Uri, credentials: DecentWalletCredentials) extends WalletApi {
@@ -35,11 +35,10 @@ class DecentWalletRestApi(url: Uri, credentials: DecentWalletCredentials) extend
       requestJson.asJson
     )
     Http1Client[IO]()
-      .flatMap(client => client.expect[String](request))
+      .flatMap(client => client.expect[String](request))    // TODO: Get the decoder to work!
       .map(parse)
-      .map(_.leftMap(_.toString))    // to Attempt
-      .map(_.map(parseTransactionId))
-      .unsafeToFuture()
+      .map(_.leftMap(_.toString))
+      .map(_.flatMap(parseTransactionId))
   }
 
   private def parseTransactionId(json: Json): Attempt[Identifier] = {
@@ -48,11 +47,12 @@ class DecentWalletRestApi(url: Uri, credentials: DecentWalletCredentials) extend
       rObj <- obj("r")
       r <- rObj.asObject
       txid <- r("txid")
-    } yield txid.asString
+      res <- txid.asString
+    } yield res
     txIdOpt.toRight("Could not parse transaction ID from response")
   }
 
-  override def getBalance: Task[Amount] = ???
+  override def getBalance: Task[Amount] = IO("Not implemented".asLeft[Amount])
 
-  override def getAddress: Task[Address] = ???
+  override def getAddress: Task[Address] = IO("Not implemented".asLeft[Address])
 }
