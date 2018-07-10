@@ -2,7 +2,6 @@ package com.generalbytes.batm.server.extensions.extra.decent
 
 import cats.effect.IO
 import cats.implicits._
-import cats.syntax._
 import com.generalbytes.batm.server.extensions.extra.decent.Decent.WalletApi
 import common.Alias._
 import common.Currency
@@ -11,8 +10,8 @@ import io.circe.generic.auto._
 import io.circe.syntax._
 import org.http4s._
 //import org.http4s.circe.CirceEntityDecoder._
-import org.http4s.circe.CirceEntityEncoder._
 import io.circe.parser._
+import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.client.blaze.Http1Client
 import org.http4s.client.dsl.io._
 import org.http4s.dsl.io._
