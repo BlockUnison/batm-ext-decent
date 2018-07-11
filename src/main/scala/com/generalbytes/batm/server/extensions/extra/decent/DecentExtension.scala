@@ -1,9 +1,10 @@
 package com.generalbytes.batm.server.extensions.extra.decent
 
-import com.generalbytes.batm.server.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.server.common.{CryptoCurrency, Currency, Extension, Wallet}
-import com.generalbytes.batm.server.common._
-import com.generalbytes.batm.server.common.Util._
+import com.generalbytes.batm.common.Alias.{Attempt, Task}
+import com.generalbytes.batm.common.{CryptoCurrency, Currency, Extension, Wallet}
+import com.generalbytes.batm.common.{Extension, Wallet}
+import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.Util._
 import org.http4s.Uri
 
 class DecentExtension extends Extension[Currency.DCT] {

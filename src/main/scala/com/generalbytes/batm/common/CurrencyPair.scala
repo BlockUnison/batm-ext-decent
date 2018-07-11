@@ -1,4 +1,4 @@
-package com.generalbytes.batm.server.common
+package com.generalbytes.batm.common
 
 trait CurrencyPair[From <: Currency, To <: Currency] {
   val from: From

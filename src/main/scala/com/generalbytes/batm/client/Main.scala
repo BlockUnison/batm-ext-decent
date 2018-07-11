@@ -2,9 +2,9 @@ package com.generalbytes.batm.client
 
 import cats.effect._
 import cats.implicits._
-import com.generalbytes.batm.server.common.Util
+import com.generalbytes.batm.common.Util
 import com.generalbytes.batm.server.extensions.extra.decent.DecentExtension
-import com.generalbytes.batm.server.common.Alias.{Attempt, Identifier, Task}
+import com.generalbytes.batm.common.Alias.{Attempt, Identifier, Task}
 
 import scala.io.StdIn
 import scala.language.postfixOps

@@ -1,4 +1,4 @@
-package com.generalbytes.batm.server.common
+package com.generalbytes.batm.common
 
 import java.util
 
