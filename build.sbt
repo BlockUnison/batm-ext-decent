@@ -10,6 +10,7 @@ addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")
 val dependencies = Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
   "org.typelevel" %% "cats-effect" % "1.0.0-RC2",
+  "com.chuusai" %% "shapeless" % "2.3.3",
   "org.http4s" %% "http4s-dsl" % http4sVersion,
   "org.http4s" %% "http4s-core" % http4sVersion,
   "org.http4s" %% "http4s-client" % http4sVersion,
@@ -18,7 +19,13 @@ val dependencies = Seq(
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0"
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
+
+  "javax.ws.rs" % "javax.ws.rs-api" % "2.1" jar() withSources() withJavadoc(),
+
+  "javax.mail" % "mail" % "1.4.1",
+  "org.knowm.xchange" % "xchange-core" % "4.3.8",
+  "org.knowm.xchange" % "xchange-bittrex" % "4.3.8"
 )
 
 lazy val root = (project in file("."))

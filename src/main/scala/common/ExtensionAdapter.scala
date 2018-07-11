@@ -7,15 +7,11 @@ import com.generalbytes.batm.server.extensions.watchlist.IWatchList
 import common.Currency.Default
 import common.Util._
 
-import scala.collection.mutable
-
-
 class ExtensionAdapter[T <: Currency : Default](ext: Extension[T]) extends IExtension {
-  import scala.collection.JavaConverters._
 
   override def getName: String = ext.name
 
-  override def getSupportedCryptoCurrencies: util.Set[String] = mutable.Set(ext.supportedCryptoCurrencies.map(_.name).toList: _*).asJava
+  override def getSupportedCryptoCurrencies: util.Set[String] = ext.supportedCryptoCurrencies.map(_.name).toJavaSet
 
   override def createExchange(s: String): IExchange = null
 
@@ -23,7 +19,7 @@ class ExtensionAdapter[T <: Currency : Default](ext: Extension[T]) extends IExte
 
   override def createRateSource(s: String): IRateSource = null
 
-  override def createWallet(s: String): IWallet = ext.createWallet(s).map(new WalletAdapter(_)).getOrThrow
+  override def createWallet(loginInfo: String): IWallet = ext.createWallet(loginInfo).map(new WalletAdapter(_)).getOrThrow
 
   override def createAddressValidator(s: String): ICryptoAddressValidator = null
 
