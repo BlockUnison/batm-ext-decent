@@ -1,7 +1,7 @@
-package common
+package com.generalbytes.batm.server.common
 
 import com.typesafe.scalalogging.Logger
-import common.Alias.Attempt
+import Alias.Attempt
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable

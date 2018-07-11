@@ -1,11 +1,11 @@
-package common
+package com.generalbytes.batm.server.common
 
 import java.util
 
 import com.generalbytes.batm.server.extensions._
 import com.generalbytes.batm.server.extensions.watchlist.IWatchList
-import common.Currency.Default
-import common.Util._
+import Currency.Default
+import Util._
 
 class ExtensionAdapter[T <: Currency : Default](ext: Extension[T]) extends IExtension {
 

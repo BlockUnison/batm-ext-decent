@@ -1,4 +1,4 @@
-package common
+package com.generalbytes.batm.server.common
 
 trait Order[T <: Currency] {
 

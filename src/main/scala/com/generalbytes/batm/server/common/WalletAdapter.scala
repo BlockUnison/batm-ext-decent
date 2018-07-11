@@ -1,12 +1,12 @@
-package common
+package com.generalbytes.batm.server.common
 
 import java.math.BigDecimal
 import java.util
 
 import com.generalbytes.batm.server.extensions.IWallet
 import com.typesafe.scalalogging.Logger
-import common.Alias.Task
-import common.Currency.Default
+import Alias.Task
+import Currency.Default
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable

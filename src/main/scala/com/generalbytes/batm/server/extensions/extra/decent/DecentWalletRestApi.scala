@@ -2,9 +2,9 @@ package com.generalbytes.batm.server.extensions.extra.decent
 
 import cats.effect.IO
 import cats.implicits._
+import com.generalbytes.batm.server.common.Currency
 import com.generalbytes.batm.server.extensions.extra.decent.Decent.WalletApi
-import common.Alias._
-import common.Currency
+import com.generalbytes.batm.server.common.Alias._
 import io.circe.Json
 import io.circe.generic.auto._
 import io.circe.syntax._

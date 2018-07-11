@@ -1,4 +1,4 @@
-package common
+package com.generalbytes.batm.server.common
 
 import cats.effect.IO
 

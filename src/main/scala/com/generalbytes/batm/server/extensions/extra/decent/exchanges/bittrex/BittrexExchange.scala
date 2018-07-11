@@ -1,7 +1,7 @@
 package com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex
 
-import common.Exchange
+import com.generalbytes.batm.server.common.Exchange
 
-class BittrexExchange extends Exchange {
+abstract class BittrexExchange extends Exchange {
 
 }

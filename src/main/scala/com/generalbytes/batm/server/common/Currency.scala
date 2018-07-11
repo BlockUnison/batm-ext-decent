@@ -1,6 +1,6 @@
-package common
+package com.generalbytes.batm.server.common
 
-import common.Alias.Attempt
+import Alias.Attempt
 import shapeless._
 import syntax.typeable._
 
@@ -15,9 +15,9 @@ trait FiatCurrency extends Currency with Fiat
 trait CryptoCurrency extends Currency with Crypto
 
 object Currency {
-  def withName[T <: Currency](currency: String): Attempt[T]= {
-    allMap.get(currency).flatMap(_.cast[T]).toRight("Currency not found")
-  }
+//  def withName[T <: Currency](currency: String): Attempt[T] = {
+//    allMap.get(currency).flatMap(_.cast[T]).toRight("Currency not found")
+//  }
 
   def apply[T <: Currency : Default]: T = implicitly[Default[T]].value
 

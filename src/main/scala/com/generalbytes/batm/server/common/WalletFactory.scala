@@ -1,6 +1,6 @@
-package common
+package com.generalbytes.batm.server.common
 
-import common.Alias.{Attempt, Task}
+import Alias.{Attempt, Task}
 
 trait WalletFactory[T <: Currency] {
   def create(loginInfo: String): Attempt[Wallet[T, Task]]

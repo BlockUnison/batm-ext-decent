@@ -1,6 +1,6 @@
-package common
+package com.generalbytes.batm.server.common
 
-import common.Alias.{Address, Identifier, Task}
+import Alias.{Address, Identifier, Task}
 
 trait Exchange {
   val cryptoCurrencies: Set[CryptoCurrency]

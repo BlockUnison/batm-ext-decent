@@ -1,11 +1,11 @@
-package common
+package com.generalbytes.batm.server.common
 
 import java.util
 import java.math._
 
 import com.generalbytes.batm.server.extensions.IExchange
 import com.typesafe.scalalogging.Logger
-import common.Util._
+import Util._
 
 class ExchangeAdapter(xch: Exchange) extends IExchange {
   implicit val logger: Logger = Logger[ExchangeAdapter]
@@ -21,8 +21,8 @@ class ExchangeAdapter(xch: Exchange) extends IExchange {
   override def getFiatBalance(s: String): java.math.BigDecimal = ???
 
   override def purchaseCoins(amount: BigDecimal, cryptoCurrency: String, fiatCurrency: String, description: String): String = {
-    val crypto = Currency.withName[CryptoCurrency](cryptoCurrency).getOrThrow
-    val fiat = Currency.withName[FiatCurrency](fiatCurrency).getOrThrow
+//    val crypto = Currency.withName[CryptoCurrency](cryptoCurrency).getOrThrow
+//    val fiat = Currency.withName[FiatCurrency](fiatCurrency).getOrThrow
 
     val order = new Order[Currency] {}    // TODO create from currencypair and amount
     xch.fulfillOrder(order)

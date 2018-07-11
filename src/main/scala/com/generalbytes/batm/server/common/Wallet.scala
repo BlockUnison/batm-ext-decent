@@ -1,6 +1,6 @@
-package common
+package com.generalbytes.batm.server.common
 
-import common.Alias.{Address, Amount, Identifier}
+import Alias.{Address, Amount, Identifier}
 
 import scala.language.higherKinds
 
