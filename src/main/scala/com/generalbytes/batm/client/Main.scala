@@ -5,15 +5,18 @@ import cats.implicits._
 import com.generalbytes.batm.common.{CurrencyPair, Util}
 import com.generalbytes.batm.server.extensions.extra.decent.DecentExtension
 import com.generalbytes.batm.common.Alias.{Attempt, Identifier, Task}
+import com.typesafe.scalalogging.Logger
 import org.http4s.Uri
 
 import scala.io.StdIn
 import scala.language.postfixOps
 import scala.util.Try
 
-object Main /*extends App*/ {
+object Main extends App {
   import Util._
   import com.generalbytes.batm.common.Currency._
+
+  implicit val logger: Logger = Logger("Main")
 
   val host = "decentatm.hypersignal.xyz"
 
@@ -33,14 +36,23 @@ object Main /*extends App*/ {
     result.flatSequence.asInstanceOf[IO[Attempt[Identifier]]].unsafeRunTimed(Util.defaultDuration).fold("Request timeout")(_.fold(identity, identity)) |> println
   }
 
+  val apiHost = "https://10.0.2.15/apiv2/"
+
+  val terminalSerialNumber = "VT123456"
+
+  val apiKey = "P4RPIUO4ICDXVV3DV84PVUXOOMVBEEZ7R"
+
+  val secretKey = "SVPMYSUXS7URIRID3S7AIVD8THSEM7XOM"
+
   def runClient(): Unit = {
     println(s"Running as CLIENT\r\nURL is $host")
     val client = new ApiClient(
-      Uri.unsafeFromString("https://10.0.2.15/apiv2/"),
-      "VT123456",
-      "P4RPIUO4ICDXVV3DV84PVUXOOMVBEEZ7R",
-      "SVPMYSUXS7URIRID3S7AIVD8THSEM7XOM"
+      Uri.unsafeFromString(apiHost),
+      terminalSerialNumber,
+      apiKey,
+      secretKey
     )
+
     val currencyPair = CurrencyPair(Euro, Decent)
     val resultIO = client.purchase(currencyPair, 1000L, "blahblah")
     val txId = resultIO.unsafeRunTimed(defaultDuration)
