@@ -36,8 +36,4 @@ object Status {
   case object Error extends StatusCode { val value = "error" }
 }
 
-trait Response[T] {
-  val status: Status.StatusCode
-  val message: Option[String]
-  val data: T
-}
+case class Response[T](status: String, message: String, data: T)
