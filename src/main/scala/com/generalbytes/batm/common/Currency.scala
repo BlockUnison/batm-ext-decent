@@ -16,7 +16,7 @@ trait CryptoCurrency extends Currency with Crypto
 
 object Currency {
 //  def withName[T <: Currency](currency: String): Attempt[T] = {
-//    allMap.get(currency).flatMap(_.cast[T]).toRight("Currency not found")
+//    allMap.get(currency).flatMap(c => Try(c.asInstanceOf[T]).toRight("Currency not found")
 //  }
 
   def apply[T <: Currency : Default]: T = implicitly[Default[T]].value

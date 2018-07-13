@@ -10,4 +10,5 @@ object Alias {
   type BlockNumber = Long
   type Task[A] = IO[Attempt[A]]
   type Attempt[A] = Either[Error, A]
+  type ExchangeRate = BigDecimal
 }

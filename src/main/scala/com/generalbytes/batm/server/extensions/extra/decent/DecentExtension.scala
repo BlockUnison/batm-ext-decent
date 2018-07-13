@@ -5,6 +5,7 @@ import com.generalbytes.batm.common.{CryptoCurrency, Currency, Extension, Wallet
 import com.generalbytes.batm.common.{Extension, Wallet}
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.Util._
+import com.generalbytes.batm.common.ratesources.SingleFixedPriceRateSource
 import org.http4s.Uri
 
 class DecentExtension extends Extension[Currency.DCT] {
@@ -20,6 +21,8 @@ class DecentExtension extends Extension[Currency.DCT] {
     }
     case _ => "Login info did not match the expected format" |> Left.apply
   }
+
+  override val rateSource: RateSource = new SingleFixedPriceRateSource(CurrencyPair(Currency.Decent, Currency.Euro), 1.0)
 }
 
 

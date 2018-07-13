@@ -26,6 +26,12 @@ object Util {
     }
   }
 
+  implicit class OptionOps[A](a: Option[A]) {
+    def getOrThrow(message: String): A = {
+      a.fold(throw new Exception(message))(identity)
+    }
+  }
+
   implicit class EitherOps[A](self: Either[A, A]) {
     def value: A = self.fold(identity, identity)
   }
