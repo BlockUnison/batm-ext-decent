@@ -3,17 +3,14 @@ package com.generalbytes.batm.client
 import cats.effect.IO
 import com.generalbytes.batm.common.Alias.{Address, Amount}
 import com.generalbytes.batm.common.{Currency, CurrencyPair, Util}
-import io.circe._
-import io.circe.generic.semiauto._
-import org.http4s._
-import org.http4s.circe.CirceEntityCodec._
+import org.http4s.{Response => _, _}
 import org.http4s.client.blaze._
 
 case class Money[T <: Currency](amount: Amount)
 
 class ApiClient(val baseUri: Uri, val serialNumber: String, apiKey: String, secretKey: String) {
 
-  implicit val decoder: Decoder[ApiResponse] = deriveDecoder[ApiResponse]
+//  implicit val decoder: Decoder[ApiResponse] = deriveDecoder[ApiResponse]
 
   private def purchaseUri(request: PurchaseRequest): Uri =
     baseUri.withPath("private/buy_crypto")
@@ -36,6 +33,8 @@ class ApiClient(val baseUri: Uri, val serialNumber: String, apiKey: String, secr
     val uri = purchaseUri(request)
 
     val client = Http1Client[IO]().unsafeRunSync()
-    client.expect[ApiResponse](uri)
+//    client.expect[ApiResponse](uri)
+
+    IO.pure(Response("ok", null, Result(PurchaseResponse(0L, Currency.Euro.name, address, amount, Currency.Decent.name, "", "", 1))))
   }
 }

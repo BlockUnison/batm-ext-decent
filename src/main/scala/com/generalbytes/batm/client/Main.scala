@@ -64,9 +64,24 @@ object Main extends App {
     println(s"txid: $txId")
   }
 
+  def runHmac(): Unit = {
+    println("Signature generator")
+    print(s"Terminal serial number ($terminalSerialNumber): ")
+    val serial = StdIn.readLine().some.filter(_.nonEmpty).getOrElse(terminalSerialNumber)
+    print(s"Api key ($apiKey): ")
+    val apiKeyActual = StdIn.readLine().some.filter(_.nonEmpty).getOrElse(apiKey)
+    print(s"Secret key ($secretKey): ")
+    val secretKeyActual = StdIn.readLine().some.filter(_.nonEmpty).getOrElse(secretKey)
+
+    val nonce = System.currentTimeMillis / 1000
+    val signature = Util.hmacsha256(nonce.toString + serial + apiKeyActual, secretKeyActual)
+    println(s"Nonce: $nonce")
+    println(s"Signature: $signature")
+  }
+
   def runServer(): Unit = {
 
   }
 
-  runClient()
+  runHmac()
 }
