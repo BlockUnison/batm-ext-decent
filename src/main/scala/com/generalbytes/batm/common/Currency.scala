@@ -1,9 +1,5 @@
 package com.generalbytes.batm.common
 
-import Alias.Attempt
-import shapeless._
-import syntax.typeable._
-
 sealed trait Currency {
   val name: String
 }
@@ -36,6 +32,6 @@ object Currency {
   val all: Set[Currency] = Set(Decent, Bitcoin, Euro)
   val allMap: Map[String, Currency] = all.map(c => c.name -> c).toMap
 
-  implicit val dct: Default[DCT] = new Default[DCT] { val value = Decent }
-  implicit val btc: Default[BTC] = new Default[BTC] { val value = Bitcoin }
+  implicit val dct: Default[DCT] = new Default[DCT] { val value: DCT = Decent }
+  implicit val btc: Default[BTC] = new Default[BTC] { val value: BTC = Bitcoin }
 }

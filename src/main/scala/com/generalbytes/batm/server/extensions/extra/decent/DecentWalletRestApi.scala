@@ -3,7 +3,7 @@ package com.generalbytes.batm.server.extensions.extra.decent
 import cats.effect.IO
 import cats.implicits._
 import com.generalbytes.batm.common.Currency
-import com.generalbytes.batm.server.extensions.extra.decent.Decent.WalletApi
+import com.generalbytes.batm.server.extensions.extra.decent.DecentAlias.WalletApi
 import com.generalbytes.batm.common.Alias._
 import io.circe.Json
 import io.circe.generic.auto._

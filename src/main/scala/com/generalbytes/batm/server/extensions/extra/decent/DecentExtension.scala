@@ -1,16 +1,14 @@
 package com.generalbytes.batm.server.extensions.extra.decent
 
 import com.generalbytes.batm.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.common.{CryptoCurrency, Currency, Extension, Wallet}
-import com.generalbytes.batm.common.{Extension, Wallet}
-import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common.ratesources.SingleFixedPriceRateSource
+import com.generalbytes.batm.common.{CryptoCurrency, Currency, Extension, Wallet, _}
 import org.http4s.Uri
 
 class DecentExtension extends Extension[Currency.DCT] {
   override val name: String = "DCT Extension"
-  override val supportedCryptoCurrencies: Set[CryptoCurrency] = Set(new Currency.DCT {})
+  override val supportedCryptoCurrencies: Set[CryptoCurrency] = Set(Currency.Decent)
 
   private val loginData = """dctd:(https?):([A-Za-z0-9]+):([A-Za-z0-9\.]+):([A-Za-z0-9.]+)""".r
 
