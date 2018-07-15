@@ -6,7 +6,7 @@ import com.generalbytes.batm.server.extensions.extra.common.XChangeExchange
 import com.generalbytes.batm.server.extensions.{IExchangeAdvanced, IRateSourceAdvanced, ITask}
 
 class XChangeAdapter[T <: XChangeExchange](xch: T) extends IExchangeAdvanced with IRateSourceAdvanced {
-  override def createPurchaseCoinsTask(bigDecimal: java.math.BigDecimal, s: String, s1: String, s2: String): ITask = xch.createPurchaseCoinsTask((bigDecimal,s, s1, s2))
+  override def createPurchaseCoinsTask(bigDecimal: java.math.BigDecimal, s: String, s1: String, s2: String): ITask = xch.createPurchaseCoinsTask(bigDecimal,s, s1, s2)
 
   override def createSellCoinsTask(bigDecimal: java.math.BigDecimal, s: String, s1: String, s2: String): ITask = xch.createSellCoinsTask(bigDecimal, s, s1, s2)
 

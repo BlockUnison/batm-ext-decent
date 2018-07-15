@@ -1,11 +1,12 @@
 package com.generalbytes.batm.server.extensions.extra.decent
 
-import cats._, cats.implicits._
+import cats._
+import cats.implicits._
 import com.generalbytes.batm.common.Alias.{Attempt, Task}
 import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common.ratesources.SingleFixedPriceRateSource
 import com.generalbytes.batm.common.{CryptoCurrency, Currency, Extension, Wallet, _}
-import com.generalbytes.batm.server.extensions.IExchange
+import com.generalbytes.batm.server.extensions.{IExchange, IExchangeAdvanced, IRateSourceAdvanced}
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.BittrexXchange
 import org.http4s.Uri
 
@@ -23,10 +24,10 @@ class DecentExtension extends Extension[Currency.DCT] {
     case _ => "Login info did not match the expected format" |> Left.apply
   }
 
-  override val rateSource: RateSource = new SingleFixedPriceRateSource(CurrencyPair(Currency.Decent, Currency.Euro), 1.0)
+  override def createRateSource: Attempt[IRateSourceAdvanced] = new XChangeAdapter(new BittrexXchange(Currency.Euro)).asRight[String]
 
-  override def createExchange(loginInfo: String): Attempt[IExchange] = {
-    new BittrexXchange(Currency.Euro).asRight[String]
+  override def createExchange(loginInfo: String): Attempt[IExchangeAdvanced] = {
+    new XChangeAdapter(new BittrexXchange(Currency.Euro)).asRight[String]
   }
 }
 

@@ -17,7 +17,7 @@ class ExtensionAdapter[T <: Currency : Default](ext: Extension[T]) extends IExte
 
   override def createPaymentProcessor(s: String): IPaymentProcessor = null
 
-  override def createRateSource(s: String): IRateSource = new RateSourceAdapter(ext.rateSource)
+  override def createRateSource(s: String): IRateSource = null
 
   override def createWallet(loginInfo: String): IWallet = ext.createWallet(loginInfo).map(new WalletAdapter(_)).getOrThrow
 
