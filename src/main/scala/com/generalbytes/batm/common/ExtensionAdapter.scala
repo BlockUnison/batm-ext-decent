@@ -13,11 +13,11 @@ class ExtensionAdapter[T <: Currency : Default](ext: Extension[T]) extends IExte
 
   override def getSupportedCryptoCurrencies: util.Set[String] = ext.supportedCryptoCurrencies.map(_.name).toJavaSet
 
-  override def createExchange(s: String): IExchange = null
+  override def createExchange(loginInfo: String): IExchange = ext.createExchange(loginInfo).getOrThrow
 
   override def createPaymentProcessor(s: String): IPaymentProcessor = null
 
-  override def createRateSource(s: String): IRateSource = null
+  override def createRateSource(s: String): IRateSource = ext.createRateSource.getOrThrow
 
   override def createWallet(loginInfo: String): IWallet = ext.createWallet(loginInfo).map(new WalletAdapter(_)).getOrThrow
 
@@ -29,7 +29,6 @@ class ExtensionAdapter[T <: Currency : Default](ext: Extension[T]) extends IExte
 
   override def getWatchList(s: String): IWatchList = null
 }
-
 
 object ExtensionAdapter {
   def create[T <: Currency : Default](ext: Extension[T]): ExtensionAdapter[T] = new ExtensionAdapter[T](ext)

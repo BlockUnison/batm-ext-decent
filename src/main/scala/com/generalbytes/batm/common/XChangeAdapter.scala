@@ -1,40 +1,52 @@
 package com.generalbytes.batm.common
 
 import java.util
-
+import java.math.BigDecimal
 import com.generalbytes.batm.server.extensions.extra.common.XChangeExchange
 import com.generalbytes.batm.server.extensions.{IExchangeAdvanced, IRateSourceAdvanced, ITask}
 
 class XChangeAdapter[T <: XChangeExchange](xch: T) extends IExchangeAdvanced with IRateSourceAdvanced {
-  override def createPurchaseCoinsTask(bigDecimal: java.math.BigDecimal, s: String, s1: String, s2: String): ITask = xch.createPurchaseCoinsTask(bigDecimal,s, s1, s2)
+  override def createPurchaseCoinsTask(amount: BigDecimal, cryptoCurrency: String, fiatCurrency: String, description: String): ITask =
+    xch.createPurchaseCoinsTask(amount,cryptoCurrency, fiatCurrency, description)
 
-  override def createSellCoinsTask(bigDecimal: java.math.BigDecimal, s: String, s1: String, s2: String): ITask = xch.createSellCoinsTask(bigDecimal, s, s1, s2)
+  override def createSellCoinsTask(amount: BigDecimal, cryptoCurrency: String, fiatCurrency: String, description: String): ITask =
+    xch.createSellCoinsTask(amount, cryptoCurrency, fiatCurrency, description)
 
-  override def getExchangeRateForBuy(s: String, s1: String): java.math.BigDecimal = xch.getExchangeRateForBuy(s, s1)
+  override def getExchangeRateForBuy(cryptoCurrency: String, fiatCurrency: String): BigDecimal =
+    xch.getExchangeRateForBuy(cryptoCurrency, fiatCurrency)
 
-  override def getExchangeRateForSell(s: String, s1: String): java.math.BigDecimal = xch.getExchangeRateForSell(s, s1)
+  override def getExchangeRateForSell(cryptoCurrency: String, fiatCurrency: String): BigDecimal =
+    xch.getExchangeRateForSell(cryptoCurrency, fiatCurrency)
 
-  override def calculateBuyPrice(s: String, s1: String, bigDecimal: java.math.BigDecimal): java.math.BigDecimal = xch.calculateBuyPrice(s, s1, bigDecimal)
+  override def calculateBuyPrice(cryptoCurrency: String, fiatCurrency: String, amount: BigDecimal): BigDecimal =
+    xch.calculateBuyPrice(cryptoCurrency, fiatCurrency, amount)
 
-  override def calculateSellPrice(s: String, s1: String, bigDecimal: java.math.BigDecimal): java.math.BigDecimal = xch.calculateSellPrice(s, s1, bigDecimal)
+  override def calculateSellPrice(cryptoCurrency: String, fiatCurrency: String, amount: BigDecimal): BigDecimal =
+    xch.calculateSellPrice(cryptoCurrency, fiatCurrency, amount)
 
-  override def getCryptoBalance(s: String): java.math.BigDecimal = xch.getCryptoBalance(s)
+  override def getCryptoBalance(cryptoCurrency: String): BigDecimal =
+    xch.getCryptoBalance(cryptoCurrency)
 
-  override def getFiatBalance(s: String): java.math.BigDecimal = xch.getFiatBalance(s)
+  override def getFiatBalance(fiatCurrency: String): BigDecimal =
+    xch.getFiatBalance(fiatCurrency)
 
-  override def purchaseCoins(bigDecimal: java.math.BigDecimal, s: String, s1: String, s2: String): String = xch.purchaseCoins(bigDecimal, s, s1, s2)
+  override def purchaseCoins(amount: BigDecimal, cryptoCurrency: String, fiatCurrency: String, description: String): String =
+    xch.purchaseCoins(amount, cryptoCurrency, fiatCurrency, description)
 
-  override def sellCoins(bigDecimal: java.math.BigDecimal, s: String, s1: String, s2: String): String = xch.sellCoins(bigDecimal, s, s1, s2)
+  override def sellCoins(amount: BigDecimal, cryptoCurrency: String, fiatCurrency: String, description: String): String =
+    xch.sellCoins(amount, cryptoCurrency, fiatCurrency, description)
 
-  override def sendCoins(s: String, bigDecimal: java.math.BigDecimal, s1: String, s2: String): String = xch.sendCoins(s, bigDecimal, s1, s2)
+  override def sendCoins(cryptoCurrency: String, amount: BigDecimal, fiatCurrency: String, description: String): String =
+    xch.sendCoins(cryptoCurrency, amount, fiatCurrency, description)
 
-  override def getDepositAddress(s: String): String = xch.getDepositAddress(s)
+  override def getDepositAddress(cryptoCurrency: String): String = xch.getDepositAddress(cryptoCurrency)
 
   override def getCryptoCurrencies: util.Set[String] = xch.getCryptoCurrencies
 
   override def getFiatCurrencies: util.Set[String] = xch.getFiatCurrencies
 
-  override def getExchangeRateLast(s: String, s1: String): java.math.BigDecimal = xch.getExchangeRateLast(s, s1)
+  override def getExchangeRateLast(cryptoCurrency: String, fiatCurrency: String): BigDecimal =
+    xch.getExchangeRateLast(cryptoCurrency, fiatCurrency)
 
   override def getPreferredFiatCurrency: String = xch.getPreferredFiatCurrency
 }
