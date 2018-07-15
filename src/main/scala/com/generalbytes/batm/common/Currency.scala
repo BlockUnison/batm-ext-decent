@@ -1,5 +1,9 @@
 package com.generalbytes.batm.common
 
+import java.util
+
+import com.generalbytes.batm.common.Alias.Address
+
 sealed trait Currency {
   val name: String
 }
@@ -11,7 +15,10 @@ trait FiatCurrency extends Currency with Fiat
 trait CryptoCurrency extends Currency with Crypto
 
 object Currency {
-//  def withName[T <: Currency](currency: String): Attempt[T] = {
+  val cryptos: Set[CryptoCurrency] = Set(Bitcoin, Decent)
+  val fiats: Set[FiatCurrency] = Set(Euro)
+
+  //  def withName[T <: Currency](currency: String): Attempt[T] = {
 //    allMap.get(currency).flatMap(c => Try(c.asInstanceOf[T]).toRight("Currency not found")
 //  }
 

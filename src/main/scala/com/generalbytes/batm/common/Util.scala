@@ -1,10 +1,7 @@
 package com.generalbytes.batm.common
 
+import com.generalbytes.batm.common.Alias.Attempt
 import com.typesafe.scalalogging.Logger
-import Alias.Attempt
-
-import javax.crypto.spec.SecretKeySpec
-import javax.crypto.Mac
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
