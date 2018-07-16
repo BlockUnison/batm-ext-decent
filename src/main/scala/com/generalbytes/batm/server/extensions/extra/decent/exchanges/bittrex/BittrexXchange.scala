@@ -2,11 +2,11 @@ package com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex
 
 import java.util
 
+import com.generalbytes.batm.common.Alias.Address
 import com.generalbytes.batm.common.Util._
-import org.knowm.xchange.ExchangeSpecification
-import com.generalbytes.batm.common.Alias.{Address, Identifier, Task}
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.server.extensions.extra.common.XChangeExchange
+import org.knowm.xchange.ExchangeSpecification
 
 //class BittrexExchange extends Exchange {
 //  override def getBalance[T <: Currency]: Task[BigDecimal] = ???

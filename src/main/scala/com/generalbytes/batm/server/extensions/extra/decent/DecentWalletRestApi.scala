@@ -2,27 +2,24 @@ package com.generalbytes.batm.server.extensions.extra.decent
 
 import cats.effect.IO
 import cats.implicits._
-import com.generalbytes.batm.common.Currency
-import com.generalbytes.batm.server.extensions.extra.decent.DecentAlias.WalletApi
 import com.generalbytes.batm.common.Alias._
+import com.generalbytes.batm.server.extensions.extra.decent.DecentAlias.WalletApi
 import io.circe.Json
 import io.circe.generic.auto._
+import io.circe.parser._
 import io.circe.syntax._
 import org.http4s._
-//import org.http4s.circe.CirceEntityDecoder._
-import io.circe.parser._
 import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.client.blaze.Http1Client
 import org.http4s.client.dsl.io._
 import org.http4s.dsl.io._
 
+case class DecentWalletCredentials(username: String, password: String)
+
 case class DecentRequest(username: String, password: String, amount: Amount, address: String)
 case class TransactionInfo(amountLeftInWallet: Amount, txid: Identifier, blockNum: BlockNumber)
 
 case class DecentResponse(b: DecentRequest, r: TransactionInfo)
-
-trait WalletCredentials[T <: Currency]    // TODO: Remove
-case class DecentWalletCredentials(username: String, password: String) extends WalletCredentials[Currency.DCT]
 
 class DecentWalletRestApi(url: Uri, credentials: DecentWalletCredentials) extends WalletApi {
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -48,7 +45,7 @@ class DecentWalletRestApi(url: Uri, credentials: DecentWalletCredentials) extend
       txid <- r("txid")
       res <- txid.asString
     } yield res
-    txIdOpt.toRight("Could not parse transaction ID from response")
+    txIdOpt.toRight(s"Could not parse transaction ID from response $json")
   }
 
   override def getBalance: Task[Amount] = IO("Not implemented".asLeft[Amount])

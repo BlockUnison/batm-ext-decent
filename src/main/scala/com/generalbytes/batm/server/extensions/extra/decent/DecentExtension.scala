@@ -2,7 +2,6 @@ package com.generalbytes.batm.server.extensions.extra.decent
 
 import cats.implicits._
 import com.generalbytes.batm.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common.{CryptoCurrency, Currency, Extension, Wallet, _}
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.BittrexXchange
 import com.generalbytes.batm.server.extensions.{IExchangeAdvanced, IRateSourceAdvanced}
@@ -22,9 +21,9 @@ class DecentExtension extends Extension[Currency.DCT] {
   override def createWallet(loginInfo: String): Attempt[Wallet[Currency.DCT, Task]] = loginInfo match {
     case walletLoginData(protocol, user, password, hostname) => {
       val url = Uri.unsafeFromString(s"$protocol://$hostname")
-      new DecentWalletRestApi(url, DecentWalletCredentials(user, password)) |> Right.apply
+      new DecentWalletRestApi(url, DecentWalletCredentials(user, password)).asRight
     }
-    case _ => "Login info did not match the expected format" |> Left.apply
+    case _ => s"Login info ($loginInfo) did not match the expected format".asLeft
   }
 
   private def exchangeFromLogin(loginInfo: Option[LoginInfo]): IExchangeAdvanced with IRateSourceAdvanced = {
@@ -36,7 +35,7 @@ class DecentExtension extends Extension[Currency.DCT] {
     new XChangeAdapter(new BittrexXchange(Currency.Euro, spec))
   }
 
-  private def parseLoginInfo(loginInfo: String): Option[LoginInfo] = loginInfo match {
+  private def parseExchangeLoginInfo(loginInfo: String): Option[LoginInfo] = loginInfo match {
     case exchangeLoginData(apiKey, secretKey) => LoginInfo(apiKey, secretKey).some
     case _ => none
   }
@@ -44,7 +43,7 @@ class DecentExtension extends Extension[Currency.DCT] {
   override def createRateSource: Attempt[IRateSourceAdvanced] = exchangeFromLogin(None).asRight
 
   override def createExchange(loginInfo: String): Attempt[IExchangeAdvanced] =
-    exchangeFromLogin(parseLoginInfo(loginInfo)).asRight
+    exchangeFromLogin(parseExchangeLoginInfo(loginInfo)).asRight
 }
 
 
