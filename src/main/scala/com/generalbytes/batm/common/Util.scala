@@ -25,6 +25,8 @@ object Util {
       log(a)
     }
 
+    def getOrNull[A1 >: A](implicit ev: Null <:< A1): A1 = a.toOption.orNull
+
     def cast[T : Typeable]: Attempt[T] = a.flatMap(_.cast[T].toRight("Could not cast"))
   }
 

@@ -4,7 +4,7 @@ import cats.implicits._
 import com.generalbytes.batm.common.Alias.{Attempt, Task}
 import com.generalbytes.batm.common.ratesources.SingleFixedPriceRateSource
 import com.generalbytes.batm.common.{CryptoCurrency, Currency, Extension, Wallet, _}
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.BittrexXchange
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.BittrexXChange
 import com.generalbytes.batm.server.extensions.{IExchangeAdvanced, IRateSourceAdvanced}
 import org.http4s.Uri
 
@@ -27,12 +27,12 @@ class DecentExtension extends Extension[Currency.DCT] {
   }
 
   private def exchangeFromLogin(loginInfo: Option[LoginInfo]): IExchangeAdvanced with IRateSourceAdvanced = {
-   val spec = BittrexXchange.defaultExchangeSpec
+    val spec = BittrexXChange.defaultExchangeSpec
     loginInfo.foreach{ l =>
       spec.setApiKey(l.apiKey)
       spec.setSecretKey(l.secretKey)
     }
-    new XChangeAdapter(new BittrexXchange(Currency.Euro, spec))
+    new XChangeAdapter(new BittrexXChange(spec, Currency.Euro))
   }
 
   private def parseExchangeLoginInfo(loginInfo: String): Option[LoginInfo] = loginInfo match {
