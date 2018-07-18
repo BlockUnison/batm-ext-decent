@@ -2,7 +2,7 @@ package com.generalbytes.batm.common
 
 import java.util
 
-import com.generalbytes.batm.common.Alias.Address
+import com.generalbytes.batm.common.Alias.{Address, Attempt}
 
 sealed trait Currency {
   val name: String
@@ -18,9 +18,9 @@ object Currency {
   val cryptos: Set[CryptoCurrency] = Set(Bitcoin, Decent)
   val fiats: Set[FiatCurrency] = Set(Euro)
 
-  //  def withName[T <: Currency](currency: String): Attempt[T] = {
-//    allMap.get(currency).flatMap(c => Try(c.asInstanceOf[T]).toRight("Currency not found")
-//  }
+  def withName(currency: String): Attempt[Currency] = {
+    allMap.get(currency).toRight(s"Currency with name $currency not found")
+  }
 
   def apply[T <: Currency : Default]: T = implicitly[Default[T]].value
 

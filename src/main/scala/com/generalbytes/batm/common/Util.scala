@@ -3,6 +3,9 @@ package com.generalbytes.batm.common
 import com.generalbytes.batm.common.Alias.Attempt
 import com.typesafe.scalalogging.Logger
 
+import shapeless._
+import syntax.typeable._
+
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.concurrent.duration._
@@ -21,6 +24,8 @@ object Util {
     def logError(implicit logger: Logger): Attempt[A] = {
       log(a)
     }
+
+    def cast[T : Typeable]: Attempt[T] = a.flatMap(_.cast[T].toRight("Could not cast"))
   }
 
   implicit class OptionOps[A](a: Option[A]) {

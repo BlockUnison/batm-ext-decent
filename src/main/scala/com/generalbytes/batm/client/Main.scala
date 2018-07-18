@@ -53,7 +53,7 @@ object Main extends App {
       secretKey
     )
 
-    val currencyPair = CurrencyPair(Euro, Decent)
+    val currencyPair = CurrencyPair(Decent, Euro)
     val resultIO = client.purchase(currencyPair, 1000L, "blahblah")
     val txId = resultIO.unsafeRunTimed(defaultDuration)
       .toRight("Request timeout")

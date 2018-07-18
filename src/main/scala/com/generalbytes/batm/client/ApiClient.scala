@@ -26,7 +26,7 @@ class ApiClient(val baseUri: Uri, val serialNumber: String, apiKey: String, secr
 
   type ApiResponse = Response[Result[PurchaseResponse]]
 
-  def purchase[F <: Currency, T <: Currency](currencyPair: CurrencyPair[F, T], amount: Amount, address: Address): IO[ApiResponse] = {
+  def purchase(currencyPair: CurrencyPair, amount: Amount, address: Address): IO[ApiResponse] = {
     val nonce = System.currentTimeMillis / 1000
     val secret = Util.hmacsha256(nonce.toString+serialNumber+apiKey, secretKey)
     val request = PurchaseRequest(serialNumber, nonce, apiKey, secret, amount, currencyPair.from.name, 0L, currencyPair.to.name, address)
