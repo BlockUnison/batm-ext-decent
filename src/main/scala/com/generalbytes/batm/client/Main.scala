@@ -73,7 +73,7 @@ object Main extends App {
     print(s"Secret key ($secretKey): ")
     val secretKeyActual = StdIn.readLine().some.filter(_.nonEmpty).map(_.trim).getOrElse(secretKey)
 
-    val nonce = System.currentTimeMillis / 1000
+    val nonce = System.currentTimeMillis
 
     val signature = Util.hmacsha256(nonce.toString + serial + apiKeyActual, secretKeyActual).toLowerCase
     println(s"Nonce: $nonce")

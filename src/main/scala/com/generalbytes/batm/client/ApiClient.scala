@@ -27,12 +27,12 @@ class ApiClient(val baseUri: Uri, val serialNumber: String, apiKey: String, secr
   type ApiResponse = Response[Result[PurchaseResponse]]
 
   def purchase(currencyPair: CurrencyPair, amount: Amount, address: Address): IO[ApiResponse] = {
-    val nonce = System.currentTimeMillis / 1000
-    val secret = Util.hmacsha256(nonce.toString+serialNumber+apiKey, secretKey)
+    val nonce = System.currentTimeMillis
+    val secret = Util.hmacsha256(nonce.toString + serialNumber + apiKey, secretKey)
     val request = PurchaseRequest(serialNumber, nonce, apiKey, secret, amount, currencyPair.from.name, 0L, currencyPair.to.name, address)
     val uri = purchaseUri(request)
 
-    val client = Http1Client[IO]().unsafeRunSync()
+//    val client = Http1Client[IO]().unsafeRunSync()
 //    client.expect[ApiResponse](uri)
 
     IO.pure(Response("ok", null, Result(PurchaseResponse(0L, Currency.Euro.name, address, amount, Currency.Decent.name, "", "", 1))))
