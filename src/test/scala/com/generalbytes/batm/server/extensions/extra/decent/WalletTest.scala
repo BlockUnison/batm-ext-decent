@@ -22,32 +22,15 @@ class WalletTest extends FlatSpec with Matchers {
     result should be(null)
   }
 
-//  it should "call service when sending money from wallet" in {
-//    val ext = new AdapterDecentExtension()
-//    val loginInfo = validLogin
-//
-//    val wallet = ext.createWallet(loginInfo)
-//    val targetAddress = "asdfh376"
-//    val amount = BigDecimal.valueOf(100)
-//    val txId = wallet.sendCoins(targetAddress, amount.bigDecimal, Currency.Decent.name, "")
-//
-//    txId should not be null
-//  }
-
-  it should "create rate source w/o problems" in {
+  it should "call service when sending money from wallet" in {
     val ext = new AdapterDecentExtension()
-    val sourceLogin = null
-    val rs = ext.createRateSource(sourceLogin)
+    val loginInfo = validLogin
 
-    rs should not be null
-  }
+    val wallet = ext.createWallet(loginInfo)
+    val targetAddress = "asdfh376"
+    val amount = BigDecimal.valueOf(100)
+    val txId = wallet.sendCoins(targetAddress, amount.bigDecimal, Currency.Decent.name, "")
 
-  it should "get exchange rate" in {
-    val ext = new AdapterDecentExtension()
-    val sourceLogin = "fixed:100.0"
-    val rs = ext.createRateSource(sourceLogin)
-
-    val rate = rs.getExchangeRateLast("DCT", "EUR") |> BigDecimal.apply
-    rate should be > BigDecimal(0.0)
+    txId should not be null
   }
 }
