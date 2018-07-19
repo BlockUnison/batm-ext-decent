@@ -20,6 +20,7 @@ case class DecentRequest(username: String, password: String, amount: Amount, add
 case class TransactionInfo(amountLeftInWallet: Amount, txid: Identifier, blockNum: BlockNumber)
 
 case class DecentResponse(b: DecentRequest, r: TransactionInfo)
+case class DecentBalanceResponse(balance: Amount)
 
 class DecentWalletRestApi(url: Uri, credentials: DecentWalletCredentials) extends WalletApi {
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -48,7 +49,7 @@ class DecentWalletRestApi(url: Uri, credentials: DecentWalletCredentials) extend
     txIdOpt.toRight(s"Could not parse transaction ID from response $json")
   }
 
-  override def getBalance: Task[Amount] = IO("Not implemented".asLeft[Amount])
+  override def getBalance: Task[Amount] = IO(DecentBalanceResponse(0L).balance.asRight[Error])
 
-  override def getAddress: Task[Address] = IO("Not implemented".asLeft[Address])
+  override def getAddress: Task[Address] = IO("".asRight[Error])
 }

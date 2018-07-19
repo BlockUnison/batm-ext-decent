@@ -15,17 +15,17 @@ class ExtensionAdapter[T <: Currency : Default](ext: Extension[T]) extends IExte
 
   override def getSupportedCryptoCurrencies: util.Set[String] = ext.supportedCryptoCurrencies.map(_.name).toJavaSet
 
-  override def createExchange(loginInfo: String): IExchange = ext.createExchange(loginInfo).logError.getOrThrow
+  override def createExchange(loginInfo: String): IExchange = ext.createExchange(loginInfo).logError.getOrNull
 
   override def createPaymentProcessor(s: String): IPaymentProcessor = null
 
-  override def createRateSource(s: String): IRateSource = ext.createRateSource.logError.getOrThrow
+  override def createRateSource(s: String): IRateSource = ext.createRateSource.logError.getOrNull
 
   override def createWallet(loginInfo: String): IWallet =
     ext.createWallet(loginInfo)
       .map(new WalletAdapter(_))
       .logError
-      .getOrThrow
+      .getOrNull
 
   override def createAddressValidator(s: String): ICryptoAddressValidator = null
 

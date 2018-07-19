@@ -38,5 +38,5 @@ class RateSourceAdapter(rs: RateSource) extends IRateSourceAdvanced {
     Option(getExchangeRateForBuy(cryptoCurrency, fiatCurrency)).map(_.multiply(amount)).orNull
 
   override def calculateSellPrice(cryptoCurrency: String, fiatCurrency: String, amount: java.math.BigDecimal): java.math.BigDecimal =
-    Option(getExchangeRateForSell(cryptoCurrency, fiatCurrency)).map(_.multiply(amount)).orNull
+    Option(getExchangeRateForSell(cryptoCurrency, fiatCurrency)).map(_.divide(amount)).orNull
 }

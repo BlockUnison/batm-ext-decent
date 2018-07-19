@@ -27,7 +27,9 @@ val dependencies = Seq(
   "javax.mail" % "mail" % "1.4.1",
   "org.knowm.xchange" % "xchange-core" % "4.3.8",
   "org.knowm.xchange" % "xchange-bittrex" % "4.3.8",
-  "com.google.guava" % "guava" % "19.0"
+  "com.google.guava" % "guava" % "19.0",
+
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
 
 lazy val root = (project in file("."))

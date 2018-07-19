@@ -55,10 +55,10 @@ object Util {
     import javax.crypto.Mac
     import javax.crypto.spec.SecretKeySpec
     val sha256_HMAC = Mac.getInstance("HmacSHA256")
-    val secret_key = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA256")
+    val secret_key = new SecretKeySpec(secretKey.getBytes, "HmacSHA256")
     sha256_HMAC.init(secret_key)
 
-    Hex.valueOf(sha256_HMAC.doFinal(message.getBytes("UTF-8")))
+    Hex.valueOf(sha256_HMAC.doFinal(message.getBytes))
   }
 }
 

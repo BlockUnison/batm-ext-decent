@@ -40,9 +40,9 @@ object Main extends App {
 
   val terminalSerialNumber = "VT123456"
 
-  val apiKey = "P4RPIUO4ICDXVV3DV84PVUXOOMVBEEZ7R"
+  val apiKey = "PD8AEO3M8EMDTVS8D3YAHBDO72XAXX27H"
 
-  val secretKey = "SVPMYSUXS7URIRID3S7AIVD8THSEM7XOM"
+  val secretKey = "SV38ZIRABDDBTTP2E27B8SDUBUO8PUK3S"
 
   def runClient(): Unit = {
     println(s"Running as CLIENT\r\nURL is $host")
@@ -69,12 +69,13 @@ object Main extends App {
     print(s"Terminal serial number ($terminalSerialNumber): ")
     val serial = StdIn.readLine().some.filter(_.nonEmpty).getOrElse(terminalSerialNumber)
     print(s"Api key ($apiKey): ")
-    val apiKeyActual = StdIn.readLine().some.filter(_.nonEmpty).getOrElse(apiKey)
+    val apiKeyActual = StdIn.readLine().some.filter(_.nonEmpty).map(_.trim).getOrElse(apiKey)
     print(s"Secret key ($secretKey): ")
-    val secretKeyActual = StdIn.readLine().some.filter(_.nonEmpty).getOrElse(secretKey)
+    val secretKeyActual = StdIn.readLine().some.filter(_.nonEmpty).map(_.trim).getOrElse(secretKey)
 
     val nonce = System.currentTimeMillis / 1000
-    val signature = Util.hmacsha256(nonce.toString + serial + apiKeyActual, secretKeyActual)
+
+    val signature = Util.hmacsha256(nonce.toString + serial + apiKeyActual, secretKeyActual).toLowerCase
     println(s"Nonce: $nonce")
     println(s"Signature: $signature")
   }
