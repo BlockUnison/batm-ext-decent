@@ -45,7 +45,7 @@ object Main extends App {
   val secretKey = "SV38ZIRABDDBTTP2E27B8SDUBUO8PUK3S"
 
   def runClient(): Unit = {
-    println(s"Running as CLIENT\r\nURL is $host")
+    println(s"Running as CLIENT\r\nURL is $apiHost")
     val client = new VirtualApiClient(
       Uri.unsafeFromString(apiHost),
       terminalSerialNumber,

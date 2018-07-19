@@ -17,7 +17,8 @@ class DecentExtension extends Extension[Currency.DCT] {
   override val supportedCryptoCurrencies: Set[CryptoCurrency] = Set(Currency.Decent)
 
   private val walletLoginData = """dctd:(https?):([A-Za-z0-9]+):([A-Za-z0-9\.]+):([A-Za-z0-9.]+)""".r
-  private val exchangeLoginData = """([A-Za-z0-9]+):([A-Za-z0-9]+)""".r
+  private val exchangeLoginData = """exchange:([A-Za-z0-9]+):([A-Za-z0-9]+)""".r
+  private val ratesourceLoginData = """fixed:([0-9\.]+)""".r
 
   override def createWallet(loginInfo: String): Attempt[Wallet[Currency.DCT, Task]] = loginInfo match {
     case walletLoginData(protocol, user, password, hostname) =>
@@ -40,10 +41,17 @@ class DecentExtension extends Extension[Currency.DCT] {
     case _ => none
   }
 
-  override def createRateSource: Attempt[IRateSourceAdvanced] = //exchangeFromLogin(None).asRight
-    new RateSourceAdapter(new SingleFixedPriceRateSource(
-      CurrencyPair(Currency.Decent, Currency.Euro), BigDecimal.valueOf(10000L)
-    )).asRight[String]
+  private def fixedPriceFromRate(rate: BigDecimal): IRateSourceAdvanced =
+    new RateSourceAdapter(
+      new SingleFixedPriceRateSource(
+        CurrencyPair(Currency.Decent, Currency.Euro), rate)
+    )
+
+  override def createRateSource(loginInfo: String): Attempt[IRateSourceAdvanced] = loginInfo match {
+    case exchangeLoginData(apiKey, secretKey) => exchangeFromLogin(LoginInfo(apiKey, secretKey).some).asRight[String]
+    case ratesourceLoginData(rate) => fixedPriceFromRate(BigDecimal(rate)).asRight[String]
+    case _ => fixedPriceFromRate(BigDecimal(0.0)).asRight[String]
+  }
 
   override def createExchange(loginInfo: String): Attempt[IExchangeAdvanced] =
     exchangeFromLogin(parseExchangeLoginInfo(loginInfo)).asRight

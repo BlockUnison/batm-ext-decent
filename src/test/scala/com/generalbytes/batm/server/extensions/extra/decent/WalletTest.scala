@@ -1,7 +1,8 @@
 package com.generalbytes.batm.server.extensions.extra.decent
 
 import com.generalbytes.batm.common.Currency
-import org.scalatest.{FlatSpec, Matchers}
+import com.generalbytes.batm.common.Util._
+import org.scalatest._
 
 class WalletTest extends FlatSpec with Matchers {
   private val validLogin = "dctd:http:admin:admin:decentatm.hypersignal.xyz"
@@ -21,15 +22,32 @@ class WalletTest extends FlatSpec with Matchers {
     result should be(null)
   }
 
-  it should "call service when sending money from wallet" in {
+//  it should "call service when sending money from wallet" in {
+//    val ext = new AdapterDecentExtension()
+//    val loginInfo = validLogin
+//
+//    val wallet = ext.createWallet(loginInfo)
+//    val targetAddress = "asdfh376"
+//    val amount = BigDecimal.valueOf(100)
+//    val txId = wallet.sendCoins(targetAddress, amount.bigDecimal, Currency.Decent.name, "")
+//
+//    txId should not be null
+//  }
+
+  it should "create rate source w/o problems" in {
     val ext = new AdapterDecentExtension()
-    val loginInfo = validLogin
+    val sourceLogin = null
+    val rs = ext.createRateSource(sourceLogin)
 
-    val wallet = ext.createWallet(loginInfo)
-    val targetAddress = "asdfh376"
-    val amount = BigDecimal.valueOf(100)
-    val txId = wallet.sendCoins(targetAddress, amount.bigDecimal, Currency.Decent.name, "")
+    rs should not be null
+  }
 
-    txId should not be null
+  it should "get exchange rate" in {
+    val ext = new AdapterDecentExtension()
+    val sourceLogin = "fixed:100.0"
+    val rs = ext.createRateSource(sourceLogin)
+
+    val rate = rs.getExchangeRateLast("DCT", "EUR") |> BigDecimal.apply
+    rate should be > BigDecimal(0.0)
   }
 }
