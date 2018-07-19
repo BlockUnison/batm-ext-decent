@@ -46,7 +46,7 @@ object Main extends App {
 
   def runClient(): Unit = {
     println(s"Running as CLIENT\r\nURL is $host")
-    val client = new ApiClient(
+    val client = new VirtualApiClient(
       Uri.unsafeFromString(apiHost),
       terminalSerialNumber,
       apiKey,
@@ -57,9 +57,8 @@ object Main extends App {
     val resultIO = client.purchase(currencyPair, 1000L, "blahblah")
     val txId = resultIO.unsafeRunTimed(defaultDuration)
       .toRight("Request timeout")
-      .map(_.data.result.remoteTransactionId)
       .logError
-      .getOrThrow
+      .getOrNull
 
     println(s"txid: $txId")
   }
@@ -80,9 +79,14 @@ object Main extends App {
     println(s"Signature: $signature")
   }
 
-  def runServer(): Unit = {
-
+  def run(): Unit = {
+    println("Press 'c' for client, 'h' for hmac generation")
+    if(StdIn.readLine().toLowerCase.trim == "c")
+      runClient()
+    else {
+      runHmac()
+    }
   }
 
-  runHmac()
+  run()
 }

@@ -8,7 +8,7 @@ import org.http4s.client.blaze._
 
 case class Money[T <: Currency](amount: Amount)
 
-class ApiClient(val baseUri: Uri, val serialNumber: String, apiKey: String, secretKey: String) {
+class VirtualApiClient(val baseUri: Uri, val serialNumber: String, apiKey: String, secretKey: String) {
 
 //  implicit val decoder: Decoder[ApiResponse] = deriveDecoder[ApiResponse]
 
@@ -26,15 +26,18 @@ class ApiClient(val baseUri: Uri, val serialNumber: String, apiKey: String, secr
 
   type ApiResponse = Response[Result[PurchaseResponse]]
 
-  def purchase(currencyPair: CurrencyPair, amount: Amount, address: Address): IO[ApiResponse] = {
+  def purchase(currencyPair: CurrencyPair, amount: Amount, address: Address): IO[String] = {
     val nonce = System.currentTimeMillis
     val secret = Util.hmacsha256(nonce.toString + serialNumber + apiKey, secretKey)
     val request = PurchaseRequest(serialNumber, nonce, apiKey, secret, amount, currencyPair.from.name, 0L, currencyPair.to.name, address)
     val uri = purchaseUri(request)
 
-//    val client = Http1Client[IO]().unsafeRunSync()
-//    client.expect[ApiResponse](uri)
+    val client = Http1Client[IO]().unsafeRunSync()
+    val response = client.expect[String](uri)
 
-    IO.pure(Response("ok", null, Result(PurchaseResponse(0L, Currency.Euro.name, address, amount, Currency.Decent.name, "", "", 1))))
+    response
+//    response
+//
+//    IO.pure(Response("ok", null, Result(PurchaseResponse(0L, Currency.Euro.name, address, amount, Currency.Decent.name, "", "", 1))))
   }
 }
