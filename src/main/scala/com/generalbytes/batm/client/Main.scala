@@ -81,11 +81,13 @@ object Main extends App {
 
   def run(): Unit = {
     println("Press 'c' for client, 'h' for hmac generation")
-    if(StdIn.readLine().toLowerCase.trim == "c")
+    val resp = StdIn.readLine().toLowerCase.trim
+    if(resp == "c")
       runClient()
-    else {
+    else if(resp == "h") {
       runHmac()
-    }
+    } else return
+    run()
   }
 
   run()
