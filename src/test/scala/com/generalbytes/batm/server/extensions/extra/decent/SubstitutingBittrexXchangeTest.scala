@@ -1,0 +1,42 @@
+package com.generalbytes.batm.server.extensions.extra.decent
+
+import com.generalbytes.batm.common.Alias.Task
+import com.generalbytes.batm.common.{Currency, LoggingSupport, TradeOrder}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, SubstitutingBittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
+import com.generalbytes.batm.common.implicits._
+import org.scalatest.{FlatSpec, Matchers}
+
+class SubstitutingBittrexXchangeTest extends FlatSpec with Matchers with LoggingSupport {
+
+  val zero: BigDecimal = BigDecimal.valueOf(0.0)
+
+  protected def createExchange: SubstitutingBittrexXChangeWrapper[Task] = {
+    val credentials = LoginInfo("ecfd6e9a0a45480e8d695ae70912319f", "2367ac62c29440f5a758b90a7ec1e0e4")
+    val exchange = new SubstitutingBittrexXChangeWrapper(new DefaultBittrexXChangeWrapper[Task](credentials).withRetries(2), Currency.Bitcoin)
+    exchange
+  }
+
+  it should "not fail when processing BUY order USD->DCT" in {
+    val exchange = createExchange
+
+    val amount = BigDecimal(39)
+    val order = TradeOrder.buy(Currency.Decent, Currency.USDollar, amount)
+    val result = exchange.fulfillOrder(order).attempt.unsafeRunSync()
+    result.left.foreach(println)
+    result.foreach(println)
+    result.getOrThrow should not be empty
+  }
+
+//  it should "not fail when processing sell order (BTC -> USD)" in {
+//    val credentials = LoginInfo("ecfd6e9a0a45480e8d695ae70912319f", "2367ac62c29440f5a758b90a7ec1e0e4")
+//    val exchange = new DefaultBittrexXChangeWrapper(credentials)
+//
+//    val amount = BigDecimal(11)
+//    val order = TradeOrder.sell(Currency.Bitcoin, Currency.USDollar, amount)
+//    val result = exchange.fulfillOrder(order)
+//    val value = result.attempt.unsafeRunSync().log.getOrThrow
+//    println(value)
+//    value should not be empty
+//  }
+}

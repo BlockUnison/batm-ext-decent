@@ -1,6 +1,9 @@
 package com.generalbytes.batm.server.extensions.extra.decent.wallets.dctd
 
-import com.generalbytes.batm.server.extensions.extra.decent.Decent.WalletApi
-import common.WalletAdapter
+import cats.Applicative
+import com.generalbytes.batm.common.Alias.Interpreter
+import com.generalbytes.batm.common.Currency.DCT
+import com.generalbytes.batm.common.adapters.WalletAdapter
+import com.generalbytes.batm.server.extensions.extra.decent.DecentAlias.DCTWallet
 
-class DecentWalletAdapter(client: WalletApi) extends WalletAdapter(client)
+class DecentWalletAdapter[F[_] : Interpreter : Applicative](client: DCTWallet[F]) extends WalletAdapter[F, DCT](client)
