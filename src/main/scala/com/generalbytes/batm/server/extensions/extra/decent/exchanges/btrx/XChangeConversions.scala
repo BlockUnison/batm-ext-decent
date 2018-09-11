@@ -1,0 +1,26 @@
+package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
+import com.generalbytes.batm.common.Alias.ExchangeRate
+import com.generalbytes.batm.common._
+import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.BittrexTick
+import org.knowm.xchange.currency
+import org.knowm.xchange.dto.Order.OrderType
+
+object XChangeConversions {
+   implicit class CurrencyConv(c: Currency) {
+     def convert: currency.Currency = currency.Currency.getInstance(c.name)
+   }
+
+  implicit class CurrencyPairConv(cp: CurrencyPair) {
+    def convert: currency.CurrencyPair = new currency.CurrencyPair(cp.base.name, cp.counter.name)
+  }
+
+  def getRateSelector(orderType: OrderType): BittrexTick => ExchangeRate = orderType match {
+    case OrderType.ASK => _.ask
+    case OrderType.BID => _.bid
+  }
+
+  def getOrderType[T <: Currency](order: TradeOrder[T]): OrderType = order match {
+    case _:PurchaseOrder[T] => OrderType.BID
+    case _:SaleOrder[T] => OrderType.ASK
+  }
+}

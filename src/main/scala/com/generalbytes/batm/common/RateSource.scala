@@ -1,11 +1,8 @@
 package com.generalbytes.batm.common
 
-import com.generalbytes.batm.common.Alias.Task
-
-// TODO: RateSource as typeclass?
-trait RateSource extends ExchangeBase{
-  def getExchangeRateForSell(currencyPair: CurrencyPair): Task[BigDecimal]
-  def getExchangeRateForBuy(currencyPair: CurrencyPair): Task[BigDecimal]
+trait RateSource[F[_]] extends ExchangeBase {
+  def getExchangeRateForSell(currencyPair: CurrencyPair): F[BigDecimal]
+  def getExchangeRateForBuy(currencyPair: CurrencyPair): F[BigDecimal]
 }
 
 trait ExchangeBase {

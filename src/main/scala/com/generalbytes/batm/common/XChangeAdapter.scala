@@ -2,7 +2,7 @@ package com.generalbytes.batm.common
 
 import java.util
 import java.math.BigDecimal
-import com.generalbytes.batm.server.extensions.extra.common.XChangeExchange
+import com.generalbytes.batm.server.extensions.extra.bitcoin.exchanges.XChangeExchange
 import com.generalbytes.batm.server.extensions.{IExchangeAdvanced, IRateSourceAdvanced, ITask}
 
 class XChangeAdapter[T <: XChangeExchange](xch: T) extends IExchangeAdvanced with IRateSourceAdvanced {

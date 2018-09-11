@@ -1,8 +1,7 @@
 package com.generalbytes.batm.common
 
-import java.util
-
-import com.generalbytes.batm.common.Alias.{Address, Attempt}
+import com.generalbytes.batm.common.Alias.Attempt
+import com.generalbytes.batm.common.implicits._
 
 sealed trait Currency {
   val name: String
@@ -16,10 +15,10 @@ trait CryptoCurrency extends Currency with Crypto
 
 object Currency {
   val cryptos: Set[CryptoCurrency] = Set(Bitcoin, Decent)
-  val fiats: Set[FiatCurrency] = Set(Euro)
+  val fiats: Set[FiatCurrency] = Set(Euro, USDollar)
 
   def withName(currency: String): Attempt[Currency] = {
-    allMap.get(currency).toRight(s"Currency with name $currency not found")
+    allMap.get(currency).toRight(err"Currency with name $currency not found")
   }
 
   def apply[T <: Currency : Default]: T = implicitly[Default[T]].value
@@ -30,15 +29,19 @@ object Currency {
   case object Bitcoin extends BTC
 
   trait EUR extends FiatCurrency { val name = "EUR" }
+  trait USD extends FiatCurrency { val name = "USD" }
   case object Euro extends EUR
+  case object USDollar extends USD
 
   trait Default[T <: Currency] {
     val value: T
   }
 
-  val all: Set[Currency] = Set(Decent, Bitcoin, Euro)
+  val all: Set[Currency] = Set(Decent, Bitcoin, Euro, USDollar)
   val allMap: Map[String, Currency] = all.map(c => c.name -> c).toMap
 
   implicit val dct: Default[DCT] = new Default[DCT] { val value: DCT = Decent }
   implicit val btc: Default[BTC] = new Default[BTC] { val value: BTC = Bitcoin }
+  implicit val eur: Default[EUR] = new Default[EUR] { val value: EUR = Euro }
+  implicit val usd: Default[USD] = new Default[USD] { val value: USD = USDollar }
 }

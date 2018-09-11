@@ -4,6 +4,6 @@ object Adapters {
   type Address = String
   type TransactionId = String
   type Amount = java.math.BigDecimal
-//  type CryptoCurrency = String
-//  type FiatCurrency = String
+  type CryptoCurrency = String
+  type FiatCurrency = String
 }

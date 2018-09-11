@@ -1,22 +1,23 @@
 package com.generalbytes.batm.common.ratesources
 
-import cats.effect.IO
-import cats.implicits._
-import com.generalbytes.batm.common.Alias.{ExchangeRate, Task}
-import com.generalbytes.batm.common.{CryptoCurrency, CurrencyPair, FiatCurrency, RateSource}
+import cats.Applicative
+import com.generalbytes.batm.common.Alias.{ApplicativeErr, ExchangeRate}
+import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.implicits._
+import shapeless.syntax.std.product._
 
-class SingleFixedPriceRateSource[F <: CryptoCurrency, T <: FiatCurrency](currencyPair: CurrencyPair, rate: ExchangeRate) extends RateSource {
-  override val cryptoCurrencies: Set[CryptoCurrency] = Set(currencyPair.from)
-  override val fiatCurrencies: Set[FiatCurrency] = Set(currencyPair.to)
-  override val preferredFiat: FiatCurrency = currencyPair.to
+class SingleFixedPriceRateSource[F[_] : Applicative : ApplicativeErr](currencyPair: CurrencyPairF2C, rate: ExchangeRate) extends RateSource[F] {
+  override val cryptoCurrencies: Set[CryptoCurrency] = Set(currencyPair.base)
+  override val fiatCurrencies: Set[FiatCurrency] = Set(currencyPair.counter)
+  override val preferredFiat: FiatCurrency = currencyPair.counter
 
-  override def getExchangeRateForSell(currencyPair: CurrencyPair): Task[ExchangeRate] =
-    if (currencyPair == this.currencyPair) {
-      IO.pure(rate.asRight)
-    } else IO.pure("Unsupported currency".asLeft)
+  override def getExchangeRateForSell(currencyPair: CurrencyPair): F[ExchangeRate] =
+    if (currencyPair.toTuple == this.currencyPair.toTuple) {
+      Applicative[F].pure(rate)
+    } else ApplicativeErr[F].raiseError(err"Unsupported currency pair $currencyPair")
 
-  override def getExchangeRateForBuy(currencyPair: CurrencyPair): Task[BigDecimal] =
-    if (currencyPair == this.currencyPair) {
-      IO.pure(rate.asRight)
-    } else IO.pure("Unsupported currency".asLeft)
+  override def getExchangeRateForBuy(currencyPair: CurrencyPair): F[BigDecimal] =
+    if (currencyPair.toTuple == this.currencyPair.toTuple) {
+      Applicative[F].pure(rate)
+    } else ApplicativeErr[F].raiseError(err"Unsupported currency pair $currencyPair")
 }

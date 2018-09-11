@@ -1,61 +1,44 @@
 package com.generalbytes.batm.common
 
-import com.generalbytes.batm.common.Alias.Attempt
-import com.typesafe.scalalogging.Logger
+import cats.{Monad, Show}
+import cats.effect.Sync
+import com.generalbytes.batm.common.Alias.{Attempt, Task}
+import org.slf4j.Logger
+import retry.RetryDetails
 
-import shapeless._
-import syntax.typeable._
-
-import scala.collection.JavaConverters._
-import scala.collection.mutable
-import scala.concurrent.duration._
-import scala.language.{higherKinds, postfixOps}
+import scala.language.higherKinds
 
 object Util {
-  implicit class Pipe[A](a: => A) {
-    def |>[B](f: A => B): B = f(a)
-  }
 
-  implicit class AttemptOps[A](a: Attempt[A]) {
-    def getOrThrow: A = {
-      a.fold(e => throw new Exception(e), identity)
-    }
-
-    def logError(implicit logger: Logger): Attempt[A] = {
-      log(a)
-    }
-
-    def getOrNull[A1 >: A](implicit ev: Null <:< A1): A1 = a.toOption.orNull
-
-    def cast[T : Typeable]: Attempt[T] = a.flatMap(_.cast[T].toRight("Could not cast"))
-  }
-
-  implicit class OptionOps[A](a: Option[A]) {
-    def getOrThrow(message: String): A = {
-      a.fold(throw new Exception(message))(identity)
-    }
-  }
-
-  implicit class EitherOps[A](self: Either[A, A]) {
-    def value: A = self.fold(identity, identity)
-  }
-
-  implicit val defaultDuration: Duration = 5 seconds
-
-  def log[A](self: Attempt[A])(implicit logger: Logger): Attempt[A] = {
-    self.left.foreach(x => logger.error(x))
+  def logObj[A: Show](self: Attempt[A])(implicit logger: Logger): Attempt[A] = {
+    self.left.foreach(x => logger.error(x.toString))
+    self.right.foreach(x => logger.debug(s"Value: ${Show[A].show(x)}"))
     self
   }
 
-  implicit class SetExtensions[A](self: Set[A]) {
-    def toJavaSet: java.util.Set[A] = mutable.Set.apply(self.toList: _*).asJava
+  def logIO[A: Show](a: A)(implicit logger: Logger): Task[A] = log[Task, A](a)
+
+  def log[F[_]: Sync, A: Show](a: A)(implicit logger: Logger): F[A] = implicitly[Sync[F]].delay {
+    logger.debug(Show[A].show(a))
+    a
   }
 
-  def hmacsha256(message: String, secretKey: String): String = {
+  implicit val showThrowable: Show[Throwable] = Show.fromToString
+
+  def logOp[M[_]: Monad : Sync, A: Show](implicit loggger: Logger): (A, RetryDetails) => M[Unit] =
+    (a, _) => implicitly[Monad[M]].map(log(a))(_ => ())
+
+  private val hmacSHA256 = "HmacSHA256"
+  private val hmacSHA512 = "HmacSHA512"
+
+  def hmacsha256(message: String, secretKey: String): String = hmacsha(message, secretKey, hmacSHA256)
+  def hmacsha512(message: String, secretKey: String): String = hmacsha(message, secretKey, hmacSHA512)
+
+  private def hmacsha(message: String, secretKey: String, algorithm: String): String = {
     import javax.crypto.Mac
     import javax.crypto.spec.SecretKeySpec
-    val sha256_HMAC = Mac.getInstance("HmacSHA256")
-    val secret_key = new SecretKeySpec(secretKey.getBytes, "HmacSHA256")
+    val sha256_HMAC = Mac.getInstance(algorithm)
+    val secret_key = new SecretKeySpec(secretKey.getBytes, hmacSHA256)
     sha256_HMAC.init(secret_key)
 
     Hex.valueOf(sha256_HMAC.doFinal(message.getBytes))

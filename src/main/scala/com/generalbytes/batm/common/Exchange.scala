@@ -1,9 +1,10 @@
 package com.generalbytes.batm.common
 
-import Alias.{Address, Identifier, Task}
+import com.generalbytes.batm.common.Alias.{Address, Amount, Identifier}
 
-trait Exchange extends ExchangeBase {
-  def getBalance[T <: Currency]: Task[BigDecimal]
-  def getAddress[T <: Currency]: Task[Address]
-  def fulfillOrder[T <: Currency](order: Order[T]): Task[Identifier]
+trait Exchange[F[_]] extends ExchangeBase {
+  def getBalance[T <: Currency](currency: T): F[Amount]
+  def getAddress[T <: Currency](currency: T): F[Address]
+  def fulfillOrder[T <: Currency](order: TradeOrder[T]): F[Identifier]
+  def withdrawFunds[T <: Currency](currency: Currency, amount: Amount, destination: Address): F[Identifier]
 }

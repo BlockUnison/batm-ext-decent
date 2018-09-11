@@ -1,12 +1,12 @@
 package com.generalbytes.batm.common
 
-import com.generalbytes.batm.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.server.extensions.{IExchangeAdvanced, IRateSourceAdvanced}
+import com.generalbytes.batm.common.factories.{AddressValidatorFactory, ExchangeFactory, RateSourceFactory, WalletFactory}
 
-trait Extension[T <: Currency] {
+trait Extension[F[_], T <: Currency]
+  extends ExchangeFactory
+    with RateSourceFactory
+    with WalletFactory[F, T]
+    with AddressValidatorFactory {
   val name: String
   val supportedCryptoCurrencies: Set[CryptoCurrency]
-  def createWallet(loginInfo: String): Attempt[Wallet[T, Task]]
-  def createRateSource(loginInfo: String): Attempt[IRateSourceAdvanced]    // TODO: Replace w/ RateSource
-  def createExchange(loginInfo: String): Attempt[IExchangeAdvanced]   // TODO: Replace w/ Exchange
 }
