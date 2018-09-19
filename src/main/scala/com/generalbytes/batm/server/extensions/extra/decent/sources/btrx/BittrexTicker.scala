@@ -1,31 +1,28 @@
 package com.generalbytes.batm.server.extensions.extra.decent.sources.btrx
 
-import cats.effect.{Effect, Sync}
+import cats.effect.{ConcurrentEffect, Effect, Sync}
 import cats.implicits._
 import cats.{Monad, Show}
 import com.generalbytes.batm.common.Alias.{ApplicativeErr, Attempt, ExchangeRate}
 import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.{CurrencyPair, LoggingSupport}
+import com.generalbytes.batm.common.{ClientFactory, CurrencyPair, LoggingSupport}
 import io.circe.{Decoder, DecodingFailure}
 import org.http4s.Uri
 import org.http4s.circe.CirceEntityDecoder._
-import org.http4s.client.blaze.Http1Client
 
 case class BittrexTick(bid: ExchangeRate, ask: ExchangeRate, last: ExchangeRate)
 case class BittrexTickError(message: String) extends Throwable(message)
 
-class BittrexTicker[F[_] : Effect : Sync : Monad : ApplicativeErr](currencyPair: CurrencyPair) extends LoggingSupport {
+class BittrexTicker[F[_] : Effect : Sync : Monad : ApplicativeErr : ConcurrentEffect](currencyPair: CurrencyPair) extends LoggingSupport with ClientFactory[F] {
   import BittrexTicker._
-  private val uri: Uri =
-    Uri.unsafeFromString("https://bittrex.com/api/v1.1/public/getticker")
-      .withQueryParam("market", s"${currencyPair.counter.name}-${currencyPair.base.name}")
-
+  private val uri: Uri = Uri.unsafeFromString("https://bittrex.com/api/v1.1/public/getticker")
+      .withQueryParam("market", currencyPair.toString)
 
   def currentRates: F[BittrexTick] =
-    Http1Client[F]()
+    client
       .flatMap(_.expect[Attempt[BittrexTick]](uri))
-      .flatTap(x => log(x))
+      .flatTap(x => log(x, currencyPair.toString))
       .unattempt
 }
 

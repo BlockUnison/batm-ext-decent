@@ -8,7 +8,7 @@ import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.Defau
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
 import org.scalatest.{FlatSpec, Matchers}
 
-class BittrexXchangeTest extends FlatSpec with Matchers with LoggingSupport {
+class BittrexXchangeTest extends FlatSpec with Matchers with TestLoggingSupport {
   val zero: BigDecimal = BigDecimal.valueOf(0.0)
 
   protected def createExchange: Exchange[Task] = {
@@ -42,7 +42,7 @@ class BittrexXchangeTest extends FlatSpec with Matchers with LoggingSupport {
 //  it should "not fail when processing sell order BTC->USD" in {
 //    val exchange = createExchange
 //
-//    val amount = BigDecimal(0.0035)
+//    val amount = BigDecimal(0.0065)
 //    val order = TradeOrder.sell(Currency.Bitcoin, Currency.USDollar, amount)
 //    val result = exchange.fulfillOrder(order)
 //    val value = result.attempt.unsafeRunSync().log.getOrThrow

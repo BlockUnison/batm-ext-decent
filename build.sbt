@@ -1,9 +1,8 @@
-val catsVersion = "1.1.0"
-val enumeratumVersion = "1.5.13"
-val circeVersion = "0.9.3"
-val jsonRpcVersion = "0.9.3"
-val http4sVersion = "0.19.0-M1"
-val xchangeVersion = "4.2.3"
+val catsVersion = "1.4.0"
+val catsEffectVersion = "1.0.0"
+val circeVersion = "0.10.0-M2"
+val http4sVersion = "0.19.0-SNAPSHOT"
+val xchangeVersion = "4.3.10"
 val catsRetryVersion = "0.1.0"
 
 resolvers ++= Seq(
@@ -15,7 +14,7 @@ addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")
 
 val dependencies = Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
-  "org.typelevel" %% "cats-effect" % "0.10.1",
+  "org.typelevel" %% "cats-effect" % catsEffectVersion,
   "com.chuusai" %% "shapeless" % "2.3.3",
   "org.http4s" %% "http4s-dsl" % http4sVersion,
   "org.http4s" %% "http4s-core" % http4sVersion,
@@ -31,17 +30,8 @@ val dependencies = Seq(
   "javax.ws.rs" % "javax.ws.rs-api" % "2.1" jar() withSources() withJavadoc(),
 
   "org.slf4j" % "slf4j-api" % "1.7.25",
-  "com.google.zxing" % "core" % "2.3.0",
-  "javax.mail" % "mail" % "1.4.1",
   "org.knowm.xchange" % "xchange-core" % xchangeVersion,
-  "org.knowm.xchange" % "xchange-itbit" % xchangeVersion,
   "org.knowm.xchange" % "xchange-bittrex" % xchangeVersion,
-  "org.knowm.xchange" % "xchange-bitfinex" % xchangeVersion,
-  "org.knowm.xchange" % "xchange-hitbtc" % xchangeVersion,
-  "com.google.guava" % "guava" % "19.0",
-//  "com.azazar" % "bitcoin-json-rpc-client" % "1.0",
-  "com.github.mmazi" % "rescu" % "1.9.1",
-  "junit" % "junit" % "4.10",
 
   "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
@@ -51,7 +41,8 @@ lazy val root = (project in file("."))
     name := "batm_server_extensions_decent",
     scalaVersion := "2.12.6",
     scalacOptions ++= Seq("-Ypartial-unification", "-unchecked", "-language:higherKinds", "-language:postfixOps"),
-    libraryDependencies ++= dependencies
+    libraryDependencies ++= dependencies,
+    updateOptions := updateOptions.value.withLatestSnapshots(false)
   )
 
 val meta = """META.INF(.)*""".r

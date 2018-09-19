@@ -4,18 +4,17 @@ import cats.implicits._
 import com.generalbytes.batm.common.Alias._
 import com.generalbytes.batm.common.Currency.DCT
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.{LoggingSupport, Wallet}
+import com.generalbytes.batm.common.{ClientFactory, LoggingSupport, Wallet}
 import io.circe.generic.semiauto._
 import io.circe.syntax._
 import io.circe.{Decoder, ObjectEncoder}
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.circe.CirceEntityEncoder._
-import org.http4s.client.blaze.Http1Client
 import org.http4s.client.dsl.io._
 import org.http4s.dsl.io._
 
-class DecentWalletRestApi(url: Uri, credentials: DecentWalletRestApi.DecentWalletCredentials) extends Wallet[Task, DCT] with LoggingSupport {
+class DecentWalletRestApi(url: Uri, credentials: DecentWalletRestApi.DecentWalletCredentials) extends Wallet[Task, DCT] with ClientFactory[Task] with LoggingSupport {
   import DecentWalletRestApi._
 
   override def issuePayment(recipientAddress: Address, amount: Amount, description: String = ""): Task[Identifier] = {
@@ -27,7 +26,7 @@ class DecentWalletRestApi(url: Uri, credentials: DecentWalletRestApi.DecentWalle
       purchaseReq.asJson
     )
 
-    Http1Client[Task]()
+    client
       .flatMap(_.expectOr[TransactionInfo](request)(_.as[ErrorResponse]))
       .map(_.txid)
   }
@@ -36,7 +35,7 @@ class DecentWalletRestApi(url: Uri, credentials: DecentWalletRestApi.DecentWalle
     val request = GET(url / "balance")
     logger.debug(request.toString)
 
-    Http1Client[Task]()
+    client
       .flatMap(_.expectOr[BalanceResponse](request)(_.as[ErrorResponse]))
       .map(_.balance)
   }

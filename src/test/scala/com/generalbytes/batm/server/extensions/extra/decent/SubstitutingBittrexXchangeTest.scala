@@ -1,23 +1,15 @@
 package com.generalbytes.batm.server.extensions.extra.decent
 
 import com.generalbytes.batm.common.Alias.Task
-import com.generalbytes.batm.common.{Currency, LoggingSupport, TradeOrder}
+import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.{Currency, TradeOrder}
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, SubstitutingBittrexXChangeWrapper}
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
-import com.generalbytes.batm.common.implicits._
-import org.scalactic.source.Position
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach, FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, Matchers}
 
-class SubstitutingBittrexXchangeTest extends FlatSpec with Matchers with LoggingSupport with BeforeAndAfter {
+class SubstitutingBittrexXchangeTest extends FlatSpec with Matchers with TestLoggingSupport {
 
   val zero: BigDecimal = BigDecimal.valueOf(0.0)
-
-  before {
-    System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG")
-    val f = logger.getClass.getDeclaredField("currentLogLevel")
-    f.setAccessible(true)
-    f.get(logger) |> println
-  }
 
   protected def createExchange: SubstitutingBittrexXChangeWrapper[Task] = {
     val credentials = LoginInfo("9c1b049844d84271b7a606311953b758", "1607470db4dc4fddb56eb58df156f672")
@@ -28,7 +20,7 @@ class SubstitutingBittrexXchangeTest extends FlatSpec with Matchers with Logging
   it should "not fail when processing BUY order USD->DCT" in {
     val exchange = createExchange
 
-    val amount = BigDecimal(80)
+    val amount = BigDecimal(85)
     val order = TradeOrder.buy(Currency.Decent, Currency.USDollar, amount)
     val result = exchange.fulfillOrder(order).attempt.unsafeRunSync()
     result.left.foreach(println)

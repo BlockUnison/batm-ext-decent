@@ -1,19 +1,19 @@
 package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
 
 import cats.Monad
-import cats.effect.{Effect, Sync}
+import cats.effect.{ConcurrentEffect, Sync}
 import cats.implicits._
 import com.generalbytes.batm.common.Alias._
-import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
+import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.DefaultBittrexXChangeWrapper.ErrorDecorator
-import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, BittrexTicker, FallbackBittrexTicker}
+import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.FallbackBittrexTicker
 import org.knowm.xchange.dto.Order.OrderType
 import shapeless._
 
-class SubstitutingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Effect](exchange: Exchange[F], midCurrency: Currency)
+class SubstitutingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : ConcurrentEffect](exchange: Exchange[F], midCurrency: Currency)
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
   import XChangeConversions._
 
@@ -32,7 +32,7 @@ class SubstitutingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Ef
         _ <- log(fstOrder)
         _ <- exchange.fulfillOrder(fstOrder)
         sndOrderTemp = createSecondSubOrder(order, amount)
-        revisedAmount <- getAmountInCurrency(CurrencyPair(midCurrency, order.currencyPair.base), getOrderType(order).inverse, amount)   // TODO: refactor this
+        revisedAmount <- getInverseAmountInCurrency(CurrencyPair(midCurrency, order.currencyPair.base), getOrderType(order), amount)   // TODO: refactor this
         _ <- log(revisedAmount, "RevisedAmount")
         sndOrder = createSecondSubOrder(sndOrderTemp, revisedAmount)
         _ <- log(sndOrder)
@@ -49,12 +49,17 @@ class SubstitutingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Ef
     }
   }
 
-  private def getAmountInCurrency(currencyPair: CurrencyPair, orderType: OrderType, counterAmount: Amount): F[Amount] = {
+  private def getInverseAmountInCurrency(currencyPair: CurrencyPair, orderType: OrderType, counterAmount: Amount): F[Amount] =
+    getAmountInCurrency(currencyPair, orderType.inverse, counterAmount, _ / _)
+
+  private def getAmountInCurrency(currencyPair: CurrencyPair, orderType: OrderType, counterAmount: Amount, f: (Amount, ExchangeRate) => Amount): F[Amount] = {
     val ticker = new FallbackBittrexTicker[F](currencyPair)
     val selector = getRateSelector(orderType)
     for {
       rate <- ticker.currentRates
-    } yield counterAmount * selector(rate)
+      amount = f(counterAmount, selector(rate))
+      _ <- log(amount, "amount")
+    } yield amount
   }
 
   private def createUndoOrder[T <: Currency](order: TradeOrder[T], midCurrencyAmount: F[Amount]): F[Identifier] = {
@@ -78,6 +83,6 @@ class SubstitutingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Ef
   }
 
   private def getAmountInMidCurrency[T <: Currency](order: TradeOrder[T]): F[Amount] = {
-    getAmountInCurrency(CurrencyPair(midCurrency, order.currencyPair.base), getOrderType(order), order.amount.amount)
+    getAmountInCurrency(CurrencyPair(midCurrency, order.currencyPair.base), getOrderType(order), order.amount.amount, _ * _)
   }
 }

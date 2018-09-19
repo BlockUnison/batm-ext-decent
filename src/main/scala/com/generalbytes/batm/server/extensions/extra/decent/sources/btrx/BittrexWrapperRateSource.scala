@@ -1,6 +1,6 @@
 package com.generalbytes.batm.server.extensions.extra.decent.sources.btrx
 
-import cats.effect.Effect
+import cats.effect.{ConcurrentEffect, Effect}
 import cats.syntax.flatMap._
 import cats.syntax.functor._
 import cats.syntax.semigroup._
@@ -8,7 +8,7 @@ import cats.{Monad, Semigroup}
 import com.generalbytes.batm.common.Alias.{ApplicativeErr, ExchangeRate}
 import com.generalbytes.batm.common._
 
-class BittrexWrapperRateSource[F[_]: Effect : Monad : ApplicativeErr] extends RateSource[F] with LoggingSupport {
+class BittrexWrapperRateSource[F[_]: Effect : Monad : ApplicativeErr : ConcurrentEffect] extends RateSource[F] with LoggingSupport {
   implicit val bigDecimalMulSemigroup: Semigroup[ExchangeRate] = (x: ExchangeRate, y: ExchangeRate) => x * y
 
   private val fiatExRSource = new FiatCurrencyExchangeRateSource[F](Currency.Euro, Currency.USDollar)

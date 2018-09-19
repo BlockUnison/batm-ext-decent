@@ -2,7 +2,7 @@ package com.generalbytes.batm.common
 
 import cats._
 import cats.arrow.FunctionK
-import cats.effect.Timer
+import cats.effect.{ContextShift, Timer}
 import com.generalbytes.batm.common.Alias.{Attempt, Task}
 import retry.Sleep
 
@@ -15,6 +15,8 @@ object implicits extends Ops {
   implicit val timerIO: Timer[Task] = Task.timer(global)
   implicit val sleepIO: Sleep[Task] = (delay: FiniteDuration) => Task.sleep(delay)
 
+
+  implicit val cs: ContextShift[Task] = Task.contextShift(global)
   implicit def currencyEq[T <: Currency]: Eq[T] = Eq.fromUniversalEquals
   implicit val defaultDuration: FiniteDuration = 5 seconds
   implicit def showAttempt[A: Show]: Show[Attempt[A]] = Show.fromToString

@@ -10,7 +10,6 @@ import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, FallbackBittrexTicker}
-import fs2.async._
 import org.knowm.xchange
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.bittrex.BittrexExchange
@@ -52,17 +51,18 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
   // TODO: Make cancellable
   // TODO: IO.shift to another thread to avoid blocking
   override def fulfillOrder[T <: Currency](order: TradeOrder[T]): F[Identifier] = {
-    val orderId: F[Identifier] = once {
+    val orderId: F[Identifier] = Async.memoize {
       createLimitOrder(order).map(exchange.getTradeService.placeLimitOrder)
     }.toIO.unsafeRunSync()    // only to initialize memoization, doesn't make the actual call
 
     val maxAttempts = 10
     val polling = retryingM[BittrexOrder](
       RetryPolicies.limitRetries[F](maxAttempts),
-      _.getIsOpen,
+      r => !r.getIsOpen,
       logOp[F, BittrexOrder]) {
       for {
         ordId <- orderId
+        _ <- log(ordId, s"Order ID for $order ")
         order <- getOrder(ordId)
       } yield order
     } map (_.getOrderUuid)

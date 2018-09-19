@@ -5,6 +5,8 @@ import Util._
 
 case class CurrencyPair(counter: Currency, base: Currency) {
   def flip: CurrencyPair = CurrencyPair(base, counter)
+
+  override def toString: String = s"${counter.name}-${base.name}"
 }
 case class CurrencyPairF2C(counter: FiatCurrency, base: CryptoCurrency)
 

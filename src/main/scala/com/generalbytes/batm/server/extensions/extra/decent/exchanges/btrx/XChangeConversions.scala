@@ -1,4 +1,5 @@
 package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
+
 import com.generalbytes.batm.common.Alias.ExchangeRate
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.BittrexTick
