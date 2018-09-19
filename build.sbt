@@ -31,7 +31,6 @@ val dependencies = Seq(
   "javax.ws.rs" % "javax.ws.rs-api" % "2.1" jar() withSources() withJavadoc(),
 
   "org.slf4j" % "slf4j-api" % "1.7.25",
-  "org.slf4j" % "slf4j-simple" % "1.7.25",
   "com.google.zxing" % "core" % "2.3.0",
   "javax.mail" % "mail" % "1.4.1",
   "org.knowm.xchange" % "xchange-core" % xchangeVersion,

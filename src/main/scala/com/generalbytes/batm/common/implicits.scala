@@ -18,6 +18,7 @@ object implicits extends Ops {
   implicit def currencyEq[T <: Currency]: Eq[T] = Eq.fromUniversalEquals
   implicit val defaultDuration: FiniteDuration = 5 seconds
   implicit def showAttempt[A: Show]: Show[Attempt[A]] = Show.fromToString
+  implicit def showOrder[T <: Currency]: Show[TradeOrder[T]] = Show.fromToString
 
   private def attempt2Task[A](a: Attempt[A]): Task[A] =
     Task.fromEither(a)

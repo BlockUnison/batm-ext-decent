@@ -14,7 +14,15 @@ object XChangeConversions {
     def convert: currency.CurrencyPair = new currency.CurrencyPair(cp.base.name, cp.counter.name)
   }
 
-  def getRateSelector(orderType: OrderType): BittrexTick => ExchangeRate = orderType match {
+  implicit class OrderTypeOps(orderType: OrderType) {
+    def inverse: OrderType = orderType match {
+      case OrderType.ASK => OrderType.BID
+      case OrderType.BID => OrderType.ASK
+    }
+  }
+
+  type RateSelector = BittrexTick => ExchangeRate
+  def getRateSelector(orderType: OrderType): RateSelector = orderType match {
     case OrderType.ASK => _.ask
     case OrderType.BID => _.bid
   }

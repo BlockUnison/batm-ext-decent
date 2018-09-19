@@ -14,9 +14,7 @@ object Alias {
   type Attempt[+A] = Either[Throwable, A]
   type ExchangeRate = BigDecimal
   type ApplicativeErr[F[_]] = ApplicativeError[F, Throwable]
-  object ApplicativeErr {
-    def apply[F[_]: ApplicativeErr]: ApplicativeErr[F] = ApplicativeError[F, Throwable]
-  }
+  def ApplicativeErr[F[_] : ApplicativeErr]: ApplicativeErr[F] = ApplicativeError[F, Throwable]
   type MonadErr[F[_]] = MonadError[F, Throwable]
   type Interpreter[F[_]] = F ~> Id
   type Translator[F[_]] = Attempt ~> F

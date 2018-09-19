@@ -12,7 +12,7 @@ class BittrexXchangeTest extends FlatSpec with Matchers with LoggingSupport {
   val zero: BigDecimal = BigDecimal.valueOf(0.0)
 
   protected def createExchange: Exchange[Task] = {
-    val credentials = LoginInfo("ecfd6e9a0a45480e8d695ae70912319f", "2367ac62c29440f5a758b90a7ec1e0e4")
+    val credentials = LoginInfo("9c1b049844d84271b7a606311953b758", "1607470db4dc4fddb56eb58df156f672")
     val exchange = new DefaultBittrexXChangeWrapper[Task](credentials).withRetries(2)
     exchange
   }
@@ -39,16 +39,16 @@ class BittrexXchangeTest extends FlatSpec with Matchers with LoggingSupport {
 //    value should not be empty
 //  }
 
-  it should "not fail when processing sell order BTC->USD" in {
-    val exchange = createExchange
-
-    val amount = BigDecimal(0.0035)
-    val order = TradeOrder.sell(Currency.Bitcoin, Currency.USDollar, amount)
-    val result = exchange.fulfillOrder(order)
-    val value = result.attempt.unsafeRunSync().log.getOrThrow
-    println(value)
-    value should not be empty
-  }
+//  it should "not fail when processing sell order BTC->USD" in {
+//    val exchange = createExchange
+//
+//    val amount = BigDecimal(0.0035)
+//    val order = TradeOrder.sell(Currency.Bitcoin, Currency.USDollar, amount)
+//    val result = exchange.fulfillOrder(order)
+//    val value = result.attempt.unsafeRunSync().log.getOrThrow
+//    println(value)
+//    value should not be empty
+//  }
 
   it should "not fail when getting balance in BTC" in {
     val exchange = createExchange

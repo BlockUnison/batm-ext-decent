@@ -5,14 +5,21 @@ import cats.effect.{Effect, Sync}
 import cats.implicits._
 import com.generalbytes.batm.common.Alias._
 import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.DefaultBittrexXChangeWrapper.ErrorDecorator
-import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, BittrexTicker}
+import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, BittrexTicker, FallbackBittrexTicker}
+import org.knowm.xchange.dto.Order.OrderType
 import shapeless._
 
 class SubstitutingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Effect](exchange: Exchange[F], midCurrency: Currency)
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
+  import XChangeConversions._
+
+  private def amountLens[T <: Currency] = lens[TradeOrder[T]].amount.amount
+  private def currencyPairLens[T <: Currency] = lens[TradeOrder[T]].currencyPair
+  private def currencyPairAndAmountLens[T <: Currency] = currencyPairLens[T] ~ amountLens[T]
 
   override def fulfillOrder[T <: Currency](order: TradeOrder[T]): F[Identifier] = {
     if (order.currencyPair.counter === midCurrency || order.currencyPair.base === midCurrency) exchange.fulfillOrder(order)
@@ -21,43 +28,56 @@ class SubstitutingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Ef
 
       val result = for {
         amount <- midCurrencyAmount
-        _ <- exchange.fulfillOrder(createFirstSubOrder(order, amount))
-        txId <- exchange.fulfillOrder(createSecondSubOrder(order))
+        fstOrder = createFirstSubOrder(order, amount)
+        _ <- log(fstOrder)
+        _ <- exchange.fulfillOrder(fstOrder)
+        sndOrderTemp = createSecondSubOrder(order, amount)
+        revisedAmount <- getAmountInCurrency(CurrencyPair(midCurrency, order.currencyPair.base), getOrderType(order).inverse, amount)   // TODO: refactor this
+        _ <- log(revisedAmount, "RevisedAmount")
+        sndOrder = createSecondSubOrder(sndOrderTemp, revisedAmount)
+        _ <- log(sndOrder)
+        txId <- exchange.fulfillOrder(sndOrder)
       } yield txId
 
       result.handleErrorWith {
         case e @ ErrorDecorator(_, CurrencyPair(_, mc)) if mc === midCurrency =>
-          for {
-            amount <- midCurrencyAmount
-            undoOrder = createFirstSubOrder(order, amount).inverse
-            undoTxId <- exchange.fulfillOrder(undoOrder)
-          } yield undoTxId
-          ApplicativeErr[F].raiseError(e)
-        case e => ApplicativeErr[F].raiseError(e)
+          // failed on second currency
+          val undoTransaction = createUndoOrder(order, midCurrencyAmount)
+          undoTransaction.flatMap(_ => raise[F](e))
+        case e => raise[F](e)
       }
     }
   }
 
-  private def createFirstSubOrder[T <: Currency](order: TradeOrder[T], amount: Amount): TradeOrder[T] = {
-    val amountLens = lens[TradeOrder[T]].amount.amount
-    val currencyPairLens = lens[TradeOrder[T]].currencyPair
-    val firstCP = CurrencyPair(order.currencyPair.counter, midCurrency)
-
-    (currencyPairLens ~ amountLens).set(order)(firstCP, amount)
+  private def getAmountInCurrency(currencyPair: CurrencyPair, orderType: OrderType, counterAmount: Amount): F[Amount] = {
+    val ticker = new FallbackBittrexTicker[F](currencyPair)
+    val selector = getRateSelector(orderType)
+    for {
+      rate <- ticker.currentRates
+    } yield counterAmount * selector(rate)
   }
 
-  private def createSecondSubOrder[T <: Currency](order: TradeOrder[T]): TradeOrder[T] = {
+  private def createUndoOrder[T <: Currency](order: TradeOrder[T], midCurrencyAmount: F[Amount]): F[Identifier] = {
+    for {
+      amount <- midCurrencyAmount
+      undoOrder = createFirstSubOrder(order, amount).inverse
+      _ <- log(undoOrder.toString, "UndoOrder")
+      undoTxId <- exchange.fulfillOrder(undoOrder)
+      _ <- log(undoTxId, "UndoTransactionId")
+    } yield undoTxId
+  }
+
+  private def createFirstSubOrder[T <: Currency](order: TradeOrder[T], amount: Amount): TradeOrder[T] = {
+    val firstCP = CurrencyPair(order.currencyPair.counter, midCurrency)
+    currencyPairAndAmountLens.set(order)(firstCP, amount)
+  }
+
+  private def createSecondSubOrder[T <: Currency](order: TradeOrder[T], amount: Amount): TradeOrder[T] = {
     val secondCP = CurrencyPair(midCurrency, order.currencyPair.base)
-    lens[TradeOrder[T]].currencyPair.set(order)(secondCP)
+    currencyPairAndAmountLens.set(order)(secondCP, amount)
   }
 
   private def getAmountInMidCurrency[T <: Currency](order: TradeOrder[T]): F[Amount] = {
-    import XChangeConversions._
-    val bittrexTicker = new BittrexTicker[F](CurrencyPair(midCurrency, order.currencyPair.base))
-    val rateSelector: BittrexTick => ExchangeRate = getRateSelector(getOrderType(order))
-
-    for {
-      rate <- bittrexTicker.currentRates
-    } yield order.amount.amount * rateSelector(rate)
+    getAmountInCurrency(CurrencyPair(midCurrency, order.currencyPair.base), getOrderType(order), order.amount.amount)
   }
 }

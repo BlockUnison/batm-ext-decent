@@ -1,15 +1,15 @@
 package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
 
-import cats.{Monad, Show}
 import cats.effect._
 import cats.effect.implicits._
 import cats.implicits._
+import cats.{Monad, Show}
 import com.generalbytes.batm.common.Alias._
 import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
-import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, BittrexTicker}
+import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, FallbackBittrexTicker}
 import fs2.async._
 import org.knowm.xchange
 import org.knowm.xchange.ExchangeFactory
@@ -21,13 +21,11 @@ import org.knowm.xchange.dto.trade.{LimitOrder, UserTrade}
 import retry._
 
 import scala.collection.JavaConverters._
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep : ConcurrentEffect](credentials: LoginInfo)
   extends Exchange[F] with LoggingSupport {
-  import XChangeConversions._
-  import BittrexTicker._
   import DefaultBittrexXChangeWrapper._
+  import XChangeConversions._
 
   protected val exchange: xchange.Exchange = createExchange
 
@@ -49,17 +47,18 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
     balance.getTotal
   }
 
-  override def getAddress[T <: Currency](currency: T): F[Address] = ApplicativeErr[F].raiseError(err"Not implemented")
+  override def getAddress[T <: Currency](currency: T): F[Address] = raise[F](err"Not implemented")
 
   // TODO: Make cancellable
   // TODO: IO.shift to another thread to avoid blocking
   override def fulfillOrder[T <: Currency](order: TradeOrder[T]): F[Identifier] = {
     val orderId: F[Identifier] = once {
       createLimitOrder(order).map(exchange.getTradeService.placeLimitOrder)
-    }.toIO.unsafeRunSync()
+    }.toIO.unsafeRunSync()    // only to initialize memoization, doesn't make the actual call
 
     val maxAttempts = 10
-    val polling = retryingM[BittrexOrder](RetryPolicies.limitRetries[F](maxAttempts),
+    val polling = retryingM[BittrexOrder](
+      RetryPolicies.limitRetries[F](maxAttempts),
       _.getIsOpen,
       logOp[F, BittrexOrder]) {
       for {
@@ -68,20 +67,19 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
       } yield order
     } map (_.getOrderUuid)
 
-    polling.handleErrorWith(e => ApplicativeErr[F].raiseError(ErrorDecorator(e, order.currencyPair)))
+    polling.handleErrorWith(e => raise[F](ErrorDecorator(e, order.currencyPair)))
   }
 
   override def withdrawFunds[T <: Currency](currency: Currency, amount: Amount, destination: Address): F[Identifier] = Sync[F].delay {
     exchange.getAccountService.withdrawFunds(currency.convert, amount.bigDecimal, destination)
   }
 
-
   def getTrades: F[List[UserTrade]] = Sync[F].delay {
     exchange.getTradeService.getTradeHistory(exchange.getTradeService.createTradeHistoryParams()).getUserTrades.asScala.toList
   }
 
   protected def createLimitOrder[T <: Currency](order: TradeOrder[T]): F[LimitOrder] = {
-    val ticker = new BittrexTicker[F](order.currencyPair)
+    val ticker = new FallbackBittrexTicker[F](order.currencyPair)
     for {
       rate <- ticker.currentRates
       orderType = getOrderType(order)
@@ -103,7 +101,6 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
   override val cryptoCurrencies: Set[CryptoCurrency] = Set.empty
   override val fiatCurrencies: Set[FiatCurrency] = Set.empty
   override val preferredFiat: FiatCurrency = Currency.USDollar
-
 }
 
 object DefaultBittrexXChangeWrapper {
@@ -111,6 +108,5 @@ object DefaultBittrexXChangeWrapper {
 
   implicit val showBittrexOrder: Show[BittrexOrder] = Show.fromToString
   implicit val orderTypeShow: Show[OrderType] = Show.fromToString
-
 }
 
