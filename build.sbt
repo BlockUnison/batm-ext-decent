@@ -2,7 +2,7 @@ val catsVersion = "1.4.0"
 val catsEffectVersion = "1.0.0"
 val circeVersion = "0.10.0-M2"
 val http4sVersion = "0.19.0-SNAPSHOT"
-val xchangeVersion = "4.3.10"
+val xchangeVersion = "4.3.11-SNAPSHOT"
 val catsRetryVersion = "0.1.0"
 
 resolvers ++= Seq(

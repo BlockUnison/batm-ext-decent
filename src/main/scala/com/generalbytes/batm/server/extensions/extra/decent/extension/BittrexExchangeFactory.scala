@@ -1,12 +1,8 @@
 package com.generalbytes.batm.server.extensions.extra.decent.extension
 
 import cats.implicits._
-import cats.effect._
-import cats.effect.implicits._
 import com.generalbytes.batm.common.Alias.{Attempt, Task}
 import com.generalbytes.batm.common.Currency
-import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common.adapters.ExchangeAdapter
 import com.generalbytes.batm.common.factories.ExchangeFactory
 import com.generalbytes.batm.server.extensions.IExchange
