@@ -17,16 +17,16 @@ class SubstitutingBittrexXchangeTest extends FlatSpec with Matchers with TestLog
     exchange
   }
 
-  it should "not fail when processing BUY order USD->DCT" in {
-    val exchange = createExchange
-
-    val amount = BigDecimal(85)
-    val order = TradeOrder.buy(Currency.Decent, Currency.USDollar, amount)
-    val result = exchange.fulfillOrder(order).attempt.unsafeRunSync()
-    result.left.foreach(println)
-    result.foreach(println)
-    result.getOrThrow should not be empty
-  }
+//  it should "not fail when processing BUY order USD->DCT" in {
+//    val exchange = createExchange
+//
+//    val amount = BigDecimal(200)
+//    val order = TradeOrder.buy(Currency.Decent, Currency.USDollar, amount)
+//    val result = exchange.fulfillOrder(order).attempt.unsafeRunSync()
+//    result.left.foreach(println)
+//    result.foreach(println)
+//    result.getOrThrow should not be empty
+//  }
 
 //  it should "not fail when processing sell order (BTC -> USD)" in {
 //    val credentials = LoginInfo("ecfd6e9a0a45480e8d695ae70912319f", "2367ac62c29440f5a758b90a7ec1e0e4")

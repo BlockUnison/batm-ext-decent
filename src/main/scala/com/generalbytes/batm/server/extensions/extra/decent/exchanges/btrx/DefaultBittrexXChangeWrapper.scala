@@ -17,10 +17,8 @@ import org.knowm.xchange.bittrex.BittrexExchange
 import org.knowm.xchange.bittrex.dto.account.BittrexOrder
 import org.knowm.xchange.bittrex.service.BittrexAccountServiceRaw
 import org.knowm.xchange.dto.Order.OrderType
-import org.knowm.xchange.dto.trade.{LimitOrder, UserTrade}
+import org.knowm.xchange.dto.trade.LimitOrder
 import retry._
-
-import scala.collection.JavaConverters._
 
 class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep : ConcurrentEffect](credentials: LoginInfo)
   extends Exchange[F] with LoggingSupport {
@@ -92,10 +90,6 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
     uri <- Uri.fromString(destination)
     accountName <- uri.query.params.get("account_name").toRight(err"Uri contains no destination address: $destination")
   } yield accountName
-
-  def getTrades: F[List[UserTrade]] = Sync[F].delay {
-    exchange.getTradeService.getTradeHistory(exchange.getTradeService.createTradeHistoryParams()).getUserTrades.asScala.toList
-  }
 
   protected def createLimitOrder[T <: Currency](order: TradeOrder[T]): F[LimitOrder] = {
     val ticker = new FallbackBittrexTicker[F](order.currencyPair)
