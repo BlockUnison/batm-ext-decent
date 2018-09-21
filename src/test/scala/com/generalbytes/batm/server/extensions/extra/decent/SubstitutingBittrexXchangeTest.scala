@@ -3,7 +3,7 @@ package com.generalbytes.batm.server.extensions.extra.decent
 import com.generalbytes.batm.common.Alias.Task
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.{Currency, TradeOrder}
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, SubstitutingBittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, OrderChainingBittrexXChangeWrapper}
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -11,9 +11,9 @@ class SubstitutingBittrexXchangeTest extends FlatSpec with Matchers with TestLog
 
   val zero: BigDecimal = BigDecimal.valueOf(0.0)
 
-  protected def createExchange: SubstitutingBittrexXChangeWrapper[Task] = {
+  protected def createExchange: OrderChainingBittrexXChangeWrapper[Task] = {
     val credentials = LoginInfo("9c1b049844d84271b7a606311953b758", "1607470db4dc4fddb56eb58df156f672")
-    val exchange = new SubstitutingBittrexXChangeWrapper(new DefaultBittrexXChangeWrapper[Task](credentials).withRetries(2), Currency.Bitcoin)
+    val exchange = new OrderChainingBittrexXChangeWrapper(new DefaultBittrexXChangeWrapper[Task](credentials).withRetries(2), Currency.Bitcoin)
     exchange
   }
 

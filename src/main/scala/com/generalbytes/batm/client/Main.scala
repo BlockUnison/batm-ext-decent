@@ -5,7 +5,7 @@ import cats.implicits._
 import com.generalbytes.batm.common.Alias.Task
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.{Currency, Util}
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, SubstitutingBittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, OrderChainingBittrexXChangeWrapper}
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
 import org.knowm.xchange.dto.trade.UserTrade
 import org.slf4j.{Logger, LoggerFactory}

@@ -6,7 +6,7 @@ import com.generalbytes.batm.common.Currency
 import com.generalbytes.batm.common.adapters.ExchangeAdapter
 import com.generalbytes.batm.common.factories.ExchangeFactory
 import com.generalbytes.batm.server.extensions.IExchange
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, ReplacementBittrexXChangeWrapper, SubstitutingBittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, ReplacementBittrexXChangeWrapper, OrderChainingBittrexXChangeWrapper}
 
 case class LoginInfo(apiKey: String, secretKey: String)
 
