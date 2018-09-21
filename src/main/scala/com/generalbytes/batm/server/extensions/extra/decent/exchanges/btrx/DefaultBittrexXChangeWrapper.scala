@@ -14,7 +14,7 @@ import org.knowm.xchange
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.bittrex.BittrexExchange
 import org.knowm.xchange.bittrex.dto.account.BittrexOrder
-import org.knowm.xchange.bittrex.service.BittrexAccountService
+import org.knowm.xchange.bittrex.service.BittrexAccountServiceRaw
 import org.knowm.xchange.dto.Order.OrderType
 import org.knowm.xchange.dto.trade.{LimitOrder, UserTrade}
 import retry._
@@ -37,8 +37,16 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
     result
   }
 
+  private def multiplicativeFactor(orderType: OrderType): ExchangeRate = {
+    val additive = 0.2
+    orderType match {
+      case OrderType.BID => 1d + additive |> BigDecimal.valueOf
+      case OrderType.ASK => 1d - additive |> BigDecimal.valueOf
+    }
+  }
+
   def getOrder(id: Identifier): F[BittrexOrder] = Sync[F].delay {
-    exchange.getAccountService.asInstanceOf[BittrexAccountService].getBittrexOrder(id)
+    exchange.getAccountService.asInstanceOf[BittrexAccountServiceRaw].getBittrexOrder(id)
   }
 
   override def getBalance[T <: Currency](currency: T): F[Amount] = Sync[F].delay {
@@ -85,6 +93,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
       orderType = getOrderType(order)
       amount = order.amount.amount
       price = calculateLimitPrice(rate, orderType)
+      _ <- log(price, "limit price")
     } yield new LimitOrder.Builder(orderType, order.currencyPair.convert)
       .tradableAmount(amount.bigDecimal)
       .limitPrice(price.bigDecimal)
@@ -93,9 +102,13 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
 
   // TODO: Exhaustive match
   // NOTE: We specify the limit price to the OPPOSITE ticker ask->bid bid->ask, because there's no market order
-  protected def calculateLimitPrice(tick: BittrexTick, orderType: OrderType): Amount = orderType match {
-    case OrderType.ASK => tick.bid
-    case OrderType.BID => tick.ask
+  protected def calculateLimitPrice(tick: BittrexTick, orderType: OrderType): Amount = {
+    val rateSelector = getRateSelector(orderType.inverse)
+    val mulFactor = multiplicativeFactor(orderType)
+    val rate = rateSelector(tick) * mulFactor
+    val significantDigits = 4
+    val newScale = significantDigits - rate.precision + rate.scale
+    rate.setScale(newScale, scala.BigDecimal.RoundingMode.HALF_UP)
   }
 
   override val cryptoCurrencies: Set[CryptoCurrency] = Set.empty

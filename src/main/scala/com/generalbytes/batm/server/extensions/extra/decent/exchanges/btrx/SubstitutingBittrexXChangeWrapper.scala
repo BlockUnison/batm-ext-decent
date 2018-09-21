@@ -86,4 +86,5 @@ class SubstitutingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Co
   private def getAmountInMidCurrency[T <: Currency](order: TradeOrder[T]): F[Amount] = {
     getAmountInCurrency(CurrencyPair(midCurrency, order.currencyPair.base), getOrderType(order), order.amount.amount, _ * _)
   }
+
 }

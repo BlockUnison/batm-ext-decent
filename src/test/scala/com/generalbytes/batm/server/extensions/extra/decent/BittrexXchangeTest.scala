@@ -31,7 +31,7 @@ class BittrexXchangeTest extends FlatSpec with Matchers with TestLoggingSupport 
 //  it should "not fail when processing sell order DCT->BTC" in {
 //    val exchange = createExchange
 //
-//    val amount = BigDecimal(81)
+//    val amount = BigDecimal(120)
 //    val order = TradeOrder.sell(Currency.Decent, Currency.Bitcoin, amount)
 //    val result = exchange.fulfillOrder(order)
 //    val value = result.attempt.unsafeRunSync().log.getOrThrow
@@ -42,7 +42,7 @@ class BittrexXchangeTest extends FlatSpec with Matchers with TestLoggingSupport 
 //  it should "not fail when processing sell order BTC->USD" in {
 //    val exchange = createExchange
 //
-//    val amount = BigDecimal(0.0065)
+//    val amount = BigDecimal(0.0005)
 //    val order = TradeOrder.sell(Currency.Bitcoin, Currency.USDollar, amount)
 //    val result = exchange.fulfillOrder(order)
 //    val value = result.attempt.unsafeRunSync().log.getOrThrow
