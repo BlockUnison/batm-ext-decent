@@ -8,7 +8,6 @@ import cats.implicits._
 import com.generalbytes.batm.common.Alias.{Interpreter, _}
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.server.extensions.IExchange
 
 class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F]) extends IExchange with LoggingSupport {
@@ -54,10 +53,10 @@ class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F])
   }
 
   override def sendCoins(destinationAddress: String, amount: BigDecimal, cryptoCurrency: String, desc: String): String = {
+    logger.debug(s"Description: $desc, Destination: $destinationAddress")
     val withdrawal: F[Identifier] = for {
       crypto <- Translator[F].apply(Currency.withName(cryptoCurrency))
       res <- xch.withdrawFunds(crypto, scala.BigDecimal(amount), destinationAddress)
-      _ <- log(desc, "description")
     } yield res
 
     Interpreter[F].apply(withdrawal)
