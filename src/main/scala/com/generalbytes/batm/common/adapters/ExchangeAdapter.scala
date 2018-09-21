@@ -6,11 +6,12 @@ import java.util
 import cats._
 import cats.implicits._
 import com.generalbytes.batm.common.Alias.{Interpreter, _}
-import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.server.extensions.IExchange
 
-class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F]) extends IExchange {
+class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F]) extends IExchange with LoggingSupport {
   override def getCryptoCurrencies: util.Set[String] = xch.cryptoCurrencies.map(_.name).toJavaSet
 
   override def getFiatCurrencies: util.Set[String] = xch.fiatCurrencies.map(_.name).toJavaSet
@@ -56,6 +57,7 @@ class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F])
     val withdrawal: F[Identifier] = for {
       crypto <- Translator[F].apply(Currency.withName(cryptoCurrency))
       res <- xch.withdrawFunds(crypto, scala.BigDecimal(amount), destinationAddress)
+      _ <- log(desc, "description")
     } yield res
 
     Interpreter[F].apply(withdrawal)
