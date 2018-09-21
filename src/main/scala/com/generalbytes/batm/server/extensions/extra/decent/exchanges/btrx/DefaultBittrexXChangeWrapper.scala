@@ -90,7 +90,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
 
   private def parseAddress[T <: Currency](destination: Address): Attempt[String] = for {
     uri <- Uri.fromString(destination)
-    accountName <- uri.query.params.get("account_name").toRight(err"Uri contains no destination address")
+    accountName <- uri.query.params.get("account_name").toRight(err"Uri contains no destination address: $destination")
   } yield accountName
 
   def getTrades: F[List[UserTrade]] = Sync[F].delay {
