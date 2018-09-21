@@ -10,6 +10,7 @@ import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, FallbackBittrexTicker}
+import org.http4s.Uri
 import org.knowm.xchange
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.bittrex.BittrexExchange
@@ -23,6 +24,7 @@ import scala.collection.JavaConverters._
 
 class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep : ConcurrentEffect](credentials: LoginInfo)
   extends Exchange[F] with LoggingSupport {
+
   import DefaultBittrexXChangeWrapper._
   import XChangeConversions._
 
@@ -61,7 +63,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
   override def fulfillOrder[T <: Currency](order: TradeOrder[T]): F[Identifier] = {
     val orderId: F[Identifier] = Async.memoize {
       createLimitOrder(order).map(exchange.getTradeService.placeLimitOrder)
-    }.toIO.unsafeRunSync()    // only to initialize memoization, doesn't make the actual call
+    }.toIO.unsafeRunSync() // only to initialize memoization, doesn't make the actual call
 
     val maxAttempts = 10
     val polling = retryingM[BittrexOrder](
@@ -78,9 +80,18 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
     polling.handleErrorWith(e => raise[F](ErrorDecorator(e, order.currencyPair)))
   }
 
-  override def withdrawFunds[T <: Currency](currency: Currency, amount: Amount, destination: Address): F[Identifier] = Sync[F].delay {
-    exchange.getAccountService.withdrawFunds(currency.convert, amount.bigDecimal, destination)
+  override def withdrawFunds[T <: Currency](currency: Currency, amount: Amount, destination: Address): F[Identifier] = {
+    val dest = parseAddress(destination)
+
+    dest.fold(e => raise[F](e), dest => delay {
+      exchange.getAccountService.withdrawFunds(currency.convert, amount.bigDecimal, dest)
+    })
   }
+
+  private def parseAddress[T <: Currency](destination: Address): Attempt[String] = for {
+    uri <- Uri.fromString(destination)
+    accountName <- uri.query.params.get("account_name").toRight(err"Uri contains no destination address")
+  } yield accountName
 
   def getTrades: F[List[UserTrade]] = Sync[F].delay {
     exchange.getTradeService.getTradeHistory(exchange.getTradeService.createTradeHistoryParams()).getUserTrades.asScala.toList

@@ -30,6 +30,7 @@ object Util {
   }
 
   def raise[F[_]] = new RaiseAux[F]
+  def delay[F[_]: Sync, A](thunk: => A): F[A] = Sync[F].delay(thunk)
 
   def logOp[M[_]: Monad : Sync, A: Show](implicit loggger: Logger): (A, RetryDetails) => M[Unit] =
     (a, _) => implicitly[Monad[M]].map(log(a))(_ => ())
