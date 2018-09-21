@@ -13,7 +13,7 @@ import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.Fallbac
 import org.knowm.xchange.dto.Order.OrderType
 import shapeless._
 
-class SubstitutingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : ConcurrentEffect]
+class OrderChainingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : ConcurrentEffect]
   (exchange: Exchange[F], midCurrency: Currency)
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
   import XChangeConversions._

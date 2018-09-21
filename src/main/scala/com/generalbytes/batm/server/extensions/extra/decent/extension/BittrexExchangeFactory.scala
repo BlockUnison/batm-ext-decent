@@ -6,7 +6,7 @@ import com.generalbytes.batm.common.Currency
 import com.generalbytes.batm.common.adapters.ExchangeAdapter
 import com.generalbytes.batm.common.factories.ExchangeFactory
 import com.generalbytes.batm.server.extensions.IExchange
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, SubstitutingBittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, ReplacementBittrexXChangeWrapper, SubstitutingBittrexXChangeWrapper}
 
 case class LoginInfo(apiKey: String, secretKey: String)
 
@@ -22,7 +22,7 @@ trait BittrexExchangeFactory extends ExchangeFactory {
   def createExchange(loginInfo: String): Attempt[IExchange] = {
     parseExchangeLoginInfo(loginInfo)
       .map(creds => new ExchangeAdapter[Task](
-        new SubstitutingBittrexXChangeWrapper(
+        new ReplacementBittrexXChangeWrapper(
           new DefaultBittrexXChangeWrapper[Task](creds).withRetries(2),
           Currency.Bitcoin
         )
