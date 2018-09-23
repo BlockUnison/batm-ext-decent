@@ -11,7 +11,7 @@ class DynamicBittrexRateSourceTest extends FlatSpec with Matchers with LoggingSu
   val zero: BigDecimal = BigDecimal.valueOf(0L)
 
   it should "get the buy rate source" in {
-    val rs = new BittrexWrapperRateSource[Task]
+    val rs = new BittrexWrapperRateSource[Task](Currency.USDollar :: Currency.Bitcoin :: Nil)
     val result = rs.getExchangeRateForBuy(CurrencyPair(Currency.Euro, Currency.Decent)).unsafeRunSync()
     result should be > zero
   }

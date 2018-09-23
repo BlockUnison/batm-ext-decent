@@ -3,6 +3,7 @@ package com.generalbytes.batm.server.extensions.extra.decent.extension
 import cats.implicits._
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.Alias.{Attempt, Task}
+import com.generalbytes.batm.common.Currency
 import com.generalbytes.batm.common.adapters.RateSourceAdapter
 import com.generalbytes.batm.common.factories.RateSourceFactory
 import com.generalbytes.batm.server.extensions.IRateSourceAdvanced
@@ -15,7 +16,7 @@ trait CompositeRateSourceFactory extends RateSourceFactory with FixedPriceRateSo
   def create(loginInfo: String): Attempt[IRateSourceAdvanced] = loginInfo match {
     case _ =>
       logger.debug(s"Login info: $loginInfo")
-      new RateSourceAdapter[Task](new BittrexWrapperRateSource()).asRight
+      new RateSourceAdapter[Task](new BittrexWrapperRateSource(Currency.Bitcoin :: Nil)).asRight
   }
 
   override def createRateSource(loginInfo: String): Attempt[IRateSourceAdvanced] =

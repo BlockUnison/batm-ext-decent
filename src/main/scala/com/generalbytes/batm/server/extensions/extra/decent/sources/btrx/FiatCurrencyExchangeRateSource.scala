@@ -6,16 +6,16 @@ import cats.effect.implicits._
 import cats.implicits._
 import com.generalbytes.batm.common.Alias.ExchangeRate
 import com.generalbytes.batm.common.Util._
-import com.generalbytes.batm.common.{ClientFactory, FiatCurrency, LoggingSupport}
+import com.generalbytes.batm.common.{ClientFactory, CurrencyPair, LoggingSupport}
 import io.circe.Decoder
 import org.http4s.Uri
 import org.http4s.circe.CirceEntityDecoder._
 
-class FiatCurrencyExchangeRateSource[F[_]: Effect : Sync : Monad : ConcurrentEffect](from: FiatCurrency, to: FiatCurrency)
+class FiatCurrencyExchangeRateSource[F[_]: Effect : Sync : Monad : ConcurrentEffect](currencyPair: CurrencyPair)
   extends ClientFactory[F] with LoggingSupport {
   import FiatCurrencyExchangeRateSource._
 
-  private val descriptor: String = (from.name :: to.name :: Nil).mkString("_")
+  private val descriptor: String = s"${currencyPair.counter.name}_${currencyPair.base.name}"
   private val uriBase: Uri = Uri.unsafeFromString("http://free.currencyconverterapi.com/api/v5/convert")
   private implicit val rateTickDecoder: Decoder[ExchangeRateTick] = getDecoder(descriptor)
 
