@@ -17,7 +17,7 @@ class DynamicBittrexRateSourceTest extends FlatSpec with Matchers with LoggingSu
     result should be > zero
   }
 
-  it should "get the buy rate source" in {
+  it should "get the buy rate source for diff currency" in {
     val rs = new BittrexWrapperRateSource[Task](Currency.USDollar :: Currency.Bitcoin :: Nil)
     val result = rs.getExchangeRateForBuy(CurrencyPair(Currency.Euro, Currency.Bitcoin)).unsafeRunSync()
     println(result)

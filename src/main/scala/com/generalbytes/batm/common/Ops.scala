@@ -16,6 +16,11 @@ import scala.collection.mutable
 import scala.util.Try
 
 trait Ops {
+
+  implicit class FuncOps[A, B, C](f: A => B => C) {
+    def flip: B => A => C = (b: B) => (a: A) => f(a)(b)
+  }
+
   implicit class Pipe[A](a: => A) {
     def |>[B](f: A => B): B = f(a)
   }

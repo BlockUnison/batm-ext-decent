@@ -17,27 +17,27 @@ class BittrexXchangeTest extends FlatSpec with Matchers with TestLoggingSupport 
     exchange
   }
 
-//  it should "not fail when processing BUY order" in {
-//    val exchange = createExchange
-//
-//    val amount = BigDecimal(21L)
-//    val order = TradeOrder.buy(Currency.Decent, Currency.Bitcoin, amount)
-//    val result = exchange.fulfillOrder(order).attempt.unsafeRunSync()
-//    result.left.foreach(println)
-//    result.foreach(println)
-//    result.getOrThrow should not be empty
-//  }
+  it should "not fail when processing BUY order" in {
+    val exchange = createExchange
 
-//  it should "not fail when processing sell order DCT->BTC" in {
-//    val exchange = createExchange
-//
-//    val amount = BigDecimal(120)
-//    val order = TradeOrder.sell(Currency.Decent, Currency.Bitcoin, amount)
-//    val result = exchange.fulfillOrder(order)
-//    val value = result.attempt.unsafeRunSync().log.getOrThrow
-//    println(value)
-//    value should not be empty
-//  }
+    val amount = BigDecimal(21L)
+    val order = TradeOrder.buy(Currency.Decent, Currency.Bitcoin, amount)
+    val result = exchange.fulfillOrder(order).attempt.unsafeRunSync()
+    result.left.foreach(println)
+    result.foreach(println)
+    result.getOrThrow should not be empty
+  }
+
+  it should "not fail when processing sell order DCT->BTC" in {
+    val exchange = createExchange
+
+    val amount = BigDecimal(120)
+    val order = TradeOrder.sell(Currency.Decent, Currency.Bitcoin, amount)
+    val result = exchange.fulfillOrder(order)
+    val value = result.attempt.unsafeRunSync().log.getOrThrow
+    println(value)
+    value should not be empty
+  }
 
 //  it should "not fail when processing sell order BTC->USD" in {
 //    val exchange = createExchange

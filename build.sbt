@@ -4,6 +4,7 @@ val circeVersion = "0.10.0-M2"
 val http4sVersion = "0.19.0-SNAPSHOT"
 val xchangeVersion = "4.3.11-SNAPSHOT"
 val catsRetryVersion = "0.1.0"
+val monocleVersion = "1.5.0-cats"
 
 resolvers ++= Seq(
     "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
@@ -26,6 +27,8 @@ val dependencies = Seq(
   "io.circe" %% "circe-parser" % circeVersion,
   "com.github.cb372" %% "cats-retry-core"        % catsRetryVersion,
   "com.github.cb372" %% "cats-retry-cats-effect" % catsRetryVersion,
+  "com.github.julien-truffaut" %%  "monocle-core"  % monocleVersion,
+  "com.github.julien-truffaut" %%  "monocle-macro" % monocleVersion,
 
   "javax.ws.rs" % "javax.ws.rs-api" % "2.1" jar() withSources() withJavadoc(),
 

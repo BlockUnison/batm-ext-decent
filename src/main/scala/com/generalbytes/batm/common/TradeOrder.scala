@@ -8,6 +8,11 @@ sealed trait TradeOrder {
   val currencyPair: CurrencyPair
   val amount: CryptoAmount[Currency]
 
+  def copy(currencyPair: CurrencyPair = this.currencyPair, amount: CryptoAmount[Currency] = this.amount): TradeOrder = this match {
+    case PurchaseOrder(_, _) => PurchaseOrder(currencyPair, amount)
+    case SaleOrder(_, _) => SaleOrder(currencyPair, amount)
+  }
+
   def inverse: TradeOrder = this match {
     case PurchaseOrder(_, _) => SaleOrder(currencyPair, amount)
     case SaleOrder(_, _) => PurchaseOrder(currencyPair, amount)
