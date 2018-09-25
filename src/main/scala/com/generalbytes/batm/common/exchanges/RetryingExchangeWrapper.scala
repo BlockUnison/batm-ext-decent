@@ -11,7 +11,7 @@ import retry._
 class RetryingExchangeWrapper[F[_] : MonadErr : Monad : Sleep : Sync](exchange: Exchange[F], maxRetries: Int)
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
 
-  override def fulfillOrder[T <: Currency](order: TradeOrder[T]): F[Identifier] =
+  override def fulfillOrder(order: TradeOrder): F[Identifier] =
     retryingOnAllErrors(
       RetryPolicies.limitRetries(maxRetries), logOp[F, Throwable]
     ) {

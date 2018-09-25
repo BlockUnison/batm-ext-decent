@@ -49,16 +49,16 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
     exchange.getAccountService.asInstanceOf[BittrexAccountServiceRaw].getBittrexOrder(id)
   }
 
-  override def getBalance[T <: Currency](currency: T): F[Amount] = Sync[F].delay {
+  override def getBalance(currency: Currency): F[Amount] = Sync[F].delay {
     val balance = exchange.getAccountService.getAccountInfo.getWallet.getBalance(currency.convert)
     balance.getTotal
   }
 
-  override def getAddress[T <: Currency](currency: T): F[Address] = raise[F](err"Not implemented")
+  override def getAddress(currency: Currency): F[Address] = raise[F](err"Not implemented")
 
   // TODO: Make cancellable
   // TODO: IO.shift to another thread to avoid blocking
-  override def fulfillOrder[T <: Currency](order: TradeOrder[T]): F[Identifier] = {
+  override def fulfillOrder(order: TradeOrder): F[Identifier] = {
     val orderId: F[Identifier] = Async.memoize {
       createLimitOrder(order).map(exchange.getTradeService.placeLimitOrder)
     }.toIO.unsafeRunSync() // only to initialize memoization, doesn't make the actual call
@@ -78,7 +78,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
     polling.handleErrorWith(e => raise[F](ErrorDecorator(e, order.currencyPair)))
   }
 
-  override def withdrawFunds[T <: Currency](currency: Currency, amount: Amount, destination: Address): F[Identifier] = {
+  override def withdrawFunds(currency: Currency, amount: Amount, destination: Address): F[Identifier] = {
     val dest = parseAddress(destination)
 
     dest.fold(e => raise[F](e), dest => delay {
@@ -86,12 +86,12 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
     })
   }
 
-  private def parseAddress[T <: Currency](destination: Address): Attempt[String] = for {
+  private def parseAddress(destination: Address): Attempt[String] = for {
     uri <- Uri.fromString(destination)
     accountName <- uri.query.params.get("account_name").toRight(err"Uri contains no destination address: $destination")
   } yield accountName
 
-  protected def createLimitOrder[T <: Currency](order: TradeOrder[T]): F[LimitOrder] = {
+  protected def createLimitOrder(order: TradeOrder): F[LimitOrder] = {
     val ticker = new FallbackBittrexTicker[F](order.currencyPair)
     for {
       rate <- ticker.currentRates

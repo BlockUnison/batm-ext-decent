@@ -24,26 +24,26 @@ class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F])
     Interpreter[F].apply(xch.getBalance(Currency.withName(fiatCurrency).getOrThrow).map(_.bigDecimal))
 
   override def purchaseCoins(amount: BigDecimal, cryptoCurrency: String, fiatCurrency: String, description: String): String = {
-    val order: Attempt[TradeOrder[CryptoCurrency]] = createOrder(amount, cryptoCurrency, fiatCurrency, TradeOrder.buy)
+    val order: Attempt[TradeOrder] = createOrder(amount, cryptoCurrency, fiatCurrency, TradeOrder.buy)
 
     processOrder(order)
   }
 
   override def sellCoins(amount: BigDecimal, cryptoCurrency: String, fiatCurrency: String, description: String): String = {
-    val order: Attempt[TradeOrder[CryptoCurrency]] = createOrder(amount, cryptoCurrency, fiatCurrency, TradeOrder.sell)
+    val order: Attempt[TradeOrder] = createOrder(amount, cryptoCurrency, fiatCurrency, TradeOrder.sell)
 
     processOrder(order)
   }
 
   private def createOrder[T <: Currency](amount: BigDecimal, cryptoCurrency: String, fiatCurrency: String,
-                                         constr: (CryptoCurrency, Currency, Amount) => TradeOrder[T]): Attempt[TradeOrder[T]] = {
+                                         constr: (CryptoCurrency, Currency, Amount) => TradeOrder): Attempt[TradeOrder] = {
     for {
       crypto <- Currency.withName(cryptoCurrency).cast[CryptoCurrency]
       fiat <- Currency.withName(fiatCurrency).cast[FiatCurrency]
     } yield constr(crypto, fiat, amount)
   }
 
-  private def processOrder[T <: Currency](order: Attempt[TradeOrder[T]]): Identifier = {
+  private def processOrder[T <: Currency](order: Attempt[TradeOrder]): Identifier = {
     val txId = for {
       ord <- Translator[F].apply(order)
       res <- xch.fulfillOrder(ord)

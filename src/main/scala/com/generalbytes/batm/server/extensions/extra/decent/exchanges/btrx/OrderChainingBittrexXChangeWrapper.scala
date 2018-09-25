@@ -18,11 +18,11 @@ class OrderChainingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : C
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
   import XChangeConversions._
 
-  private def amountLens[T <: Currency] = lens[TradeOrder[T]].amount.amount
-  private def currencyPairLens[T <: Currency] = lens[TradeOrder[T]].currencyPair
-  private def currencyPairAndAmountLens[T <: Currency] = currencyPairLens[T] ~ amountLens[T]
+  private val amountLens = lens[TradeOrder].amount.amount
+  private val currencyPairLens = lens[TradeOrder].currencyPair
+  private val currencyPairAndAmountLens = currencyPairLens ~ amountLens
 
-  override def fulfillOrder[T <: Currency](order: TradeOrder[T]): F[Identifier] = {
+  override def fulfillOrder(order: TradeOrder): F[Identifier] = {
     if (order.currencyPair.counter === midCurrency || order.currencyPair.base === midCurrency) exchange.fulfillOrder(order)
     else {
       val midCurrencyAmount = getAmountInMidCurrency(order)
@@ -63,7 +63,7 @@ class OrderChainingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : C
     } yield amount
   }
 
-  private def createUndoOrder[T <: Currency](order: TradeOrder[T], midCurrencyAmount: F[Amount]): F[Identifier] = {
+  private def createUndoOrder(order: TradeOrder, midCurrencyAmount: F[Amount]): F[Identifier] = {
     for {
       amount <- midCurrencyAmount
       undoOrder = createFirstSubOrder(order, amount).inverse
@@ -73,17 +73,17 @@ class OrderChainingBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : C
     } yield undoTxId
   }
 
-  private def createFirstSubOrder[T <: Currency](order: TradeOrder[T], amount: Amount): TradeOrder[T] = {
+  private def createFirstSubOrder(order: TradeOrder, amount: Amount): TradeOrder = {
     val firstCP = CurrencyPair(order.currencyPair.counter, midCurrency)
     currencyPairAndAmountLens.set(order)(firstCP, amount)
   }
 
-  private def createSecondSubOrder[T <: Currency](order: TradeOrder[T], amount: Amount): TradeOrder[T] = {
+  private def createSecondSubOrder(order: TradeOrder, amount: Amount): TradeOrder = {
     val secondCP = CurrencyPair(midCurrency, order.currencyPair.base)
     currencyPairAndAmountLens.set(order)(secondCP, amount)
   }
 
-  private def getAmountInMidCurrency[T <: Currency](order: TradeOrder[T]): F[Amount] = {
+  private def getAmountInMidCurrency(order: TradeOrder): F[Amount] = {
     getAmountInCurrency(CurrencyPair(midCurrency, order.currencyPair.base), getOrderType(order), order.amount.amount, _ * _)
   }
 }

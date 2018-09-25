@@ -4,23 +4,23 @@ import com.generalbytes.batm.common.Alias.Amount
 
 final case class CryptoAmount[T <: Currency](amount: Amount)
 
-sealed trait TradeOrder[T <: Currency] {
+sealed trait TradeOrder {
   val currencyPair: CurrencyPair
-  val amount: CryptoAmount[T]
+  val amount: CryptoAmount[Currency]
 
-  def inverse: TradeOrder[T] = this match {
+  def inverse: TradeOrder = this match {
     case PurchaseOrder(_, _) => SaleOrder(currencyPair, amount)
     case SaleOrder(_, _) => PurchaseOrder(currencyPair, amount)
   }
 }
 
-final case class PurchaseOrder[T <: Currency](currencyPair: CurrencyPair, amount: CryptoAmount[T]) extends TradeOrder[T]
-final case class SaleOrder[T <: Currency](currencyPair: CurrencyPair, amount: CryptoAmount[T]) extends TradeOrder[T]
+final case class PurchaseOrder(currencyPair: CurrencyPair, amount: CryptoAmount[Currency]) extends TradeOrder
+final case class SaleOrder(currencyPair: CurrencyPair, amount: CryptoAmount[Currency]) extends TradeOrder
 
 object TradeOrder {
-  def buy[T <: Currency](cryptoCurrency: CryptoCurrency, counter: Currency, amount: Amount): TradeOrder[T] =
-    PurchaseOrder(CurrencyPair(counter, cryptoCurrency), CryptoAmount[T](amount))
+  def buy(cryptoCurrency: CryptoCurrency, counter: Currency, amount: Amount): TradeOrder =
+    PurchaseOrder(CurrencyPair(counter, cryptoCurrency), CryptoAmount[Currency](amount))
 
-  def sell[T <: Currency](cryptoCurrency: CryptoCurrency, counter: Currency, amount: Amount): TradeOrder[T] =
-    SaleOrder(CurrencyPair(counter, cryptoCurrency), CryptoAmount[T](amount))
+  def sell(cryptoCurrency: CryptoCurrency, counter: Currency, amount: Amount): TradeOrder =
+    SaleOrder(CurrencyPair(counter, cryptoCurrency), CryptoAmount[Currency](amount))
 }

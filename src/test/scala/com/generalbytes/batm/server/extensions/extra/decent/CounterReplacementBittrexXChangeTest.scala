@@ -12,7 +12,7 @@ class CounterReplacementBittrexXChangeTest extends FlatSpec with Matchers with T
   val zero: BigDecimal = BigDecimal.valueOf(0.0)
   private val credentials = LoginInfo("9c1b049844d84271b7a606311953b758", "1607470db4dc4fddb56eb58df156f672")
   private val underlying = new DefaultBittrexXChangeWrapper[Task](credentials)
-  private val exchange = new CounterReplacingXChangeWrapper(underlying.withRetries(2), CurrencyPair(Currency.USDollar, Currency.Bitcoin))
+  private val exchange = new CounterReplacingXChangeWrapper(underlying.withRetries(2), CurrencyPair(Currency.USDollar, Currency.Bitcoin) :: CurrencyPair(Currency.Euro, Currency.Bitcoin) :: Nil)
 
   it should "get balance in replace currency" in {
     underlying.getBalance(Currency.Bitcoin).unsafeRunSync() shouldEqual exchange.getBalance(Currency.USDollar).unsafeRunSync()

@@ -28,8 +28,8 @@ object XChangeConversions {
     case OrderType.BID => _.bid
   }
 
-  def getOrderType[T <: Currency](order: TradeOrder[T]): OrderType = order match {
-    case _:PurchaseOrder[T] => OrderType.BID
-    case _:SaleOrder[T] => OrderType.ASK
+  def getOrderType(order: TradeOrder): OrderType = order match {
+    case _:PurchaseOrder => OrderType.BID
+    case _:SaleOrder => OrderType.ASK
   }
 }
