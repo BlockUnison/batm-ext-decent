@@ -3,6 +3,7 @@ package com.generalbytes.batm.server.extensions.extra.decent.sources.btrx
 import cats.effect.{ConcurrentEffect, Effect}
 import cats.instances.list._
 import cats.syntax.eq._
+import cats.syntax.flatMap._
 import cats.syntax.functor._
 import cats.syntax.semigroup._
 import cats.syntax.traverse._
@@ -10,6 +11,7 @@ import cats.{Applicative, Eval, Later, Monad, Semigroup}
 import com.generalbytes.batm.common.Alias.{ApplicativeErr, ExchangeRate}
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.XChangeConversions._
 import org.knowm.xchange.dto.Order.OrderType
 
@@ -19,7 +21,7 @@ class BittrexWrapperRateSource[F[_]: Effect : Monad : Applicative : ApplicativeE
 
   private def createTicker(orderType: OrderType, currencyPair: CurrencyPair): Eval[F[ExchangeRate]] = {
     if (currencyPair.base.isInstanceOf[Fiat] && currencyPair.counter.isInstanceOf[Fiat])
-      Later(new FiatCurrencyExchangeRateSource[F](currencyPair)).map(_.currentRate)
+      Later(new FiatCurrencyExchangeTicker[F](currencyPair)).map(_.currentRate)
     else
       Later(new FallbackBittrexTicker[F](currencyPair)).map(_.currentRates.map(getRateSelector(orderType)))
   }
@@ -31,6 +33,7 @@ class BittrexWrapperRateSource[F[_]: Effect : Monad : Applicative : ApplicativeE
     val progression = getCurrencySteps(currencyPair, intermediate)
 
     val currencyPairs = (progression zip progression.tail).map((CurrencyPair.apply _).tupled).filter(cp => cp.base =!= cp.counter)
+    logger.debug(currencyPairs.map(_.toString).mkString(" "))
 
     val rates = for {
       cp <- currencyPairs

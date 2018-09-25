@@ -11,9 +11,9 @@ import io.circe.Decoder
 import org.http4s.Uri
 import org.http4s.circe.CirceEntityDecoder._
 
-class FiatCurrencyExchangeRateSource[F[_]: Effect : Sync : Monad : ConcurrentEffect](currencyPair: CurrencyPair)
+class FiatCurrencyExchangeTicker[F[_]: Effect : Sync : Monad : ConcurrentEffect](currencyPair: CurrencyPair)
   extends ClientFactory[F] with LoggingSupport {
-  import FiatCurrencyExchangeRateSource._
+  import FiatCurrencyExchangeTicker._
 
   private val descriptor: String = s"${currencyPair.counter.name}_${currencyPair.base.name}"
   private val uriBase: Uri = Uri.unsafeFromString("http://free.currencyconverterapi.com/api/v5/convert")
@@ -29,7 +29,7 @@ class FiatCurrencyExchangeRateSource[F[_]: Effect : Sync : Monad : ConcurrentEff
   }
 }
 
-object FiatCurrencyExchangeRateSource {
+object FiatCurrencyExchangeTicker {
   case class ExchangeRateTick(rate: ExchangeRate)
 
   def getDecoder(descriptor: String): Decoder[ExchangeRateTick] = Decoder.instance { c =>

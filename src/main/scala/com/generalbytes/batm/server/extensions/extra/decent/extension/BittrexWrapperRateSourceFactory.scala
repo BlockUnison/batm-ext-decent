@@ -10,5 +10,6 @@ import com.generalbytes.batm.server.extensions.IRateSourceAdvanced
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.BittrexWrapperRateSource
 
 trait BittrexWrapperRateSourceFactory extends RateSourceFactory {
-  def createRateSource(loginInfo: String): Attempt[IRateSourceAdvanced] = new RateSourceAdapter[Task](new BittrexWrapperRateSource(Currency.Bitcoin :: Nil)).asRight
+  def createRateSource(loginInfo: String): Attempt[IRateSourceAdvanced] =
+    new RateSourceAdapter[Task](new BittrexWrapperRateSource(List(Currency.USDollar, Currency.Bitcoin))).asRight
 }

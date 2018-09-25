@@ -16,10 +16,10 @@ object Util {
     self
   }
 
-  def logIO[A: Show](a: A)(implicit logger: Logger): Task[A] = log[Task, A](a)
+  def logIO[A](a: A)(implicit logger: Logger): Task[A] = log[Task, A](a)
 
-  def log[F[_]: Sync, A: Show](a: A, message: String = "Value")(implicit logger: Logger): F[A] = implicitly[Sync[F]].delay {
-    logger.debug(s"$message: ${Show[A].show(a)}")
+  def log[F[_]: Sync, A](a: A, message: String = "Value")(implicit logger: Logger): F[A] = implicitly[Sync[F]].delay {
+    logger.debug(s"$message: $a")
     a
   }
 

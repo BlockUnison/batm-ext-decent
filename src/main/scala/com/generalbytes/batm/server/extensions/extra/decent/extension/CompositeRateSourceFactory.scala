@@ -16,7 +16,7 @@ trait CompositeRateSourceFactory extends RateSourceFactory with FixedPriceRateSo
   def create(loginInfo: String): Attempt[IRateSourceAdvanced] = loginInfo match {
     case _ =>
       logger.debug(s"Login info: $loginInfo")
-      new RateSourceAdapter[Task](new BittrexWrapperRateSource(Currency.Bitcoin :: Nil)).asRight
+      new RateSourceAdapter[Task](new BittrexWrapperRateSource(List(Currency.USDollar, Currency.Bitcoin))).asRight
   }
 
   override def createRateSource(loginInfo: String): Attempt[IRateSourceAdvanced] =
