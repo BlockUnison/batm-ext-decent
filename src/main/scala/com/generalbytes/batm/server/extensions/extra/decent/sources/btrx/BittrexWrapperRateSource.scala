@@ -13,14 +13,15 @@ import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.XChangeConversions._
 import org.knowm.xchange.dto.Order.OrderType
 
-class BittrexWrapperRateSource[F[_]: Effect : Monad : Applicative : ApplicativeErr : ConcurrentEffect](intermediate: List[Currency]) extends RateSource[F] with LoggingSupport {
+class BittrexWrapperRateSource[F[_]: Effect : Monad : Applicative : ApplicativeErr : ConcurrentEffect](intermediate: List[Currency])
+  extends RateSource[F] with LoggingSupport {
   implicit val bigDecimalMulSemigroup: Semigroup[ExchangeRate] = (x: ExchangeRate, y: ExchangeRate) => x * y
 
   private def createTicker(orderType: OrderType, currencyPair: CurrencyPair): Eval[F[ExchangeRate]] = {
     if (currencyPair.base.isInstanceOf[Fiat] && currencyPair.counter.isInstanceOf[Fiat])
       Later(new FiatCurrencyExchangeRateSource[F](currencyPair)).map(_.currentRate)
     else
-      Later(new BittrexTicker[F](currencyPair)).map(_.currentRates.map(getRateSelector(orderType)))
+      Later(new FallbackBittrexTicker[F](currencyPair)).map(_.currentRates.map(getRateSelector(orderType)))
   }
 
   def getCurrencySteps(currencyPair: CurrencyPair, between: List[Currency]): List[Currency] =

@@ -2,11 +2,11 @@ package com.generalbytes.batm.server.extensions.extra.decent.extension
 
 import cats.implicits._
 import com.generalbytes.batm.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.common.Currency
+import com.generalbytes.batm.common.{Currency, CurrencyPair}
 import com.generalbytes.batm.common.adapters.ExchangeAdapter
 import com.generalbytes.batm.common.factories.ExchangeFactory
 import com.generalbytes.batm.server.extensions.IExchange
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{DefaultBittrexXChangeWrapper, ReplacementBittrexXChangeWrapper, OrderChainingBittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{CounterReplacingXChangeWrapper, DefaultBittrexXChangeWrapper, OrderChainingBittrexXChangeWrapper}
 
 case class LoginInfo(apiKey: String, secretKey: String)
 
@@ -22,9 +22,9 @@ trait BittrexExchangeFactory extends ExchangeFactory {
   def createExchange(loginInfo: String): Attempt[IExchange] = {
     parseExchangeLoginInfo(loginInfo)
       .map(creds => new ExchangeAdapter[Task](
-        new ReplacementBittrexXChangeWrapper(
+        new CounterReplacingXChangeWrapper[Task](
           new DefaultBittrexXChangeWrapper[Task](creds).withRetries(2),
-          Currency.Bitcoin
+          CurrencyPair(Currency.USDollar, Currency.Bitcoin)
         )
       ))
       .toRight(err"Could not create exchange from loginInfo: $loginInfo")
