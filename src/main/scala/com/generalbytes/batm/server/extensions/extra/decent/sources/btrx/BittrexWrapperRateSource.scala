@@ -7,7 +7,7 @@ import cats.syntax.flatMap._
 import cats.syntax.functor._
 import cats.syntax.semigroup._
 import cats.syntax.traverse._
-import cats.{Applicative, Eval, Later, Monad, Semigroup}
+import cats.{Applicative, Eval, Later, Monad, Now, Semigroup}
 import com.generalbytes.batm.common.Alias.{ApplicativeErr, ExchangeRate}
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
@@ -20,7 +20,9 @@ class BittrexWrapperRateSource[F[_]: Effect : Monad : Applicative : ApplicativeE
   implicit val bigDecimalMulSemigroup: Semigroup[ExchangeRate] = (x: ExchangeRate, y: ExchangeRate) => x * y
 
   private def createTicker(orderType: OrderType, currencyPair: CurrencyPair): Eval[F[ExchangeRate]] = {
-    if (currencyPair.base.isInstanceOf[Fiat] && currencyPair.counter.isInstanceOf[Fiat])
+    if (currencyPair.base === currencyPair.counter)
+      Now(Applicative[F].pure(BigDecimal.valueOf(1L)))
+    else if (currencyPair.base.isInstanceOf[Fiat] && currencyPair.counter.isInstanceOf[Fiat])
       Later(new FiatCurrencyExchangeTicker[F](currencyPair)).map(_.currentRate)
     else
       Later(new FallbackBittrexTicker[F](currencyPair)).map(_.currentRates.map(getRateSelector(orderType)))
