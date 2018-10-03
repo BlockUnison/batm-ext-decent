@@ -32,8 +32,7 @@ class CounterReplacingXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Concu
   override def getBalance(currency: Currency): F[Amount] ={
     val replacementCurrency = replacementMap.getOrElse(currency, currency)
     val balance = exchange.getBalance(replacementCurrency)
-    val exchangeRate = rateSource.getExchangeRateForSell(CurrencyPair(replacementCurrency, currency))
-    balance
-      .map2(exchangeRate)(_ / _)
+    val exchangeRate = rateSource.getExchangeRateForSell(CurrencyPair(currency, replacementCurrency))
+    balance.map2(exchangeRate)(_ * _)
   }
 }
