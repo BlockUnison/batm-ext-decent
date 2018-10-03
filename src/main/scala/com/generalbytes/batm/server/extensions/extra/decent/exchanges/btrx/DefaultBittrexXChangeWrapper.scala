@@ -51,8 +51,8 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
 
   override def getBalance(currency: Currency): F[Amount] = Sync[F].delay {
     val balance = exchange.getAccountService.getAccountInfo.getWallet.getBalance(currency.convert)
-    balance.getTotal
-  }
+    BigDecimal(balance.getTotal)
+  } flatTap (b => log(b, s"Balance in $currency"))
 
   override def getAddress(currency: Currency): F[Address] = raise[F](err"Not implemented")
 

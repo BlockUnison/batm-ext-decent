@@ -24,9 +24,10 @@ trait BittrexExchangeFactory extends ExchangeFactory {
       .map(creds => new ExchangeAdapter[Task](
         new CounterReplacingXChangeWrapper[Task](
           new DefaultBittrexXChangeWrapper[Task](creds),
-          List(CurrencyPair(Currency.Euro, Currency.Bitcoin), CurrencyPair(Currency.USDollar, Currency.Bitcoin))
+          List(CurrencyPair(Currency.Euro, Currency.Bitcoin), CurrencyPair(Currency.USDollar, Currency.Bitcoin)),
+          List(Currency.USDollar)
         )
       ))
-      .toRight(err"Could not create exchange from loginInfo: $loginInfo")
+      .toRight(err"Could not create exchange from params: $loginInfo")
   }
 }

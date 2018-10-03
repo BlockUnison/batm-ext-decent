@@ -46,10 +46,10 @@ class BittrexWrapperRateSource[F[_]: Effect : Monad : Applicative : ApplicativeE
     } yield rs.foldLeft(BigDecimal.valueOf(1L))(_ |+| _)
   }
 
-  override def getExchangeRateForSell(currencyPair: CurrencyPair): F[BigDecimal] =
+  override def getExchangeRateForSell(currencyPair: CurrencyPair): F[ExchangeRate] =
     getRate(OrderType.BID, currencyPair)
 
-  override def getExchangeRateForBuy(currencyPair: CurrencyPair): F[BigDecimal] =
+  override def getExchangeRateForBuy(currencyPair: CurrencyPair): F[ExchangeRate] =
     getRate(OrderType.ASK, currencyPair)
 
   override val cryptoCurrencies: Set[CryptoCurrency] = Set(Currency.Decent)
