@@ -79,17 +79,10 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
   }
 
   override def withdrawFunds(currency: Currency, amount: Amount, destination: Address): F[Identifier] = {
-    val dest = parseAddress(destination)
-
-    dest.fold(e => raise[F](e), dest => delay {
-      exchange.getAccountService.withdrawFunds(currency.convert, amount.bigDecimal, dest)
-    })
+    delay {
+      exchange.getAccountService.withdrawFunds(currency.convert, amount.bigDecimal, destination)
+    }
   }
-
-  private def parseAddress(destination: Address): Attempt[String] = for {
-    uri <- Uri.fromString(destination)
-    accountName <- uri.query.params.get("account_name").toRight(err"Uri contains no destination address: $destination")
-  } yield accountName
 
   protected def createLimitOrder(order: TradeOrder): F[LimitOrder] = {
     val ticker = new FallbackBittrexTicker[F](order.currencyPair)
