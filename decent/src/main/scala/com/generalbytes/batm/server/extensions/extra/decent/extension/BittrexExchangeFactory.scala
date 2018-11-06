@@ -2,7 +2,8 @@ package com.generalbytes.batm.server.extensions.extra.decent.extension
 
 import cats.implicits._
 import com.generalbytes.batm.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.common.{Currency, CurrencyPair}
+import com.generalbytes.batm.common.CurrencyPair
+import com.generalbytes.batm.common.Currency._
 import com.generalbytes.batm.common.adapters.ExchangeAdapter
 import com.generalbytes.batm.common.factories.ExchangeFactory
 import com.generalbytes.batm.server.extensions.IExchange
@@ -24,8 +25,8 @@ trait BittrexExchangeFactory extends ExchangeFactory {
       .map(creds => new ExchangeAdapter[Task](
         new CounterReplacingXChangeWrapper[Task](
           new DefaultBittrexXChangeWrapper[Task](creds),
-          List(CurrencyPair(Currency.Euro, Currency.Bitcoin), CurrencyPair(Currency.USDollar, Currency.Bitcoin)),
-          List(Currency.USDollar)
+          List(CurrencyPair(Euro, Bitcoin), CurrencyPair(USDollar, Bitcoin)),
+          List(USDollar)
         )
       ))
       .toRight(err"Could not create exchange from params: $loginInfo")

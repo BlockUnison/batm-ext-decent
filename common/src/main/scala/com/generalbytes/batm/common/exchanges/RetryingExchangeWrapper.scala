@@ -1,10 +1,9 @@
 package com.generalbytes.batm.common.exchanges
 
-import cats.Monad
 import cats.effect.Sync
-import com.generalbytes.batm.common.Alias.{Identifier, MonadErr}
-import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.Alias.Identifier
 import com.generalbytes.batm.common.Util._
+import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
 import retry._
 

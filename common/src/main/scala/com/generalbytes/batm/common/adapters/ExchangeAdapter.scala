@@ -11,6 +11,8 @@ import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.server.extensions.IExchange
 
 class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F]) extends IExchange with LoggingSupport {
+  private val interpret = implicitly[Interpreter[F]]
+
   override def getCryptoCurrencies: util.Set[String] = xch.cryptoCurrencies.map(_.name).toJavaSet
 
   override def getFiatCurrencies: util.Set[String] = xch.fiatCurrencies.map(_.name).toJavaSet
@@ -18,10 +20,10 @@ class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F])
   override def getPreferredFiatCurrency: String = xch.preferredFiat.name
 
   override def getCryptoBalance(cryptoCurrency: String): BigDecimal =
-    Interpreter[F].apply(xch.getBalance(Currency.withName(cryptoCurrency).getOrThrow)).bigDecimal
+    interpret(xch.getBalance(Currency.withName(cryptoCurrency).getOrThrow)).bigDecimal
 
   override def getFiatBalance(fiatCurrency: String): BigDecimal =
-    Interpreter[F].apply(xch.getBalance(Currency.withName(fiatCurrency).getOrThrow).map(_.bigDecimal))
+    interpret(xch.getBalance(Currency.withName(fiatCurrency).getOrThrow).map(_.bigDecimal))
 
   override def purchaseCoins(amount: BigDecimal, cryptoCurrency: String, fiatCurrency: String, description: String): String = {
     val order: Attempt[TradeOrder] = createOrder(amount, cryptoCurrency, fiatCurrency, TradeOrder.buy)
@@ -49,7 +51,7 @@ class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F])
       res <- xch.fulfillOrder(ord)
     } yield res
 
-    Interpreter[F].apply(txId)
+    interpret(txId)
   }
 
   override def sendCoins(destinationAddress: String, amount: BigDecimal, cryptoCurrency: String, desc: String): String = {
@@ -59,7 +61,7 @@ class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F])
       res <- xch.withdrawFunds(crypto, scala.BigDecimal(amount), destinationAddress)
     } yield res
 
-    Interpreter[F].apply(withdrawal)
+    interpret(withdrawal)
   }
 
   override def getDepositAddress(s: String): String = ???

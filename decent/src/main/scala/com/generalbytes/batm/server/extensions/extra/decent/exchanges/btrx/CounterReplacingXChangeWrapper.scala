@@ -1,20 +1,18 @@
 package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
 
-import cats._
-import cats.syntax.semigroup._
+import cats.effect.ConcurrentEffect
 import cats.syntax.apply._
-import cats.effect.{ConcurrentEffect, Sync}
-import com.generalbytes.batm.common.Alias.{Amount, ApplicativeErr, Identifier}
+import com.generalbytes.batm.common.Alias.{Amount, Identifier}
 import com.generalbytes.batm.common._
-import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.BittrexWrapperRateSource
-import shapeless.syntax.std.product._
 import monocle.Lens
 import monocle.macros.GenLens
+import shapeless.syntax.std.product._
 
-class CounterReplacingXChangeWrapper[F[_]: ConcurrentEffect]
-  (exchange: Exchange[F], replacements: Seq[CurrencyPair], intermediate: List[Currency])
+class CounterReplacingXChangeWrapper[F[_]: ConcurrentEffect](exchange: Exchange[F],
+                                                             replacements: Seq[CurrencyPair],
+                                                             intermediate: List[Currency])
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
 
   private val rateSource = new BittrexWrapperRateSource[F](intermediate)

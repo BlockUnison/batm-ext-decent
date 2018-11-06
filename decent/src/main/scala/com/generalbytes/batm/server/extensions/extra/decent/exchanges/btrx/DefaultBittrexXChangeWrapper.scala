@@ -44,7 +44,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
     }
   }
 
-  def getOrder(id: Identifier): F[BittrexOrder] = Sync[F].delay {
+  private def getOrder(id: Identifier): F[BittrexOrder] = Sync[F].delay {
     exchange.getAccountService.asInstanceOf[BittrexAccountServiceRaw].getBittrexOrder(id)
   }
 

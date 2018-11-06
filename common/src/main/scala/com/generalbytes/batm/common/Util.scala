@@ -25,11 +25,11 @@ object Util {
 
   implicit val showThrowable: Show[Throwable] = Show.fromToString
 
-  class RaiseAux[F[_]] {
+  class RaisePartiallyApplied[F[_]] {
     def apply[A](e: Throwable)(implicit F: ApplicativeErr[F]): F[A] = ApplicativeErr[F].raiseError(e)
   }
 
-  def raise[F[_]] = new RaiseAux[F]
+  def raise[F[_]] = new RaisePartiallyApplied[F]
   def delay[F[_]: Sync, A](thunk: => A): F[A] = Sync[F].delay(thunk)
 
   def logOp[M[_]: Monad : Sync, A: Show](implicit loggger: Logger): (A, RetryDetails) => M[Unit] =

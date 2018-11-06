@@ -13,12 +13,14 @@ class SingleFixedPriceRateSource[F[_] : ApplicativeErr](currencyPair: CurrencyPa
   override val preferredFiat: FiatCurrency = currencyPair.counter
 
   override def getExchangeRateForSell(currencyPair: CurrencyPair): F[ExchangeRate] =
-    if (currencyPair.toTuple == this.currencyPair.toTuple) {
-      Applicative[F].pure(rate)
-    } else raise[F](err"Unsupported currency pair $currencyPair")
+    getRate(currencyPair)
 
-  override def getExchangeRateForBuy(currencyPair: CurrencyPair): F[BigDecimal] =
+  override def getExchangeRateForBuy(currencyPair: CurrencyPair): F[ExchangeRate] =
+    getRate(currencyPair)
+
+  private def getRate(currencyPair: CurrencyPair): F[ExchangeRate] = {
     if (currencyPair.toTuple == this.currencyPair.toTuple) {
       Applicative[F].pure(rate)
     } else raise[F](err"Unsupported currency pair $currencyPair")
+  }
 }
