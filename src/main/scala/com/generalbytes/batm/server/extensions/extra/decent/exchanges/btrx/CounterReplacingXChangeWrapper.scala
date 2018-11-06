@@ -13,7 +13,7 @@ import shapeless.syntax.std.product._
 import monocle.Lens
 import monocle.macros.GenLens
 
-class CounterReplacingXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : ConcurrentEffect]
+class CounterReplacingXChangeWrapper[F[_]: ConcurrentEffect]
   (exchange: Exchange[F], replacements: Seq[CurrencyPair], intermediate: List[Currency])
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
 

@@ -1,7 +1,8 @@
-package com.generalbytes.batm.common
+package com.generalbytes.batm.common.adapters
 
-import java.util
 import java.math.BigDecimal
+import java.util
+
 import com.generalbytes.batm.server.extensions.extra.bitcoin.exchanges.XChangeExchange
 import com.generalbytes.batm.server.extensions.{IExchangeAdvanced, IRateSourceAdvanced, ITask}
 

@@ -7,7 +7,7 @@ import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.Util._
 import shapeless.syntax.std.product._
 
-class SingleFixedPriceRateSource[F[_] : Applicative : ApplicativeErr](currencyPair: CurrencyPairF2C, rate: ExchangeRate) extends RateSource[F] {
+class SingleFixedPriceRateSource[F[_] : ApplicativeErr](currencyPair: CurrencyPairF2C, rate: ExchangeRate) extends RateSource[F] {
   override val cryptoCurrencies: Set[CryptoCurrency] = Set(currencyPair.base)
   override val fiatCurrencies: Set[FiatCurrency] = Set(currencyPair.counter)
   override val preferredFiat: FiatCurrency = currencyPair.counter

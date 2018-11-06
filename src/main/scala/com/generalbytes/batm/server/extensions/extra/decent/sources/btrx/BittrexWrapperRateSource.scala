@@ -15,7 +15,7 @@ import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.XChangeConversions._
 import org.knowm.xchange.dto.Order.OrderType
 
-class BittrexWrapperRateSource[F[_]: Effect : Monad : Applicative : ApplicativeErr : ConcurrentEffect](intermediate: List[Currency])
+class BittrexWrapperRateSource[F[_]: ConcurrentEffect](intermediate: List[Currency])
   extends RateSource[F] with LoggingSupport {
   implicit val bigDecimalMulSemigroup: Semigroup[ExchangeRate] = (x: ExchangeRate, y: ExchangeRate) => x * y
 

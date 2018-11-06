@@ -1,6 +1,5 @@
 package com.generalbytes.batm.server.extensions.extra.decent.sources.btrx
 
-import cats.Monad
 import cats.effect._
 import cats.effect.implicits._
 import cats.implicits._
@@ -11,7 +10,7 @@ import io.circe.Decoder
 import org.http4s.Uri
 import org.http4s.circe.CirceEntityDecoder._
 
-class FiatCurrencyExchangeTicker[F[_]: Effect : Sync : Monad : ConcurrentEffect](currencyPair: CurrencyPair)
+class FiatCurrencyExchangeTicker[F[_]: ConcurrentEffect](currencyPair: CurrencyPair)
   extends ClientFactory[F] with LoggingSupport {
   import FiatCurrencyExchangeTicker._
 

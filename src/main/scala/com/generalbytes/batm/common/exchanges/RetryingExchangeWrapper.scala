@@ -8,7 +8,7 @@ import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
 import retry._
 
-class RetryingExchangeWrapper[F[_] : MonadErr : Monad : Sleep : Sync](exchange: Exchange[F], maxRetries: Int)
+class RetryingExchangeWrapper[F[_] : Sleep : Sync](exchange: Exchange[F], maxRetries: Int)
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
 
   override def fulfillOrder(order: TradeOrder): F[Identifier] =

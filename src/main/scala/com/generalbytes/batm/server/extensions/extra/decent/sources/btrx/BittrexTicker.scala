@@ -14,7 +14,7 @@ import org.http4s.circe.CirceEntityDecoder._
 case class BittrexTick(bid: ExchangeRate, ask: ExchangeRate, last: ExchangeRate)
 case class BittrexTickError(message: String) extends Throwable(message)
 
-class BittrexTicker[F[_] : Effect : Sync : Monad : ApplicativeErr : ConcurrentEffect](currencyPair: CurrencyPair) extends LoggingSupport with ClientFactory[F] {
+class BittrexTicker[F[_]: ConcurrentEffect](currencyPair: CurrencyPair) extends LoggingSupport with ClientFactory[F] {
   import BittrexTicker._
   private val uri: Uri = Uri.unsafeFromString("https://bittrex.com/api/v1.1/public/getticker")
       .withQueryParam("market", currencyPair.toString)
