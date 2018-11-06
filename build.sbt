@@ -1,8 +1,8 @@
 val catsVersion = "1.4.0"
 val catsEffectVersion = "1.0.0"
-val circeVersion = "0.10.0-M2"
-val http4sVersion = "0.19.0-SNAPSHOT"
-val xchangeVersion = "4.3.11-SNAPSHOT"
+val circeVersion = "0.10.1"
+val http4sVersion = "0.19.0"
+val xchangeVersion = "4.3.11"
 val catsRetryVersion = "0.1.0"
 val monocleVersion = "1.5.0-cats"
 
@@ -39,13 +39,34 @@ val dependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
 
-lazy val root = (project in file("."))
+lazy val compilerOptions = Seq("-Ypartial-unification", "-unchecked", "-language:higherKinds", "-language:postfixOps")
+lazy val commonSettings = Seq(
+	scalacOptions ++= compilerOptions,
+	updateOptions := updateOptions.value.withLatestSnapshots(false)
+)
+
+lazy val common = project
+  .in(file("common"))
   .settings(
-    name := "batm_server_extensions_decent",
-    scalaVersion := "2.12.6",
-    scalacOptions ++= Seq("-Ypartial-unification", "-unchecked", "-language:higherKinds", "-language:postfixOps"),
-    libraryDependencies ++= dependencies,
-    updateOptions := updateOptions.value.withLatestSnapshots(false)
+    name := "batm-ext-common",
+    commonSettings,
+    libraryDependencies ++= dependencies
+  )
+
+lazy val decent = project
+  .in(file("decent"))
+  .settings(
+    name := "batm-ext-decent",
+    commonSettings,
+    libraryDependencies ++= dependencies
+  )
+  .dependsOn(common)
+
+lazy val global = (project in file("."))
+  .settings(commonSettings)
+  .aggregate(
+    common,
+    decent
   )
 
 val meta = """META.INF(.)*""".r
