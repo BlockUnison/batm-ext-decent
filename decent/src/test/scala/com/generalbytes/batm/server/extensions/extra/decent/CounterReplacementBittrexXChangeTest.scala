@@ -1,8 +1,8 @@
 package com.generalbytes.batm.server.extensions.extra.decent
 
-import com.generalbytes.batm.common.Alias.{Amount, Task}
+import com.generalbytes.batm.common.Alias.Task
+import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.{Currency, CurrencyPair, Exchange, TradeOrder}
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{CounterReplacingXChangeWrapper, DefaultBittrexXChangeWrapper}
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
 import org.scalactic.source.Position
