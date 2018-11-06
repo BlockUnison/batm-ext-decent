@@ -13,7 +13,7 @@ import com.generalbytes.batm.server.extensions.IWallet
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 
-class WalletAdapter[F[_] : Applicative : Interpreter, T <: Currency : Currency.Default](wallet: Wallet[F, T]) extends IWallet {
+class WalletAdapter[F[_] : Applicative : Interpreter](wallet: Wallet[F]) extends IWallet {
 
   override def sendCoins(address: Address, amount: Amount, currency: String, desc: String): TransactionId =
     Interpreter[F].apply(wallet.issuePayment(address, amount.toBigInteger.longValue, desc))
@@ -24,7 +24,7 @@ class WalletAdapter[F[_] : Applicative : Interpreter, T <: Currency : Currency.D
   override def getCryptoBalance(cryptoCurrency: Adapters.CryptoCurrency): BigDecimal =
     Interpreter[F].apply(wallet.getBalance.map(_.bigDecimal))
 
-  override def getCryptoCurrencies: util.Set[Adapters.CryptoCurrency] = mutable.Set(Currency[T].name).asJava
+  override def getCryptoCurrencies: util.Set[Adapters.CryptoCurrency] = mutable.Set(wallet.cryptoCurrency.name).asJava
 
-  override def getPreferredCryptoCurrency: Adapters.CryptoCurrency = Currency[T].name
+  override def getPreferredCryptoCurrency: Adapters.CryptoCurrency = wallet.cryptoCurrency.name
 }

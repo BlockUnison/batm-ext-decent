@@ -5,7 +5,7 @@ import com.generalbytes.batm.common.factories.{AddressValidatorFactory, Exchange
 trait Extension[F[_], T <: Currency]
   extends ExchangeFactory
     with RateSourceFactory
-    with WalletFactory[F, T]
+    with WalletFactory[F]
     with AddressValidatorFactory {
   val name: String
   val supportedCryptoCurrencies: Set[CryptoCurrency]

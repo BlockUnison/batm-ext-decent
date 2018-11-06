@@ -4,7 +4,7 @@ import cats.implicits._
 import com.generalbytes.batm.common.Alias._
 import com.generalbytes.batm.common.Currency.DCT
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.{ClientFactory, LoggingSupport, Wallet}
+import com.generalbytes.batm.common._
 import io.circe.generic.semiauto._
 import io.circe.syntax._
 import io.circe.{Decoder, ObjectEncoder}
@@ -14,8 +14,10 @@ import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.client.dsl.io._
 import org.http4s.dsl.io._
 
-class DecentWalletRestApi(url: Uri, credentials: DecentWalletRestApi.DecentWalletCredentials) extends Wallet[Task, DCT] with ClientFactory[Task] with LoggingSupport {
+class DecentWalletRestApi(url: Uri, credentials: DecentWalletRestApi.DecentWalletCredentials) extends Wallet[Task] with ClientFactory[Task] with LoggingSupport {
   import DecentWalletRestApi._
+
+  override val cryptoCurrency: CryptoCurrency = Currency.Decent
 
   override def issuePayment(recipientAddress: Address, amount: Amount, description: String = ""): Task[Identifier] = {
     val purchaseReq = PurchaseRequest(credentials.username, credentials.password, amount, recipientAddress)

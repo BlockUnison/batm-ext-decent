@@ -1,16 +1,15 @@
 package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
 
+import cats.Show
 import cats.effect._
 import cats.effect.implicits._
 import cats.implicits._
-import cats.{Monad, Show}
 import com.generalbytes.batm.common.Alias._
 import com.generalbytes.batm.common.Util._
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, FallbackBittrexTicker}
-import org.http4s.Uri
 import org.knowm.xchange
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.bittrex.BittrexExchange
@@ -20,7 +19,7 @@ import org.knowm.xchange.dto.Order.OrderType
 import org.knowm.xchange.dto.trade.LimitOrder
 import retry._
 
-class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep : ConcurrentEffect](credentials: LoginInfo)
+class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: LoginInfo)
   extends Exchange[F] with LoggingSupport {
 
   import DefaultBittrexXChangeWrapper._
@@ -98,7 +97,6 @@ class DefaultBittrexXChangeWrapper[F[_]: Sync : ApplicativeErr : Monad : Sleep :
       .build()
   }
 
-  // TODO: Exhaustive match
   // NOTE: We specify the limit price to the OPPOSITE ticker ask->bid bid->ask, because there's no market order
   protected def calculateLimitPrice(tick: BittrexTick, orderType: OrderType): Amount = {
     val rateSelector = getRateSelector(orderType.inverse)
