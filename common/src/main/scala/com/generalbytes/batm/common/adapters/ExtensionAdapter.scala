@@ -41,4 +41,6 @@ class ExtensionAdapter[F[_]: Applicative : Interpreter, T <: Currency : Default]
   override def init(iExtensionContext: IExtensionContext): Unit = ()
 
   override def getCryptoCurrencyDefinitions: util.Set[ICryptoCurrencyDefinition] = Set.empty[ICryptoCurrencyDefinition].toJavaSet
+
+  override def getRestServices: util.Set[IRestService] = Set.empty[IRestService].toJavaSet
 }

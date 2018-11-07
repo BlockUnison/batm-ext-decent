@@ -7,7 +7,7 @@ import cats._
 import cats.implicits._
 import com.generalbytes.batm.common.Adapters.{Address, Amount, TransactionId}
 import com.generalbytes.batm.common.Alias.Interpreter
-import com.generalbytes.batm.common.{Adapters, Currency, Wallet}
+import com.generalbytes.batm.common.{Adapters, Wallet}
 import com.generalbytes.batm.server.extensions.IWallet
 
 import scala.collection.JavaConverters._

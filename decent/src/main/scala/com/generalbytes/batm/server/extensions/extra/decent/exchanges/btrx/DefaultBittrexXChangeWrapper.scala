@@ -13,7 +13,7 @@ import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{Bittre
 import org.knowm.xchange
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.bittrex.BittrexExchange
-import org.knowm.xchange.bittrex.dto.account.BittrexOrder
+import org.knowm.xchange.bittrex.dto.trade.BittrexOrder
 import org.knowm.xchange.bittrex.service.BittrexAccountServiceRaw
 import org.knowm.xchange.dto.Order.OrderType
 import org.knowm.xchange.dto.trade.LimitOrder
@@ -65,7 +65,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
     val maxAttempts = 10
     val polling = retryingM[BittrexOrder](
       RetryPolicies.limitRetries[F](maxAttempts),
-      r => !r.getIsOpen,
+      r => !r.getOpen,
       logOp[F, BittrexOrder]) {
       for {
         ordId <- orderId
@@ -92,7 +92,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
       price = calculateLimitPrice(rate, orderType)
       _ <- log(price, "limit price")
     } yield new LimitOrder.Builder(orderType, order.currencyPair.convert)
-      .tradableAmount(amount.bigDecimal)
+      .originalAmount(amount.bigDecimal)
       .limitPrice(price.bigDecimal)
       .build()
   }

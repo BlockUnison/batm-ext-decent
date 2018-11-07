@@ -1,10 +1,10 @@
-package com.generalbytes.batm.common
+package com.generalbytes.batm.server.extensions.extra.decent.utils
 
 import cats.implicits._
-import cats.effect._
+import cats.effect.ConcurrentEffect
+import com.generalbytes.batm.common.implicits._
 import org.http4s.client.Client
 import org.http4s.client.blaze.BlazeClientBuilder
-import implicits._
 
 trait ClientFactory[F[_]] {
 

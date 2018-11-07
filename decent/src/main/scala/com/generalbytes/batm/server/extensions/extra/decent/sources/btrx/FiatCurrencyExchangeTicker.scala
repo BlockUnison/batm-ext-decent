@@ -5,7 +5,8 @@ import cats.effect.implicits._
 import cats.implicits._
 import com.generalbytes.batm.common.Alias.ExchangeRate
 import com.generalbytes.batm.common.Util._
-import com.generalbytes.batm.common.{ClientFactory, CurrencyPair, LoggingSupport}
+import com.generalbytes.batm.common.{CurrencyPair, LoggingSupport}
+import com.generalbytes.batm.server.extensions.extra.decent.utils.ClientFactory
 import io.circe.Decoder
 import org.http4s.Uri
 import org.http4s.circe.CirceEntityDecoder._

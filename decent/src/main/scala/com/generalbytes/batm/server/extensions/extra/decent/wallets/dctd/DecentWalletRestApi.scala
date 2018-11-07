@@ -5,6 +5,7 @@ import com.generalbytes.batm.common.Alias._
 import com.generalbytes.batm.common.Currency.DCT
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common._
+import com.generalbytes.batm.server.extensions.extra.decent.utils.ClientFactory
 import io.circe.generic.semiauto._
 import io.circe.syntax._
 import io.circe.{Decoder, ObjectEncoder}
