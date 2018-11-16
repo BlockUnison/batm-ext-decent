@@ -1,9 +1,8 @@
 package com.generalbytes.batm.server.extensions.extra.decent
 
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.Task
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common._
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.DefaultBittrexXChangeWrapper
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
 import org.scalatest.{FlatSpec, Matchers}

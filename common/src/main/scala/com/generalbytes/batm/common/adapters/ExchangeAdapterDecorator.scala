@@ -1,7 +1,7 @@
 package com.generalbytes.batm.common.adapters
 
-import com.generalbytes.batm.common.Alias.{Address, Amount, Identifier}
-import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.domain.{Address, Amount, Identifier}
+import com.generalbytes.batm.common.domain._
 
 abstract class ExchangeAdapterDecorator[F[_]](exchange: Exchange[F]) extends Exchange[F] {
   override def getBalance(currency: Currency): F[Amount] = exchange.getBalance(currency)

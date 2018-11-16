@@ -2,9 +2,9 @@ package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
 
 import cats.effect.ConcurrentEffect
 import cats.syntax.apply._
-import com.generalbytes.batm.common.Alias.{Amount, Identifier}
-import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
+import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.BittrexWrapperRateSource
 import monocle.Lens
 import monocle.macros.GenLens

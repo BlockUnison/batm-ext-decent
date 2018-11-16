@@ -3,14 +3,14 @@ package com.generalbytes.batm.common.adapters
 import java.util
 
 import cats.{Applicative, Id, ~>}
-import com.generalbytes.batm.common.Alias.{Attempt, Interpreter}
-import com.generalbytes.batm.common.Currency.Default
+import com.generalbytes.batm.common.domain.{Attempt, Interpreter}
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.{Currency, Extension, LoggingSupport}
+import com.generalbytes.batm.common.utils.LoggingSupport
+import com.generalbytes.batm.common.domain.{Currency, Extension}
 import com.generalbytes.batm.server.extensions._
 import com.generalbytes.batm.server.extensions.watchlist.IWatchList
 
-class ExtensionAdapter[F[_]: Applicative : Interpreter, T <: Currency : Default](ext: Extension[F, T])(implicit val g: Attempt ~> Id)
+class ExtensionAdapter[F[_]: Applicative : Interpreter, T <: Currency](ext: Extension[F, T])(implicit val g: Attempt ~> Id)
   extends IExtension with LoggingSupport {
 
   override def getName: String = ext.name

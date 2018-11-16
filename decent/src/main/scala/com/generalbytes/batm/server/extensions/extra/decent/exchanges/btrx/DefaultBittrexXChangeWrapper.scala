@@ -4,10 +4,12 @@ import cats.Show
 import cats.effect._
 import cats.effect.implicits._
 import cats.implicits._
-import com.generalbytes.batm.common.Alias._
-import com.generalbytes.batm.common.Util._
+import com.generalbytes.batm.common.domain._
+import com.generalbytes.batm.common.utils.Util._
+import com.generalbytes.batm.common.utils.XChangeUtils._
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, FallbackBittrexTicker}
 import org.knowm.xchange
@@ -23,7 +25,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
   extends Exchange[F] with LoggingSupport {
 
   import DefaultBittrexXChangeWrapper._
-  import XChangeConversions._
+  import com.generalbytes.batm.server.extensions.extra.decent.utils.BittrexUtils._
 
   protected val exchange: xchange.Exchange = createExchange
 
@@ -51,7 +53,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
   override def getBalance(currency: Currency): F[Amount] = delay {
     val balance = exchange.getAccountService.getAccountInfo.getWallet.getBalance(currency.convert)
     BigDecimal(balance.getTotal)
-  } flatTap (b => log[F](b, s"Balance in $currency"))
+  }
 
   override def getAddress(currency: Currency): F[Address] = raise[F](err"Not implemented")
 

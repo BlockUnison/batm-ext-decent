@@ -5,9 +5,10 @@ import java.util
 
 import cats._
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.{Interpreter, _}
-import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.domain.{Interpreter, _}
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.server.extensions.IExchange
 
 class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F]) extends IExchange with LoggingSupport {

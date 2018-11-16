@@ -1,8 +1,8 @@
 package com.generalbytes.batm.server.extensions.extra.decent.extension
 
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.common.Util._
+import com.generalbytes.batm.common.domain.{Attempt, Task}
+import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.common.adapters.RateSourceAdapter
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.factories.RateSourceFactory

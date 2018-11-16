@@ -1,8 +1,7 @@
 package com.generalbytes.batm.server.extensions.extra.decent.extension
 
-import com.generalbytes.batm.common.Alias.Task
 import com.generalbytes.batm.common.factories.DummyAddressValidatorFactory
-import com.generalbytes.batm.common.{CryptoCurrency, Currency, Extension}
+import com.generalbytes.batm.common.domain.{CryptoCurrency, Task, Currency, Extension}
 
 class DecentExtension extends Extension[Task, Currency.DCT]
   with CompositeRateSourceFactory

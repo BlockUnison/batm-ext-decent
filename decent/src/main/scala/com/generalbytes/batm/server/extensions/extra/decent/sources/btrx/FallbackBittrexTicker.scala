@@ -2,8 +2,9 @@ package com.generalbytes.batm.server.extensions.extra.decent.sources.btrx
 
 import cats.effect.ConcurrentEffect
 import cats.implicits._
-import com.generalbytes.batm.common.Util._
-import com.generalbytes.batm.common.{CurrencyPair, LoggingSupport}
+import com.generalbytes.batm.common.utils.Util._
+import com.generalbytes.batm.common.domain._
+import com.generalbytes.batm.common.utils.LoggingSupport
 
 class FallbackBittrexTicker[F[_]: ConcurrentEffect](currencyPair: CurrencyPair)
   extends LoggingSupport {

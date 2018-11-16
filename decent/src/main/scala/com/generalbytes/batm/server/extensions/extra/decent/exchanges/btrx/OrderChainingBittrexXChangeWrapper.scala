@@ -1,22 +1,21 @@
 package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
 
-import cats.Monad
-import cats.effect.{ConcurrentEffect, Sync}
+import cats.effect.ConcurrentEffect
 import cats.implicits._
-import com.generalbytes.batm.common.Alias._
-import com.generalbytes.batm.common.Util._
-import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.utils.LoggingSupport
+import com.generalbytes.batm.common.utils.Util._
+import com.generalbytes.batm.common.utils.XChangeUtils._
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.DefaultBittrexXChangeWrapper.ErrorDecorator
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.FallbackBittrexTicker
+import com.generalbytes.batm.server.extensions.extra.decent.utils.BittrexUtils._
 import org.knowm.xchange.dto.Order.OrderType
 import shapeless._
 
-class OrderChainingBittrexXChangeWrapper[F[_]: ConcurrentEffect](exchange: Exchange[F],
-                                                                 midCurrency: Currency)
+class OrderChainingBittrexXChangeWrapper[F[_]: ConcurrentEffect](exchange: Exchange[F], midCurrency: Currency)
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
-  import XChangeConversions._
 
   private val amountLens = lens[TradeOrder].amount.amount
   private val currencyPairLens = lens[TradeOrder].currencyPair

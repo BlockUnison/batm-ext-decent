@@ -1,6 +1,6 @@
 package com.generalbytes.batm.server.extensions.extra.decent
 
-import com.generalbytes.batm.common.LoggingSupport
+import com.generalbytes.batm.common.utils.LoggingSupport
 import org.scalatest.{BeforeAndAfter, TestSuite}
 
 trait TestLoggingSupport extends TestSuite with LoggingSupport with BeforeAndAfter {

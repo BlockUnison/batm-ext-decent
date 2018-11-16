@@ -3,7 +3,9 @@ package com.generalbytes.batm.common
 import cats._
 import cats.arrow.FunctionK
 import cats.effect.{ContextShift, Timer}
-import com.generalbytes.batm.common.Alias.{Attempt, Task}
+import com.generalbytes.batm.common.domain._
+import com.generalbytes.batm.common.domain.{Attempt, Task}
+import com.generalbytes.batm.common.utils.Ops
 import retry.Sleep
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -19,8 +21,6 @@ object implicits extends Ops {
   implicit val cs: ContextShift[Task] = Task.contextShift(global)
   implicit def currencyEq[T <: Currency]: Eq[T] = Eq.fromUniversalEquals
   implicit val defaultDuration: FiniteDuration = 5 seconds
-  implicit def showAttempt[A: Show]: Show[Attempt[A]] = Show.fromToString
-  implicit val showOrder: Show[TradeOrder] = Show.fromToString
 
   private def attempt2Task[A](a: Attempt[A]): Task[A] =
     Task.fromEither(a)

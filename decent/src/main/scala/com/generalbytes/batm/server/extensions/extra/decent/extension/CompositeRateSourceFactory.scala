@@ -2,10 +2,10 @@ package com.generalbytes.batm.server.extensions.extra.decent.extension
 
 import cats.implicits._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.common.{Currency, LoggingSupport}
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.adapters.RateSourceAdapter
 import com.generalbytes.batm.common.factories.RateSourceFactory
+import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.server.extensions.IRateSourceAdvanced
 import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.BittrexWrapperRateSource
 

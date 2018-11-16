@@ -1,18 +1,18 @@
 package com.generalbytes.batm.server.extensions.extra.decent.extension
 
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.common.CurrencyPair
-import com.generalbytes.batm.common.Currency._
+import com.generalbytes.batm.common.domain._
+import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.adapters.ExchangeAdapter
 import com.generalbytes.batm.common.factories.ExchangeFactory
 import com.generalbytes.batm.server.extensions.IExchange
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{CounterReplacingXChangeWrapper, DefaultBittrexXChangeWrapper, OrderChainingBittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.{CounterReplacingXChangeWrapper, DefaultBittrexXChangeWrapper}
 
 case class LoginInfo(apiKey: String, secretKey: String)
 
 trait BittrexExchangeFactory extends ExchangeFactory {
-  import com.generalbytes.batm.common.implicits._
+  import Currency._
+
   private val exchangeLoginData = """btrx:([A-Za-z0-9]+):([A-Za-z0-9]+)""".r
 
   protected def parseExchangeLoginInfo(loginInfo: String): Option[LoginInfo] = loginInfo match {

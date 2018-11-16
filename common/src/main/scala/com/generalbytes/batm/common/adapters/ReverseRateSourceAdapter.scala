@@ -2,9 +2,10 @@ package com.generalbytes.batm.common.adapters
 
 import cats.effect.Sync
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.ExchangeRate
+import com.generalbytes.batm.common.domain.ExchangeRate
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.server.extensions.IRateSourceAdvanced
 
 class ReverseRateSourceAdapter[F[_]: Sync](rs: IRateSourceAdvanced) extends RateSource[F] {

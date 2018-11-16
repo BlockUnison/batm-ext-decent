@@ -8,11 +8,13 @@ import cats.syntax.functor._
 import cats.syntax.semigroup._
 import cats.syntax.traverse._
 import cats.{Applicative, Eval, Later, Monad, Now, Semigroup}
-import com.generalbytes.batm.common.Alias.{ApplicativeErr, ExchangeRate}
+import com.generalbytes.batm.common.domain.{ErrorApplicative, ExchangeRate}
 import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.Util._
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx.XChangeConversions._
+import com.generalbytes.batm.common.utils.LoggingSupport
+import com.generalbytes.batm.common.utils.Util._
+import com.generalbytes.batm.server.extensions.extra.decent.utils.BittrexUtils._
 import org.knowm.xchange.dto.Order.OrderType
 
 class BittrexWrapperRateSource[F[_]: ConcurrentEffect](intermediate: List[Currency])

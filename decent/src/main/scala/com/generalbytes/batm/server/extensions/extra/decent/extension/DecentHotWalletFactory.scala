@@ -1,10 +1,8 @@
 package com.generalbytes.batm.server.extensions.extra.decent.extension
 
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.{Attempt, Task}
-import com.generalbytes.batm.common.Currency.DCT
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.Wallet
 import com.generalbytes.batm.common.factories.WalletFactory
 import com.generalbytes.batm.server.extensions.extra.decent.wallets.dctd.DecentWalletRestApi
 import org.http4s.Uri

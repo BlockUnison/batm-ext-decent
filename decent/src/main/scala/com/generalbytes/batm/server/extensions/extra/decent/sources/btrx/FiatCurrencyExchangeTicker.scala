@@ -3,9 +3,9 @@ package com.generalbytes.batm.server.extensions.extra.decent.sources.btrx
 import cats.effect._
 import cats.effect.implicits._
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.ExchangeRate
-import com.generalbytes.batm.common.Util._
-import com.generalbytes.batm.common.{CurrencyPair, LoggingSupport}
+import com.generalbytes.batm.common.domain.{CurrencyPair, ExchangeRate}
+import com.generalbytes.batm.common.utils.Util._
+import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.server.extensions.extra.decent.utils.ClientFactory
 import io.circe.Decoder
 import org.http4s.Uri
