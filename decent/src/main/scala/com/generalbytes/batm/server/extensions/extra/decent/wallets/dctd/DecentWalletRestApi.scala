@@ -29,18 +29,20 @@ class DecentWalletRestApi(url: Uri, credentials: DecentWalletRestApi.DecentWalle
       purchaseReq.asJson
     )
 
-    client
-      .flatMap(_.expectOr[TransactionInfo](request)(_.as[ErrorResponse]))
+    client.use {
+      _.expectOr[TransactionInfo](request)(_.as[ErrorResponse])
       .map(_.txid)
+    }
   }
 
   override def getBalance: Task[Amount] = {
     val request = GET(url / "balance")
     logger.debug(request.toString)
 
-    client
-      .flatMap(_.expectOr[BalanceResponse](request)(_.as[ErrorResponse]))
+    client.use {
+      _.expectOr[BalanceResponse](request)(_.as[ErrorResponse])
       .map(_.balance)
+    }
   }
 
   override def getAddress: Task[Address] = Task.raiseError(err"Not implemented")

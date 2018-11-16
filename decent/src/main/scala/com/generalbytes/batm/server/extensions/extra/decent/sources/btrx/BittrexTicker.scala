@@ -21,11 +21,13 @@ class BittrexTicker[F[_]: ConcurrentEffect](currencyPair: CurrencyPair) extends 
   private val uri: Uri = Uri.unsafeFromString("https://bittrex.com/api/v1.1/public/getticker")
       .withQueryParam("market", currencyPair.toString)
 
+
   def currentRates: F[BittrexTick] =
-    client
-      .flatMap(_.expect[Attempt[BittrexTick]](uri))
-      .flatTap(x => log(x, currencyPair.toString))
+    client.use (
+      _.expect[Attempt[BittrexTick]](uri)
+      .flatTap(x => log[F](x, currencyPair.toString))
       .unattempt
+    )
 }
 
 object BittrexTicker {

@@ -44,14 +44,14 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
     }
   }
 
-  private def getOrder(id: Identifier): F[BittrexOrder] = Sync[F].delay {
+  private def getOrder(id: Identifier): F[BittrexOrder] = delay {
     exchange.getAccountService.asInstanceOf[BittrexAccountServiceRaw].getBittrexOrder(id)
   }
 
-  override def getBalance(currency: Currency): F[Amount] = Sync[F].delay {
+  override def getBalance(currency: Currency): F[Amount] = delay {
     val balance = exchange.getAccountService.getAccountInfo.getWallet.getBalance(currency.convert)
     BigDecimal(balance.getTotal)
-  } flatTap (b => log(b, s"Balance in $currency"))
+  } flatTap (b => log[F](b, s"Balance in $currency"))
 
   override def getAddress(currency: Currency): F[Address] = raise[F](err"Not implemented")
 

@@ -14,7 +14,6 @@ import org.http4s.circe.CirceEntityDecoder._
 class FiatCurrencyExchangeTicker[F[_]: ConcurrentEffect](currencyPair: CurrencyPair)
   extends ClientFactory[F] with LoggingSupport {
   import FiatCurrencyExchangeTicker._
-
   private val descriptor: String = s"${currencyPair.counter.name}_${currencyPair.base.name}"
   private val uriBase: Uri = Uri.unsafeFromString("http://free.currencyconverterapi.com/api/v5/convert")
   private implicit val rateTickDecoder: Decoder[ExchangeRateTick] = getDecoder(descriptor)
@@ -22,10 +21,11 @@ class FiatCurrencyExchangeTicker[F[_]: ConcurrentEffect](currencyPair: CurrencyP
   def currentRate: F[ExchangeRate] = {
     val uri = uriBase.withQueryParam("q", descriptor).withQueryParam("compact", "y")
 
-    client
-      .flatMap(_.expect[ExchangeRateTick](uri))
+    client.use {
+      _.expect[ExchangeRateTick](uri)
       .map(_.rate)
-      .flatTap(x => log(x))
+      .flatTap(x => log[F](x))
+    }
   }
 }
 

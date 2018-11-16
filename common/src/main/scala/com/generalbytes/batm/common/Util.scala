@@ -1,8 +1,8 @@
 package com.generalbytes.batm.common
 
-import cats.{ApplicativeError, Monad, Show}
 import cats.effect.Sync
-import com.generalbytes.batm.common.Alias.{ApplicativeErr, Attempt, Task}
+import cats.implicits._
+import com.generalbytes.batm.common.Alias.{ApplicativeErr, Attempt}
 import org.slf4j.Logger
 import retry.RetryDetails
 
@@ -10,30 +10,30 @@ import scala.language.higherKinds
 
 object Util {
 
-  def logObj[A: Show](self: Attempt[A])(implicit logger: Logger): Attempt[A] = {
+  def logObj[A](self: Attempt[A])(implicit logger: Logger): Attempt[A] = {
     self.left.foreach(x => logger.error(x.toString))
-    self.right.foreach(x => logger.debug(s"Value: ${Show[A].show(x)}"))
+    self.right.foreach(x => logger.debug(s"Value: $x"))
     self
   }
 
-  def logIO[A](a: A)(implicit logger: Logger): Task[A] = log[Task, A](a)
-
-  def log[F[_]: Sync, A](a: A, message: String = "Value")(implicit logger: Logger): F[A] = implicitly[Sync[F]].delay {
-    logger.debug(s"$message: $a")
-    a
+  class LogPartiallyApplied[F[_]] {
+    def apply[A](a: A, message: String = "Value")(implicit F: Sync[F], logger: Logger): F[A] = F.delay {
+      logger.debug(s"$message: $a")
+      a
+    }
   }
 
-  implicit val showThrowable: Show[Throwable] = Show.fromToString
+  def log[F[_]] = new LogPartiallyApplied[F]
 
   class RaisePartiallyApplied[F[_]] {
-    def apply[A](e: Throwable)(implicit F: ApplicativeErr[F]): F[A] = ApplicativeErr[F].raiseError(e)
+    def apply[A](e: Throwable)(implicit F: ApplicativeErr[F]): F[A] = F.raiseError(e)
   }
 
   def raise[F[_]] = new RaisePartiallyApplied[F]
   def delay[F[_]: Sync, A](thunk: => A): F[A] = Sync[F].delay(thunk)
 
-  def logOp[M[_]: Monad : Sync, A: Show](implicit loggger: Logger): (A, RetryDetails) => M[Unit] =
-    (a, _) => implicitly[Monad[M]].map(log(a))(_ => ())
+  def logOp[M[_], A](implicit M: Sync[M], logger: Logger): (A, RetryDetails) => M[Unit] =
+    (a, _) => log[M](a).void
 
   private val hmacSHA256 = "HmacSHA256"
   private val hmacSHA512 = "HmacSHA512"

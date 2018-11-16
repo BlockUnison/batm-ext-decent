@@ -3,7 +3,7 @@ val catsEffectVersion = "1.0.0"
 val circeVersion = "0.10.1"
 val http4sVersion = "0.19.0"
 val xchangeVersion = "4.3.11"
-val catsRetryVersion = "0.1.0"
+val catsRetryVersion = "0.2.0"
 val monocleVersion = "1.5.0-cats"
 val slf4jVersion = "1.7.25"
 
@@ -24,9 +24,9 @@ val dependencies = Seq(
   "com.github.cb372" %% "cats-retry-cats-effect" % catsRetryVersion,
 
 
-  "javax.ws.rs" % "javax.ws.rs-api" % "2.1" jar() withSources() withJavadoc(),
+//  "javax.ws.rs" % "javax.ws.rs-api" % "2.1" jar() withSources() withJavadoc(),
 
-  "org.slf4j" % "slf4j-api" % "1.7.25",
+  "org.slf4j" % "slf4j-api" % slf4jVersion,
 
   "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )

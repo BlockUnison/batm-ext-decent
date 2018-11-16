@@ -49,10 +49,10 @@ trait Ops {
     }
   }
 
-  implicit class FlattenAttemptOps[F[_] : Monad : ApplicativeErr, A](a: F[Attempt[A]]) {
+  implicit class FlattenAttemptOps[F[_], A](a: F[Attempt[A]])(implicit F: MonadErr[F]) {
     def unattempt: F[A] = a.flatMap(_.fold(
-      implicitly[ApplicativeErr[F]].raiseError,
-      implicitly[ApplicativeErr[F]].pure))
+      F.raiseError,
+      F.pure))
   }
 
   implicit class ExchangeOps[F[_]: Monad : MonadErr : Sleep : Sync](ex: Exchange[F]) {

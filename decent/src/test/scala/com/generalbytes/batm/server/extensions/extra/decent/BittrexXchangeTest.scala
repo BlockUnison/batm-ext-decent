@@ -20,7 +20,7 @@ class BittrexXchangeTest extends FlatSpec with Matchers with TestLoggingSupport 
   it should "not fail when processing BUY order" in {
     val exchange = createExchange
 
-    val amount = BigDecimal(21L)
+    val amount = BigDecimal(40L)
     val order = TradeOrder.buy(Currency.Decent, Currency.Bitcoin, amount)
     val result = exchange.fulfillOrder(order).attempt.unsafeRunSync()
     result.left.foreach(println)
@@ -31,7 +31,7 @@ class BittrexXchangeTest extends FlatSpec with Matchers with TestLoggingSupport 
   it should "not fail when processing sell order DCT->BTC" in {
     val exchange = createExchange
 
-    val amount = BigDecimal(120)
+    val amount = BigDecimal(50)
     val order = TradeOrder.sell(Currency.Decent, Currency.Bitcoin, amount)
     val result = exchange.fulfillOrder(order)
     val value = result.attempt.unsafeRunSync().log.getOrThrow
