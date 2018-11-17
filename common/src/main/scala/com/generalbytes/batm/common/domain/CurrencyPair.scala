@@ -1,7 +1,4 @@
-package com.generalbytes.batm.common
-
-import com.generalbytes.batm.common.Alias.Attempt
-import Util._
+package com.generalbytes.batm.common.domain
 
 case class CurrencyPair(counter: Currency, base: Currency) {
   def flip: CurrencyPair = CurrencyPair(base, counter)

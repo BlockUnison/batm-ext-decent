@@ -1,8 +1,8 @@
-package com.generalbytes.batm.common
+package com.generalbytes.batm.common.utils
 
 import cats.effect.Sync
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.{ApplicativeErr, Attempt}
+import com.generalbytes.batm.common.domain.{ErrorApplicative, Attempt}
 import org.slf4j.Logger
 import retry.RetryDetails
 
@@ -26,7 +26,7 @@ object Util {
   def log[F[_]] = new LogPartiallyApplied[F]
 
   class RaisePartiallyApplied[F[_]] {
-    def apply[A](e: Throwable)(implicit F: ApplicativeErr[F]): F[A] = F.raiseError(e)
+    def apply[A](e: Throwable)(implicit F: ErrorApplicative[F]): F[A] = F.raiseError(e)
   }
 
   def raise[F[_]] = new RaisePartiallyApplied[F]

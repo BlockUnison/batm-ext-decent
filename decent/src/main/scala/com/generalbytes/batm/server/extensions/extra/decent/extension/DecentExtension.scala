@@ -1,9 +1,9 @@
 package com.generalbytes.batm.server.extensions.extra.decent.extension
 
+import com.generalbytes.batm.common.domain.{CryptoCurrency, Currency, Extension}
 import com.generalbytes.batm.common.factories.DummyAddressValidatorFactory
-import com.generalbytes.batm.common.domain.{CryptoCurrency, Task, Currency, Extension}
 
-class DecentExtension extends Extension[Task, Currency.DCT]
+class DecentExtension extends Extension
   with CompositeRateSourceFactory
   with BittrexExchangeFactory
   with DecentHotWalletFactory

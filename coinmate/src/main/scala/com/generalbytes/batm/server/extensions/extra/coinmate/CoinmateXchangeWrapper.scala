@@ -9,21 +9,19 @@ import com.generalbytes.batm.common.utils.LoggingSupport
 import org.knowm.xchange
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.coinmate.CoinmateExchange
-import org.knowm.xchange.dto.Order.OrderType
 import org.knowm.xchange.dto.trade.MarketOrder
 import retry.Sleep
 
-case class LoginInfo(apiKey: String, secretKey: String)
-
-class CoinmateXchangeWrapper [F[_]: Sleep : ConcurrentEffect](credentials: LoginInfo)
-  extends Exchange[F] with LoggingSupport {
+class CoinmateXchangeWrapper [F[_]: Sleep : ConcurrentEffect](credentials: CoinmateLoginInfo)
+  extends Exchange[F] with RateSource[F] with LoggingSupport {
 
   protected val exchange: xchange.Exchange = createExchange
 
   protected def createExchange: xchange.Exchange = {
     val spec = new CoinmateExchange().getDefaultExchangeSpecification
-    spec.setApiKey(credentials.apiKey)
-    spec.setSecretKey(credentials.secretKey)
+    spec.setUserName(credentials.clientId)
+    spec.setApiKey(credentials.publicKey)
+    spec.setSecretKey(credentials.privateKey)
     val result = ExchangeFactory.INSTANCE.createExchange(spec)
     result
   }
@@ -48,4 +46,12 @@ class CoinmateXchangeWrapper [F[_]: Sleep : ConcurrentEffect](credentials: Login
   override val cryptoCurrencies: Set[CryptoCurrency] = Set(Currency.BitcoinCash, Currency.Bitcoin)
   override val fiatCurrencies: Set[FiatCurrency] = Set(Currency.Euro)
   override val preferredFiat: FiatCurrency = Currency.Euro
+
+  override def getExchangeRateForSell(currencyPair: CurrencyPair): F[ExchangeRate] = delay {
+    exchange.getMarketDataService.getTicker(currencyPair.convert).getAsk
+  }
+
+  override def getExchangeRateForBuy(currencyPair: CurrencyPair): F[ExchangeRate] = delay {
+    exchange.getMarketDataService.getTicker(currencyPair.convert).getBid
+  }
 }

@@ -1,6 +1,4 @@
-package com.generalbytes.batm.common
-
-import com.generalbytes.batm.common.Alias.Amount
+package com.generalbytes.batm.common.domain
 
 final case class CryptoAmount[T <: Currency](amount: Amount)
 
