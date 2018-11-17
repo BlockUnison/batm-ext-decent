@@ -1,7 +1,6 @@
 package com.generalbytes.batm.server.extensions.extra.decent
 
 import cats.implicits._
-import com.generalbytes.batm.server.extensions.extra.decent.extension.DecentExtension
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.server.extensions.extra.decent.wallets.dctd.DecentWalletRestApi
 import org.http4s.Uri
