@@ -10,7 +10,7 @@ import com.generalbytes.batm.server.extensions.IExchange
 
 case class CoinmateLoginInfo(clientId: String, publicKey: String, privateKey: String)
 
-trait CoinmateExchangeFactory extends ExchangeFactory with CoinmateLoginInfoFactory {
+trait CoinmateExchangeFactory extends ExchangeFactory with CoinmateCredentialsFactory {
 
   def createExchange(loginInfo: String): Attempt[IExchange] =
     parseLoginInfo(loginInfo).map { creds =>

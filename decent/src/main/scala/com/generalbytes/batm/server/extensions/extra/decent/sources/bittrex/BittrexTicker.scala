@@ -1,4 +1,4 @@
-package com.generalbytes.batm.server.extensions.extra.decent.sources.btrx
+package com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex
 
 import cats.effect.ConcurrentEffect
 import cats.implicits._

@@ -1,4 +1,4 @@
-package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
+package com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex
 
 import cats.Show
 import cats.effect._
@@ -10,8 +10,8 @@ import com.generalbytes.batm.common.utils.XChangeUtils._
 import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.utils.LoggingSupport
-import com.generalbytes.batm.server.extensions.extra.decent.extension.LoginInfo
-import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.{BittrexTick, FallbackBittrexTicker}
+import com.generalbytes.batm.server.extensions.extra.decent.factories.Credentials
+import com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex.{BittrexTick, FallbackBittrexTicker}
 import org.knowm.xchange
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.bittrex.BittrexExchange
@@ -21,7 +21,7 @@ import org.knowm.xchange.dto.Order.OrderType
 import org.knowm.xchange.dto.trade.LimitOrder
 import retry._
 
-class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: LoginInfo)
+class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: Credentials)
   extends Exchange[F] with LoggingSupport {
 
   import DefaultBittrexXChangeWrapper._

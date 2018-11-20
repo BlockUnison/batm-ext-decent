@@ -48,4 +48,5 @@ object Currency {
 
   implicit val usd: Default[USD] = new Default[USD] { val value: USD = USDollar }
 
+  def parseCSV(values: String): List[Currency] = values.split(',').toList.map(Currency.withName).flatMap(_.toOption.toList)
 }

@@ -4,8 +4,8 @@ import cats._
 import cats.arrow.FunctionK
 import cats.effect.{ContextShift, Timer}
 import com.generalbytes.batm.common.domain._
-import com.generalbytes.batm.common.domain.{Attempt, Task}
-import com.generalbytes.batm.common.utils.Ops
+import com.generalbytes.batm.common.utils.{LoggingSupport, Ops, Util}
+import org.slf4j.Logger
 import retry.Sleep
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -31,6 +31,9 @@ object implicits extends Ops {
   private def task2Attempt[A](t: Task[A]): Attempt[A] =
     t.attempt
       .unsafeRunSync()
+
+  def attempt2Null[A](a: Attempt[A])(implicit ev: Null <:< A, logger: Logger): Id[A] =
+    Util.logObj(a).toOption.orNull
 
   implicit val g: Attempt ~> Id = FunctionK.lift(attempt2Id _)
   implicit val h: Task ~> Attempt = FunctionK.lift(task2Attempt _)

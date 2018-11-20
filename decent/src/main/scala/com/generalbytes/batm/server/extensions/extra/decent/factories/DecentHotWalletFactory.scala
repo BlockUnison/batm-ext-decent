@@ -1,4 +1,4 @@
-package com.generalbytes.batm.server.extensions.extra.decent.extension
+package com.generalbytes.batm.server.extensions.extra.decent.factories
 
 import cats.implicits._
 import com.generalbytes.batm.common.adapters.WalletAdapter

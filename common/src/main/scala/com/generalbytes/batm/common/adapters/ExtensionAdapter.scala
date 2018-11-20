@@ -2,30 +2,29 @@ package com.generalbytes.batm.common.adapters
 
 import java.util
 
-import cats.{Applicative, Id, ~>}
-import com.generalbytes.batm.common.domain.{Attempt, Extension, Interpreter}
+import cats.Applicative
+import com.generalbytes.batm.common.domain.{Extension, Interpreter}
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.server.extensions._
 import com.generalbytes.batm.server.extensions.watchlist.IWatchList
 
-class ExtensionAdapter[F[_]: Applicative : Interpreter](ext: Extension)(implicit val g: Attempt ~> Id)
+class ExtensionAdapter[F[_]: Applicative : Interpreter](ext: Extension)
   extends IExtension with LoggingSupport {
 
   override def getName: String = ext.name
 
   override def getSupportedCryptoCurrencies: util.Set[String] = ext.supportedCryptoCurrencies.map(_.name).toJavaSet
 
-  override def createExchange(loginInfo: String): IExchange = g(ext.createExchange(loginInfo))
+  override def createExchange(loginInfo: String): IExchange = attempt2Null(ext.createExchange(loginInfo))
 
   override def createPaymentProcessor(s: String): IPaymentProcessor = null
 
-  override def createRateSource(loginInfo: String): IRateSource = g(ext.createRateSource(loginInfo))
+  override def createRateSource(loginInfo: String): IRateSource = attempt2Null(ext.createRateSource(loginInfo))
 
-  override def createWallet(loginInfo: String): IWallet = g(ext.createWallet(loginInfo))
+  override def createWallet(loginInfo: String): IWallet = attempt2Null(ext.createWallet(loginInfo))
 
-  override def createAddressValidator(cryptoCurrency: String): ICryptoAddressValidator =
-    g(ext.createAddressValidator)
+  override def createAddressValidator(cryptoCurrency: String): ICryptoAddressValidator = attempt2Null(ext.createAddressValidator)
 
   override def createPaperWalletGenerator(s: String): IPaperWalletGenerator = null
 

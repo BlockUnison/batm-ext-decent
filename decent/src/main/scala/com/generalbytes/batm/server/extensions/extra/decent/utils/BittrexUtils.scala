@@ -1,7 +1,7 @@
 package com.generalbytes.batm.server.extensions.extra.decent.utils
 
 import com.generalbytes.batm.common.domain.ExchangeRate
-import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.BittrexTick
+import com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex.BittrexTick
 import org.knowm.xchange.dto.Order.OrderType
 
 object BittrexUtils {

@@ -1,4 +1,4 @@
-package com.generalbytes.batm.server.extensions.extra.decent.sources.btrx
+package com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex
 
 import cats.effect._
 import cats.effect.implicits._

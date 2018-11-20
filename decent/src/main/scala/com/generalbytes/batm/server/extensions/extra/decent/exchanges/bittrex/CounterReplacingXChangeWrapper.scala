@@ -1,11 +1,11 @@
-package com.generalbytes.batm.server.extensions.extra.decent.exchanges.btrx
+package com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex
 
 import cats.effect.ConcurrentEffect
 import cats.syntax.apply._
 import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
 import com.generalbytes.batm.common.utils.LoggingSupport
-import com.generalbytes.batm.server.extensions.extra.decent.sources.btrx.BittrexWrapperRateSource
+import com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex.BittrexWrapperRateSource
 import monocle.Lens
 import monocle.macros.GenLens
 import shapeless.syntax.std.product._
