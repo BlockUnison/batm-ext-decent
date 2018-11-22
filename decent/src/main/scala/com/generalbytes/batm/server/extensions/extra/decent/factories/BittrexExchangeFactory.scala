@@ -8,7 +8,7 @@ import com.generalbytes.batm.common.factories.ExchangeFactory
 import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.server.extensions.IExchange
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{CounterReplacingXChangeWrapper, DefaultBittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{CounterReplacingXChangeWrapper, BittrexXChangeWrapper}
 
 case class Credentials(apiKey: String, secretKey: String)
 case class ExchangeParams(replacements: List[CurrencyPair], intermediates: List[Currency], credentials: Credentials)
@@ -36,7 +36,7 @@ trait BittrexExchangeFactory extends ExchangeFactory with LoggingSupport {
       .map(params =>
         new ExchangeAdapter(
           new CounterReplacingXChangeWrapper(
-            new DefaultBittrexXChangeWrapper[Task](params.credentials),
+            new BittrexXChangeWrapper[Task](params.credentials),
               params.replacements,
               params.intermediates
 //              List(CurrencyPair(Euro, Bitcoin), CurrencyPair(USDollar, Bitcoin)),

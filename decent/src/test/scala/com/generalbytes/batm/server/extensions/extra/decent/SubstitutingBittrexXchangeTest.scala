@@ -2,16 +2,24 @@ package com.generalbytes.batm.server.extensions.extra.decent
 
 import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{DefaultBittrexXChangeWrapper, OrderChainingBittrexXChangeWrapper}
-import com.generalbytes.batm.server.extensions.extra.decent.factories.Credentials
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{BittrexXChangeWrapper, OrderChainingBittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.factories.{BittrexExchangeFactory, Credentials}
 import org.scalatest.{FlatSpec, Matchers}
 
 class SubstitutingBittrexXchangeTest extends FlatSpec with Matchers with TestLoggingSupport {
 
   val zero: BigDecimal = BigDecimal.valueOf(0.0)
   private val credentials = Credentials("9c1b049844d84271b7a606311953b758", "1607470db4dc4fddb56eb58df156f672")
-  private val underlying = new DefaultBittrexXChangeWrapper[Task](credentials)
+  private val underlying = new BittrexXChangeWrapper[Task](credentials)
   private val exchange = new OrderChainingBittrexXChangeWrapper(underlying.withRetries(2), Currency.Bitcoin)
+
+  it should "create instance based on loginInfo string" in {
+    val loginInfo = "bittrex:9c1b049844d84271b7a606311953b758:1607470db4dc4fddb56eb58df156f672:EUR->BTC,USD->BTC:USD"
+    val instance = new BittrexExchangeFactory{}.createExchange(loginInfo)
+
+    instance.isLeft shouldEqual false
+    instance.getOrElse(null) should not be null
+  }
 
   it should "get balance in replace currency" in {
     underlying.getBalance(Currency.Bitcoin).unsafeRunSync() shouldEqual exchange.getBalance(Currency.USDollar).unsafeRunSync()

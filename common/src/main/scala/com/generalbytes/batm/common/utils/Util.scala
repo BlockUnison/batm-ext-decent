@@ -1,6 +1,5 @@
 package com.generalbytes.batm.common.utils
 
-import cats.Id
 import cats.effect.Sync
 import cats.implicits._
 import com.generalbytes.batm.common.domain.{Attempt, ErrorApplicative}

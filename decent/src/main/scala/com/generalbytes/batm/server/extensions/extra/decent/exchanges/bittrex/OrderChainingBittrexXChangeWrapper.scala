@@ -8,7 +8,7 @@ import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.common.utils.XChangeUtils._
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.DefaultBittrexXChangeWrapper.ErrorDecorator
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.BittrexXChangeWrapper.ErrorDecorator
 import com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex.FallbackBittrexTicker
 import com.generalbytes.batm.server.extensions.extra.decent.utils.BittrexUtils._
 import org.knowm.xchange.dto.Order.OrderType

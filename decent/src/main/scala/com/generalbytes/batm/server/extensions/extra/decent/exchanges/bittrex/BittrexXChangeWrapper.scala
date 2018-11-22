@@ -1,15 +1,13 @@
 package com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex
 
-import cats.Show
 import cats.effect._
 import cats.effect.implicits._
 import cats.implicits._
 import com.generalbytes.batm.common.domain._
-import com.generalbytes.batm.common.utils.Util._
-import com.generalbytes.batm.common.utils.XChangeUtils._
-import com.generalbytes.batm.common._
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.utils.LoggingSupport
+import com.generalbytes.batm.common.utils.Util._
+import com.generalbytes.batm.common.utils.XChangeUtils._
 import com.generalbytes.batm.server.extensions.extra.decent.factories.Credentials
 import com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex.{BittrexTick, FallbackBittrexTicker}
 import org.knowm.xchange
@@ -21,10 +19,9 @@ import org.knowm.xchange.dto.Order.OrderType
 import org.knowm.xchange.dto.trade.LimitOrder
 import retry._
 
-class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: Credentials)
+class BittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: Credentials)
   extends Exchange[F] with LoggingSupport {
 
-  import DefaultBittrexXChangeWrapper._
   import com.generalbytes.batm.server.extensions.extra.decent.utils.BittrexUtils._
 
   protected val exchange: xchange.Exchange = createExchange
@@ -76,13 +73,11 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
       } yield order
     } map (_.getOrderUuid)
 
-    polling.handleErrorWith(e => raise[F](ErrorDecorator(e, order.currencyPair)))
+    polling.handleErrorWith(e => raise[F](BittrexXChangeWrapper.ErrorDecorator(e, order.currencyPair)))
   }
 
-  override def withdrawFunds(currency: Currency, amount: Amount, destination: Address): F[Identifier] = {
-    delay {
-      exchange.getAccountService.withdrawFunds(currency.convert, amount.bigDecimal, destination)
-    }
+  override def withdrawFunds(currency: Currency, amount: Amount, destination: Address): F[Identifier] = delay {
+    exchange.getAccountService.withdrawFunds(currency.convert, amount.bigDecimal, destination)
   }
 
   protected def createLimitOrder(order: TradeOrder): F[LimitOrder] = {
@@ -114,10 +109,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
   override val preferredFiat: FiatCurrency = Currency.USDollar
 }
 
-object DefaultBittrexXChangeWrapper {
+object BittrexXChangeWrapper {
   case class ErrorDecorator(error: Throwable, currencyPair: CurrencyPair) extends Throwable(error)
-
-  implicit val showBittrexOrder: Show[BittrexOrder] = Show.fromToString
-  implicit val orderTypeShow: Show[OrderType] = Show.fromToString
 }
 
