@@ -29,13 +29,13 @@ class OrderChainingBittrexXChangeWrapper[F[_]: ConcurrentEffect](exchange: Excha
       val result = for {
         amount <- midCurrencyAmount
         fstOrder = createFirstSubOrder(order, amount)
-        _ <- log(fstOrder)
+        _ <- logM(fstOrder)
         _ <- exchange.fulfillOrder(fstOrder)
         sndOrderTemp = createSecondSubOrder(order, amount)
         revisedAmount <- getInverseAmountInCurrency(CurrencyPair(midCurrency, order.currencyPair.base), getOrderType(order), amount)   // TODO: refactor this
-        _ <- log(revisedAmount, "RevisedAmount")
+        _ <- logM(revisedAmount, "RevisedAmount")
         sndOrder = createSecondSubOrder(sndOrderTemp, revisedAmount)
-        _ <- log(sndOrder)
+        _ <- logM(sndOrder)
         txId <- exchange.fulfillOrder(sndOrder)
       } yield txId
 
@@ -58,7 +58,7 @@ class OrderChainingBittrexXChangeWrapper[F[_]: ConcurrentEffect](exchange: Excha
     for {
       rate <- ticker.currentRates
       amount = f(counterAmount, selector(rate))
-      _ <- log(amount, "amount")
+      _ <- logM(amount, "amount")
     } yield amount
   }
 
@@ -66,9 +66,9 @@ class OrderChainingBittrexXChangeWrapper[F[_]: ConcurrentEffect](exchange: Excha
     for {
       amount <- midCurrencyAmount
       undoOrder = createFirstSubOrder(order, amount).inverse
-      _ <- log(undoOrder.toString, "UndoOrder")
+      _ <- logM(undoOrder.toString, "UndoOrder")
       undoTxId <- exchange.fulfillOrder(undoOrder)
-      _ <- log(undoTxId, "UndoTransactionId")
+      _ <- logM(undoTxId, "UndoTransactionId")
     } yield undoTxId
   }
 

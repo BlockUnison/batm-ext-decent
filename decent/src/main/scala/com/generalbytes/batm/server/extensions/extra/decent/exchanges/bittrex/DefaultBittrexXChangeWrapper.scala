@@ -71,7 +71,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
       logOp[F, BittrexOrder]) {
       for {
         ordId <- orderId
-        _ <- log(ordId, s"Order ID for $order ")
+        _ <- logM(ordId, s"Order ID for $order ")
         order <- getOrder(ordId)
       } yield order
     } map (_.getOrderUuid)
@@ -92,7 +92,7 @@ class DefaultBittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: 
       orderType = getOrderType(order)
       amount = order.amount.amount
       price = calculateLimitPrice(rate, orderType)
-      _ <- log(price, "limit price")
+      _ <- logM(price, "limit price")
     } yield new LimitOrder.Builder(orderType, order.currencyPair.convert)
       .originalAmount(amount.bigDecimal)
       .limitPrice(price.bigDecimal)

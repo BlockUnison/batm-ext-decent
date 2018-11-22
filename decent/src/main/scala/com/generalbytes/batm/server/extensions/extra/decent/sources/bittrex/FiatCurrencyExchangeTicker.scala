@@ -24,7 +24,7 @@ class FiatCurrencyExchangeTicker[F[_]: ConcurrentEffect](currencyPair: CurrencyP
     client.use {
       _.expect[ExchangeRateTick](uri)
       .map(_.rate)
-      .flatTap(x => log[F](x))
+      .flatTap(x => logM[F](x))
     }
   }
 }

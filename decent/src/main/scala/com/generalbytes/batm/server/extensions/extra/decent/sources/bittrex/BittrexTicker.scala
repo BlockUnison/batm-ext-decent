@@ -25,7 +25,7 @@ class BittrexTicker[F[_]: ConcurrentEffect](currencyPair: CurrencyPair) extends 
   def currentRates: F[BittrexTick] =
     client.use (
       _.expect[Attempt[BittrexTick]](uri)
-      .flatTap(x => log[F](x, currencyPair.toString))
+      .flatTap(x => logM[F](x, currencyPair.toString))
       .unattempt
     )
 }

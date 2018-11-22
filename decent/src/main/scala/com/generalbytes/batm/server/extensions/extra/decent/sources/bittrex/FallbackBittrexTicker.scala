@@ -12,7 +12,7 @@ class FallbackBittrexTicker[F[_]: ConcurrentEffect](currencyPair: CurrencyPair)
   lazy val inverse: BittrexTicker[F] = new BittrexTicker[F](currencyPair.flip)
 
   def currentRates: F[BittrexTick] = underlying.currentRates.handleErrorWith {
-    case BittrexTickError("INVALID_MARKET") => inverse.currentRates.map(flipTick).flatTap(t => log[F](t, currencyPair.flip.toString))
+    case BittrexTickError("INVALID_MARKET") => inverse.currentRates.map(flipTick).flatTap(t => logM[F](t, currencyPair.flip.toString))
     case e => raise[F](e)
   }
 
