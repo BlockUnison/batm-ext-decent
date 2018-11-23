@@ -10,9 +10,9 @@ import monocle.Lens
 import monocle.macros.GenLens
 import shapeless.syntax.std.product._
 
-class CounterReplacingXChangeWrapper[F[_]: ConcurrentEffect](exchange: Exchange[F],
-                                                             replacements: Seq[CurrencyPair],
-                                                             intermediate: List[Currency])
+class CounterCurrencyReplacingXChangeWrapper[F[_]: ConcurrentEffect](exchange: Exchange[F],
+                                                                     replacements: Seq[CurrencyPair],
+                                                                     intermediate: List[Currency])
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
 
   private val rateSource = new BittrexWrapperRateSource[F](intermediate)

@@ -19,7 +19,7 @@ trait BittrexRateSourceFactory extends RateSourceFactory with LoggingSupport {
   }
 
   def createRateSource(loginInfo: String): Attempt[IRateSourceAdvanced] =
-    parseLoginInfo(loginInfo |> log) map { intermediates =>
+    parseLoginInfo(log(loginInfo)) map { intermediates =>
       new RateSourceAdapter[Task](
         new BittrexWrapperRateSource(intermediates)
       )

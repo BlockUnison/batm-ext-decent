@@ -5,11 +5,12 @@ val http4sVersion = "0.19.0"
 val xchangeVersion = "4.3.11"
 val catsRetryVersion = "0.2.0"
 val monocleVersion = "1.5.0-cats"
-val slf4jVersion = "1.7.25"
+val logbackVersion = "1.2.3"
 
+val slf4jVersion = "1.7.25"
 resolvers ++= Seq(
-    "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-    "JCenter" at "https://jcenter.bintray.com/"
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+  "JCenter" at "https://jcenter.bintray.com/"
 )
 
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")
@@ -24,8 +25,10 @@ val dependencies = Seq(
   "org.knowm.xchange"           %  "xchange-core"           % xchangeVersion,
   "javax.ws.rs"                 % "javax.ws.rs-api"         % "2.1" jar() withSources() withJavadoc(),
   "org.slf4j"                   % "slf4j-api"               % slf4jVersion,
+  "ch.qos.logback"              % "logback-classic"         % logbackVersion,
+  "ch.qos.logback"              % "logback-core"            % logbackVersion,
 
-  "org.scalatest"               %% "scalatest"              % "3.0.5" % "test"
+  "org.scalatest"               %% "scalatest"              % "3.0.5"         % "test"
 )
 
 val xchangeDependencies = Seq(
@@ -40,7 +43,6 @@ val xchangeDependencies = Seq(
   "com.github.julien-truffaut"  %%  "monocle-core"          % monocleVersion,
   "com.github.julien-truffaut"  %%  "monocle-macro"         % monocleVersion,
 
-  "org.slf4j"                   % "slf4j-simple"            % slf4jVersion,
   "org.knowm.xchange"           % "xchange-bittrex"         % xchangeVersion,
   "org.knowm.xchange"           % "xchange-coinmate"        % xchangeVersion
 )

@@ -16,8 +16,10 @@ object Util {
     self
   }
 
-  def log[A](a: A)(implicit logger: Logger): A = {
-    logger.debug(a.toString)
+  def log[A](a: A)(implicit logger: Logger): A = log(a, "")
+
+  def log[A](a: A, message: String)(implicit logger: Logger): A = {
+    logger.debug(s"$message: $a")
     a
   }
 

@@ -2,7 +2,7 @@ package com.generalbytes.batm.server.extensions.extra.decent
 
 import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{CounterReplacingXChangeWrapper, BittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{CounterCurrencyReplacingXChangeWrapper, BittrexXChangeWrapper}
 import com.generalbytes.batm.server.extensions.extra.decent.factories.Credentials
 import org.scalactic.source.Position
 import org.scalatest.{BeforeAndAfter, FlatSpec, Matchers}
@@ -17,7 +17,7 @@ class CounterReplacementBittrexXChangeTest extends FlatSpec with Matchers with T
   private def createExchange(): Unit = {
     val credentials = Credentials("9c1b049844d84271b7a606311953b758", "1607470db4dc4fddb56eb58df156f672")
     underlying = new BittrexXChangeWrapper[Task](credentials)
-    exchange = new CounterReplacingXChangeWrapper(underlying,
+    exchange = new CounterCurrencyReplacingXChangeWrapper(underlying,
       List(CurrencyPair(Currency.USDollar, Currency.Bitcoin), CurrencyPair(Currency.Euro, Currency.Bitcoin)),
       List(Currency.USDollar))
   }

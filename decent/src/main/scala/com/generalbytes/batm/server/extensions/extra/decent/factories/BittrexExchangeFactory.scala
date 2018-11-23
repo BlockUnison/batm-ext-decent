@@ -8,7 +8,7 @@ import com.generalbytes.batm.common.factories.ExchangeFactory
 import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.server.extensions.IExchange
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{CounterReplacingXChangeWrapper, BittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{CounterCurrencyReplacingXChangeWrapper, BittrexXChangeWrapper}
 
 case class Credentials(apiKey: String, secretKey: String)
 case class ExchangeParams(replacements: List[CurrencyPair], intermediates: List[Currency], credentials: Credentials)
@@ -25,17 +25,18 @@ trait BittrexExchangeFactory extends ExchangeFactory with LoggingSupport {
 
   protected def parseExchangeLoginInfo(loginInfo: String): Option[ExchangeParams] = loginInfo match {
     case exchangeLoginData(apiKey, secretKey, replacements, intermediates) => ExchangeParams(
-      replacements.split(',').toList.flatMap(s => getCurrencyPair(s).toList),
-      Currency.parseCSV(intermediates),
-      Credentials(apiKey, secretKey)).some
+        replacements.split(',').toList.flatMap(s => getCurrencyPair(s).toList),
+        Currency.parseCSV(intermediates),
+        Credentials(apiKey, secretKey)
+      ).some
     case _ => none
   }
 
   def createExchange(loginInfo: String): Attempt[IExchange] = {
-    parseExchangeLoginInfo(loginInfo |> log)
+    parseExchangeLoginInfo(log(loginInfo))
       .map(params =>
         new ExchangeAdapter(
-          new CounterReplacingXChangeWrapper(
+          new CounterCurrencyReplacingXChangeWrapper(
             new BittrexXChangeWrapper[Task](params.credentials),
               params.replacements,
               params.intermediates
