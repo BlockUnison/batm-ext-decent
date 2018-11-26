@@ -5,51 +5,52 @@ val http4sVersion = "0.19.0"
 val xchangeVersion = "4.3.11"
 val catsRetryVersion = "0.2.0"
 val monocleVersion = "1.5.0-cats"
-val slf4jVersion = "1.7.25"
+val logbackVersion = "1.2.3"
 
+val slf4jVersion = "1.7.25"
 resolvers ++= Seq(
-    "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-    "JCenter" at "https://jcenter.bintray.com/"
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+  "JCenter" at "https://jcenter.bintray.com/"
 )
 
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")
 addCompilerPlugin("com.olegpy"     %% "better-monadic-for" % "0.2.4")
 
 val dependencies = Seq(
-  "org.typelevel" %% "cats-core" % catsVersion,
-  "org.typelevel" %% "cats-effect" % catsEffectVersion,
-  "com.chuusai" %% "shapeless" % "2.3.3",
+  "org.typelevel"               %% "cats-core"              % catsVersion,
+  "org.typelevel"               %% "cats-effect"            % catsEffectVersion,
+  "com.chuusai"                 %% "shapeless"              % "2.3.3",
+  "com.github.cb372"            %% "cats-retry-core"        % catsRetryVersion,
+  "com.github.cb372"            %% "cats-retry-cats-effect" % catsRetryVersion,
+  "javax.ws.rs"                 % "javax.ws.rs-api"         % "2.1" jar() withSources() withJavadoc(),
+  "org.slf4j"                   % "slf4j-api"               % slf4jVersion,
+  "ch.qos.logback"              % "logback-classic"         % logbackVersion,
+  "ch.qos.logback"              % "logback-core"            % logbackVersion,
 
-  "com.github.cb372" %% "cats-retry-core"        % catsRetryVersion,
-  "com.github.cb372" %% "cats-retry-cats-effect" % catsRetryVersion,
+  "org.scalatest"               %% "scalatest"              % "3.0.5"         % "test",
+)
 
-
-//  "javax.ws.rs" % "javax.ws.rs-api" % "2.1" jar() withSources() withJavadoc(),
-
-  "org.slf4j" % "slf4j-api" % slf4jVersion,
-
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+val libDependencies = Seq(
+  "org.http4s"                  %% "http4s-dsl"             % http4sVersion,
+  "org.http4s"                  %% "http4s-core"            % http4sVersion,
+  "org.http4s"                  %% "http4s-client"          % http4sVersion,
+  "org.http4s"                  %% "http4s-blaze-client"    % http4sVersion,
+  "org.http4s"                  %% "http4s-circe"           % http4sVersion,
+  "io.circe"                    %% "circe-core"             % circeVersion,
+  "io.circe"                    %% "circe-generic"          % circeVersion,
+  "io.circe"                    %% "circe-parser"           % circeVersion,
+  "com.github.julien-truffaut"  %%  "monocle-core"          % monocleVersion,
+  "com.github.julien-truffaut"  %%  "monocle-macro"         % monocleVersion,
 )
 
 val xchangeDependencies = Seq(
-  "org.http4s" %% "http4s-dsl" % http4sVersion,
-  "org.http4s" %% "http4s-core" % http4sVersion,
-  "org.http4s" %% "http4s-client" % http4sVersion,
-  "org.http4s" %% "http4s-blaze-client" % http4sVersion,
-  "org.http4s" %% "http4s-circe" % http4sVersion,
-  "io.circe" %% "circe-core" % circeVersion,
-  "io.circe" %% "circe-generic" % circeVersion,
-  "io.circe" %% "circe-parser" % circeVersion,
-  "com.github.julien-truffaut" %%  "monocle-core"  % monocleVersion,
-  "com.github.julien-truffaut" %%  "monocle-macro" % monocleVersion,
-
-  "org.slf4j" % "slf4j-simple" % slf4jVersion,
-  "org.knowm.xchange" % "xchange-core" % xchangeVersion,
-  "org.knowm.xchange" % "xchange-bittrex" % xchangeVersion
+  "com.github.mmazi"                  % "rescu"                   % "2.0.2",
+  "commons-io"                        % "commons-io"              % "2.6",
+  "org.apache.commons"                % "commons-lang3"           % "3.7",
+  "com.fasterxml.jackson.dataformat"  % "jackson-dataformat-csv"  % "2.9.6"
 )
 
 lazy val unmanagedSettings = Seq(
-//  unmanagedBase := baseDirectory.value / "lib",
   unmanagedJars in Compile ++= Seq(
     file("lib/batm_server_extensions_api.jar")
   )
@@ -82,6 +83,7 @@ lazy val common = project
     commonSettings ++ unmanagedSettings,
     libraryDependencies ++= dependencies
   )
+  .dependsOn(xchange)
 
 lazy val decent = project
   .in(file("decent"))
@@ -89,13 +91,33 @@ lazy val decent = project
     name := "batm-ext-decent",
     commonSettings ++ unmanagedSettings,
     assemblySettings,
+    libraryDependencies ++= dependencies ++ libDependencies
+  )
+  .dependsOn(common, xchange)
+
+lazy val coinmate = project
+  .in(file("coinmate"))
+  .settings(
+    name := "batm-ext-coinmate",
+    commonSettings ++ unmanagedSettings,
+    assemblySettings,
+    libraryDependencies ++= dependencies ++ libDependencies
+  )
+  .dependsOn(common, xchange)
+  
+lazy val xchange = project
+  .in(file("xchange"))
+  .settings(
+    name := "xchange",
+    commonSettings,
     libraryDependencies ++= dependencies ++ xchangeDependencies
   )
-  .dependsOn(common)
 
 lazy val global = (project in file("."))
   .settings(commonSettings)
   .aggregate(
+	xchange,
     common,
-    decent
+    decent,
+    coinmate
   )

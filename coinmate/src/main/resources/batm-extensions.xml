@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extensions>
+    <extension class="com.generalbytes.batm.server.extensions.extra.bitcoincash.BitcoinCashExtension">
+        <exchange prefix="bch_coinmate" name="Coinmate Exchange (ext)">
+            <param name="clientID" />
+            <param name="publicKey" />
+            <param name="privateKey" />
+            <cryptocurrency>BCH</cryptocurrency>
+        </exchange>
+        <ratesource prefix="bch_coinmate" name ="Coinmate RateSource (ext)" >
+            <param name="clientID" />
+            <param name="publicKey" />
+            <param name="privateKey" />
+            <cryptocurrency>BCH</cryptocurrency>
+        </ratesource>
+    </extension>
+</extensions>

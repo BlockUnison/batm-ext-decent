@@ -1,10 +1,11 @@
 package com.generalbytes.batm.common.exchanges
 
 import cats.effect.Sync
-import com.generalbytes.batm.common.Alias.Identifier
-import com.generalbytes.batm.common.Util._
-import com.generalbytes.batm.common._
+import com.generalbytes.batm.common.domain.Identifier
+import com.generalbytes.batm.common.utils.Util._
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
+import com.generalbytes.batm.common.utils.LoggingSupport
 import retry._
 
 class RetryingExchangeWrapper[F[_] : Sleep : Sync](exchange: Exchange[F], maxRetries: Int)

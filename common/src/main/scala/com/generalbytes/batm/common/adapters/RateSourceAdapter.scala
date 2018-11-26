@@ -3,9 +3,9 @@ package com.generalbytes.batm.common.adapters
 import java.math._
 import java.util
 
-import com.generalbytes.batm.common.Alias.Interpreter
+import com.generalbytes.batm.common.domain.Interpreter
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.common.{CurrencyPair, RateSource}
+import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.server.extensions.IRateSourceAdvanced
 
 class RateSourceAdapter[F[_] : Interpreter](rs: RateSource[F]) extends IRateSourceAdvanced {

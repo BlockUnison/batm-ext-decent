@@ -1,8 +1,8 @@
 package com.generalbytes.batm.common.factories
 
-import com.generalbytes.batm.common.Alias.Attempt
-import com.generalbytes.batm.common.{Currency, Wallet}
+import com.generalbytes.batm.common.domain.Attempt
+import com.generalbytes.batm.server.extensions.IWallet
 
-trait WalletFactory[F[_]] {
-  def createWallet(loginInfo: String): Attempt[Wallet[F]]
+trait WalletFactory {
+  def createWallet(loginInfo: String): Attempt[IWallet]
 }

@@ -1,7 +1,7 @@
 package com.generalbytes.batm.common.factories
 
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.{Address, Attempt}
+import com.generalbytes.batm.common.domain.{Address, Attempt}
 import com.generalbytes.batm.server.extensions.ICryptoAddressValidator
 
 trait DummyAddressValidatorFactory extends AddressValidatorFactory {

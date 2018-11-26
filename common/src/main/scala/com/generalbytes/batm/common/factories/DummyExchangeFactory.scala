@@ -1,7 +1,7 @@
 package com.generalbytes.batm.common.factories
 
 import cats.implicits._
-import com.generalbytes.batm.common.Alias.Attempt
+import com.generalbytes.batm.common.domain.Attempt
 import com.generalbytes.batm.common.exchanges.DummyExchange
 import com.generalbytes.batm.server.extensions.IExchangeAdvanced
 
