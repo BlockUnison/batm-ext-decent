@@ -3,10 +3,10 @@ package com.generalbytes.batm.server.extensions.extra.decent
 import cats.implicits._
 import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex.BittrexWrapperRateSource
+import com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex.BittrexWrapperRateSource
 import org.scalatest.{FlatSpec, Matchers}
 
-class DynamicBittrexRateSourceTest extends FlatSpec with Matchers with TestLoggingSupport {
+class DynamicBittrexRateSourceTest extends FlatSpec with Matchers {
   val zero: BigDecimal = BigDecimal.valueOf(0L)
 
   it should "get the buy rate source" in {

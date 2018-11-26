@@ -4,7 +4,7 @@ import com.generalbytes.batm.common.adapters.ExtensionAdapter
 import com.generalbytes.batm.common.domain.{CryptoCurrency, Currency, Extension, Task}
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.factories.{DummyAddressValidatorFactory, DummyWalletFactory}
-import com.generalbytes.batm.server.extensions.extra.coinmate.{CoinmateExchangeFactory, CoinmateRateSourceFactory}
+import com.generalbytes.batm.server.extensions.extra.bch_coinmate.{CoinmateExchangeFactory, CoinmateRateSourceFactory}
 
 class BitcoinCashExtension extends ExtensionAdapter[Task](new BitcoinCashExtension.Impl)
 
@@ -15,7 +15,7 @@ object BitcoinCashExtension {
   with DummyWalletFactory
   with DummyAddressValidatorFactory {
 
-    override val name: String = "Coinmate extension"
+    override val name: String = "Coinmate extension (ext)"
     override val supportedCryptoCurrencies: Set[CryptoCurrency] = Set(Currency.BitcoinCash, Currency.Bitcoin)
   }
 }

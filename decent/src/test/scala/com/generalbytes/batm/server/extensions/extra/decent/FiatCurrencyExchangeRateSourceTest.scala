@@ -2,7 +2,7 @@ package com.generalbytes.batm.server.extensions.extra.decent
 
 import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex.FiatCurrencyExchangeTicker
+import com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex.FiatCurrencyExchangeTicker
 import org.scalatest.{FlatSpec, Matchers}
 
 class FiatCurrencyExchangeRateSourceTest extends FlatSpec with Matchers {

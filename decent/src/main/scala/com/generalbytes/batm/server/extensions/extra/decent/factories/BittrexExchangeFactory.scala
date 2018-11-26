@@ -8,14 +8,14 @@ import com.generalbytes.batm.common.factories.ExchangeFactory
 import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.server.extensions.IExchange
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{CounterCurrencyReplacingXChangeWrapper, BittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.dct_bittrex._
 
 case class Credentials(apiKey: String, secretKey: String)
 case class ExchangeParams(replacements: List[CurrencyPair], intermediates: List[Currency], credentials: Credentials)
 
 trait BittrexExchangeFactory extends ExchangeFactory with LoggingSupport {
 
-  private val exchangeLoginData = """bittrex:([A-Za-z0-9]+):([A-Za-z0-9]+):([A-Z,->]+):([A-Z,]+)""".r
+  private val exchangeLoginData = """dct_bittrex:([A-Za-z0-9]+):([A-Za-z0-9]+):([A-Z,->]+):([A-Z,]+)""".r
 
   private def getCurrencyPair(pair: String): Option[CurrencyPair] = {
     val list = Currency.parseCSV(pair.replace("->", ","))
@@ -23,7 +23,7 @@ trait BittrexExchangeFactory extends ExchangeFactory with LoggingSupport {
     else CurrencyPair(list.head, list.tail.head).some
   }
 
-  protected def parseExchangeLoginInfo(loginInfo: String): Option[ExchangeParams] = loginInfo match {
+  protected def parseExchangeLoginInfo(loginInfo: String): Option[ExchangeParams] = Option(loginInfo).getOrElse("") match {
     case exchangeLoginData(apiKey, secretKey, replacements, intermediates) => ExchangeParams(
         replacements.split(',').toList.flatMap(s => getCurrencyPair(s).toList),
         Currency.parseCSV(intermediates),

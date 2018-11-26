@@ -9,7 +9,7 @@
             <param name="port" />
             <cryptocurrency>DCT</cryptocurrency>
         </wallet>
-        <exchange prefix="bittrex" name="Bittrex.com Exchange (ext)">
+        <exchange prefix="dct_bittrex" name="Bittrex.com Exchange (ext)">
             <param name="apikey" />
             <param name="apisecret" />
             <param name="replacements" />
@@ -17,7 +17,7 @@
             <cryptocurrency>DCT</cryptocurrency>
             <cryptocurrency>BTC</cryptocurrency>
         </exchange>
-        <ratesource prefix="bittrex" name ="Bittrex.com Rate Source (ext)" >
+        <ratesource prefix="dct_bittrex" name ="Bittrex.com Rate Source (ext)" >
             <param name="intermediates" />
             <cryptocurrency>DCT</cryptocurrency>
         </ratesource>

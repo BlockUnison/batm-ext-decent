@@ -3,11 +3,12 @@ package com.generalbytes.batm.server.extensions.extra.decent
 import cats.implicits._
 import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.BittrexXChangeWrapper
+import com.generalbytes.batm.common.utils.LoggingSupport
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.dct_bittrex.BittrexXChangeWrapper
 import com.generalbytes.batm.server.extensions.extra.decent.factories.Credentials
 import org.scalatest.{FlatSpec, Matchers}
 
-class BittrexXchangeTest extends FlatSpec with Matchers with TestLoggingSupport {
+class BittrexXchangeTest extends FlatSpec with Matchers with LoggingSupport {
   val zero: BigDecimal = BigDecimal.valueOf(0.0)
 
   protected def createExchange: Exchange[Task] = {

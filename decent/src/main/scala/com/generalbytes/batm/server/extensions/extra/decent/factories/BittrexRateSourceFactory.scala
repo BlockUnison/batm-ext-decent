@@ -8,12 +8,12 @@ import com.generalbytes.batm.common.factories.RateSourceFactory
 import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.server.extensions.IRateSourceAdvanced
-import com.generalbytes.batm.server.extensions.extra.decent.sources.bittrex.BittrexWrapperRateSource
+import com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex.BittrexWrapperRateSource
 
 trait BittrexRateSourceFactory extends RateSourceFactory with LoggingSupport {
-  private val rateSourceLoginData = """bittrex:([A-Z,]+)""".r
+  private val rateSourceLoginData = """dct_bittrex:([A-Z,]+)""".r
 
-  private def parseLoginInfo(loginInfo: String): Option[List[Currency]] = loginInfo match {
+  private def parseLoginInfo(loginInfo: String): Option[List[Currency]] = Option(loginInfo).getOrElse("") match {
     case rateSourceLoginData(intermediates) => Currency.parseCSV(intermediates).some
     case _ => none
   }

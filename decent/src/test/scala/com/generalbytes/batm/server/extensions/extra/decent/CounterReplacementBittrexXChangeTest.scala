@@ -2,12 +2,12 @@ package com.generalbytes.batm.server.extensions.extra.decent
 
 import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
-import com.generalbytes.batm.server.extensions.extra.decent.exchanges.bittrex.{CounterCurrencyReplacingXChangeWrapper, BittrexXChangeWrapper}
+import com.generalbytes.batm.server.extensions.extra.decent.exchanges.dct_bittrex.{CounterCurrencyReplacingXChangeWrapper, BittrexXChangeWrapper}
 import com.generalbytes.batm.server.extensions.extra.decent.factories.Credentials
 import org.scalactic.source.Position
 import org.scalatest.{BeforeAndAfter, FlatSpec, Matchers}
 
-class CounterReplacementBittrexXChangeTest extends FlatSpec with Matchers with TestLoggingSupport with BeforeAndAfter {
+class CounterReplacementBittrexXChangeTest extends FlatSpec with Matchers with BeforeAndAfter {
   override def before(fun: => Any)(implicit pos: Position): Unit = createExchange()
 
   val zero: BigDecimal = BigDecimal.valueOf(0.0)

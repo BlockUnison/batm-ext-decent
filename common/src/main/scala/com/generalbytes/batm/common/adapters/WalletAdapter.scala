@@ -1,6 +1,5 @@
 package com.generalbytes.batm.common.adapters
 
-import java.math.BigDecimal
 import java.util
 
 import cats._
@@ -17,13 +16,13 @@ import scala.collection.mutable
 class WalletAdapter[F[_] : Applicative : Interpreter](wallet: Wallet[F]) extends IWallet {
   private val interpret = implicitly[Interpreter[F]]
 
-  override def sendCoins(address: Address, amount: Amount, currency: String, desc: String): TransactionId =
-    interpret(wallet.issuePayment(address, amount.toBigInteger.longValue, desc))
+  override def sendCoins(address: Adapters.Address, amount: Adapters.Amount, currency: Adapters.CryptoCurrency, desc: String): TransactionId =
+    interpret(wallet.issuePayment(address, BigDecimal(amount), desc))
 
-  override def getCryptoAddress(cryptoCurrency: Adapters.CryptoCurrency): Address =
+  override def getCryptoAddress(cryptoCurrency: Adapters.CryptoCurrency): Adapters.Address =
     interpret(wallet.getAddress)
 
-  override def getCryptoBalance(cryptoCurrency: Adapters.CryptoCurrency): BigDecimal =
+  override def getCryptoBalance(cryptoCurrency: Adapters.CryptoCurrency): Adapters.Amount=
     interpret(wallet.getBalance.map(_.bigDecimal))
 
   override def getCryptoCurrencies: util.Set[Adapters.CryptoCurrency] = mutable.Set(wallet.cryptoCurrency.name).asJava
