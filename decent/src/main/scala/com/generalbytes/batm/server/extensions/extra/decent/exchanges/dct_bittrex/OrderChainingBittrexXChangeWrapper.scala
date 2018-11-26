@@ -11,7 +11,7 @@ import com.generalbytes.batm.common.utils.XChangeUtils._
 import com.generalbytes.batm.server.extensions.extra.decent.exchanges.dct_bittrex.BittrexXChangeWrapper.ErrorDecorator
 import com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex.FallbackBittrexTicker
 import com.generalbytes.batm.server.extensions.extra.decent.utils.BittrexUtils._
-import org.knowm.xchange.dto.Order.OrderType
+import org.knowm.xchange.internal.dto.Order.OrderType
 import shapeless._
 
 class OrderChainingBittrexXChangeWrapper[F[_]: ConcurrentEffect](exchange: Exchange[F], midCurrency: Currency)

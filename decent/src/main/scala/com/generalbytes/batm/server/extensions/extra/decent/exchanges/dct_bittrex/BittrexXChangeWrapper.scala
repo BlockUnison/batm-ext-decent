@@ -10,13 +10,12 @@ import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.common.utils.XChangeUtils._
 import com.generalbytes.batm.server.extensions.extra.decent.factories.Credentials
 import com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex.{BittrexTick, FallbackBittrexTicker}
-import org.knowm.xchange
-import org.knowm.xchange.ExchangeFactory
-import org.knowm.xchange.bittrex.BittrexExchange
-import org.knowm.xchange.bittrex.dto.trade.BittrexOrder
-import org.knowm.xchange.bittrex.service.BittrexAccountServiceRaw
-import org.knowm.xchange.dto.Order.OrderType
-import org.knowm.xchange.dto.trade.LimitOrder
+import org.knowm.xchange.internal.{Exchange => XChange, ExchangeFactory}
+import org.knowm.xchange.internal.bittrex.BittrexExchange
+import org.knowm.xchange.internal.bittrex.dto.trade.BittrexOrder
+import org.knowm.xchange.internal.bittrex.service.BittrexAccountServiceRaw
+import org.knowm.xchange.internal.dto.Order.OrderType
+import org.knowm.xchange.internal.dto.trade.LimitOrder
 import retry._
 
 class BittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: Credentials)
@@ -24,9 +23,9 @@ class BittrexXChangeWrapper[F[_]: Sleep : ConcurrentEffect](credentials: Credent
 
   import com.generalbytes.batm.server.extensions.extra.decent.utils.BittrexUtils._
 
-  protected val exchange: xchange.Exchange = createExchange
+  protected val exchange: XChange = createExchange
 
-  protected def createExchange: xchange.Exchange = {
+  protected def createExchange: XChange = {
     val spec = new BittrexExchange().getDefaultExchangeSpecification
     spec.setApiKey(credentials.apiKey)
     spec.setSecretKey(credentials.secretKey)

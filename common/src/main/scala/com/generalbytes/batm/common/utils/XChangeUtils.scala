@@ -2,7 +2,8 @@ package com.generalbytes.batm.common.utils
 
 import com.generalbytes.batm.common.domain._
 import org.knowm.xchange._
-import org.knowm.xchange.dto.Order.OrderType
+import org.knowm.xchange.internal.currency
+import org.knowm.xchange.internal.dto.Order.OrderType
 
 object XChangeUtils {
   implicit class CurrencyConv(c: Currency) {

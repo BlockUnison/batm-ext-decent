@@ -2,9 +2,10 @@ package com.generalbytes.batm.server.extensions.extra.bch_coinmate
 
 import com.generalbytes.batm.common.domain.{Currency, Task, TradeOrder}
 import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.utils.LoggingSupport
 import org.scalatest.{FlatSpec, Matchers}
 
-class CoinmateExchangeTest extends FlatSpec with Matchers with TestLoggingSupport {
+class CoinmateExchangeTest extends FlatSpec with Matchers with LoggingSupport {
   val clientId = "34813"
   val pubKey = "k0w_LMZzhZVLdsvww5ej5PQCoZmxDNRY1mFOvRFMQNM"
   val privKey = "ufjJ1vmCQBrp5HxymX76XbvuMCsVIm0n_MZcmM0qm1M"

@@ -3,21 +3,21 @@ package com.generalbytes.batm.server.extensions.extra.bch_coinmate
 import cats.effect.ConcurrentEffect
 import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.common.utils.XChangeUtils._
-import com.generalbytes.batm.common.utils.LoggingSupport
-import org.knowm.xchange
-import org.knowm.xchange.ExchangeFactory
-import org.knowm.xchange.coinmate.CoinmateExchange
-import org.knowm.xchange.dto.trade.MarketOrder
+import org.knowm.xchange.internal
+import org.knowm.xchange.internal.ExchangeFactory
+import org.knowm.xchange.internal.coinmate.CoinmateExchange
+import org.knowm.xchange.internal.dto.trade.MarketOrder
 import retry.Sleep
 
 class CoinmateXchangeWrapper [F[_]: Sleep : ConcurrentEffect](credentials: CoinmateLoginInfo)
   extends Exchange[F] with RateSource[F] with LoggingSupport {
 
-  protected val exchange: xchange.Exchange = createExchange
+  protected val exchange: internal.Exchange = createExchange
 
-  protected def createExchange: xchange.Exchange = {
+  protected def createExchange: internal.Exchange = {
     val spec = new CoinmateExchange().getDefaultExchangeSpecification
     spec.setUserName(credentials.clientId)
     spec.setApiKey(credentials.publicKey)

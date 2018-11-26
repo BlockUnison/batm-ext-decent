@@ -5,7 +5,7 @@ import cats.syntax.apply._
 import com.generalbytes.batm.common.domain._
 import com.generalbytes.batm.common.adapters.ExchangeAdapterDecorator
 import com.generalbytes.batm.common.utils.LoggingSupport
-import com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex.BittrexWrapperRateSource
+import com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex.BittrexRateSourceWrapper
 import monocle.Lens
 import monocle.macros.GenLens
 import shapeless.syntax.std.product._
@@ -15,7 +15,7 @@ class CounterCurrencyReplacingXChangeWrapper[F[_]: ConcurrentEffect](exchange: E
                                                                      intermediate: List[Currency])
   extends ExchangeAdapterDecorator[F](exchange) with LoggingSupport {
 
-  private val rateSource = new BittrexWrapperRateSource[F](intermediate)
+  private val rateSource = new BittrexRateSourceWrapper[F](intermediate)
   private val replacementMap = replacements.map(_.productElements.tupled).toMap
   private val counterLens: Lens[TradeOrder, Currency] =
     Lens[TradeOrder, CurrencyPair](_.currencyPair)(cp => _.copy(cp)) composeLens

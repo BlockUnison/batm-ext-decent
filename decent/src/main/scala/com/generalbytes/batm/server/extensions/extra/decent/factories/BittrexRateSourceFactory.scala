@@ -8,7 +8,7 @@ import com.generalbytes.batm.common.factories.RateSourceFactory
 import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.server.extensions.IRateSourceAdvanced
-import com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex.BittrexWrapperRateSource
+import com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex.BittrexRateSourceWrapper
 
 trait BittrexRateSourceFactory extends RateSourceFactory with LoggingSupport {
   private val rateSourceLoginData = """dct_bittrex:([A-Z,]+)""".r
@@ -21,7 +21,7 @@ trait BittrexRateSourceFactory extends RateSourceFactory with LoggingSupport {
   def createRateSource(loginInfo: String): Attempt[IRateSourceAdvanced] =
     parseLoginInfo(log(loginInfo)) map { intermediates =>
       new RateSourceAdapter[Task](
-        new BittrexWrapperRateSource(intermediates)
+        new BittrexRateSourceWrapper(intermediates)
       )
     } toRight err"Could not create exchange from the parameters: $loginInfo"
 }
