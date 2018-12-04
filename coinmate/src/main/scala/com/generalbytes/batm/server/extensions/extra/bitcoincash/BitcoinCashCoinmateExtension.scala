@@ -1,14 +1,13 @@
 package com.generalbytes.batm.server.extensions.extra.bitcoincash
 
 import com.generalbytes.batm.common.adapters.ExtensionAdapter
-import com.generalbytes.batm.common.domain.{CryptoCurrency, Currency, Extension, Task}
-import com.generalbytes.batm.common.implicits._
+import com.generalbytes.batm.common.domain.{CryptoCurrency, Currency, Extension}
 import com.generalbytes.batm.common.factories.{DummyAddressValidatorFactory, DummyWalletFactory}
-import com.generalbytes.batm.server.extensions.extra.bch_coinmate.{CoinmateExchangeFactory, CoinmateRateSourceFactory}
+import com.generalbytes.batm.server.extensions.extra.coinmate.{CoinmateExchangeFactory, CoinmateRateSourceFactory}
 
-class BitcoinCashExtension extends ExtensionAdapter[Task](new BitcoinCashExtension.Impl)
+class BitcoinCashCoinmateExtension extends ExtensionAdapter(new BitcoinCashCoinmateExtension.Impl)
 
-object BitcoinCashExtension {
+object BitcoinCashCoinmateExtension {
   class Impl extends Extension
   with CoinmateExchangeFactory
   with CoinmateRateSourceFactory

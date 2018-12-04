@@ -1,4 +1,4 @@
-package com.generalbytes.batm.server.extensions.extra.bch_coinmate
+package com.generalbytes.batm.server.extensions.extra.coinmate
 
 import com.generalbytes.batm.common.domain.{Currency, Task, TradeOrder}
 import com.generalbytes.batm.common.implicits._

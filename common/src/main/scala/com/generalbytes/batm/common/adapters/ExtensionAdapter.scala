@@ -10,7 +10,7 @@ import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.server.extensions._
 import com.generalbytes.batm.server.extensions.watchlist.IWatchList
 
-class ExtensionAdapter[F[_]: Applicative : Interpreter](ext: Extension)
+class ExtensionAdapter(ext: Extension)
   extends IExtension with LoggingSupport {
 
   override def getName: String = ext.name
@@ -38,4 +38,6 @@ class ExtensionAdapter[F[_]: Applicative : Interpreter](ext: Extension)
   override def getCryptoCurrencyDefinitions: util.Set[ICryptoCurrencyDefinition] = Set.empty[ICryptoCurrencyDefinition].toJavaSet
 
   override def getRestServices: util.Set[IRestService] = Set.empty[IRestService].toJavaSet
+
+  override def getChatCommands: util.Set[Class[_]] = Set.empty[Class[_]].toJavaSet
 }

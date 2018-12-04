@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extensions>
-    <extension class="com.generalbytes.batm.server.extensions.extra.bitcoincash.BitcoinCashExtension">
+    <extension class="com.generalbytes.batm.server.extensions.extra.bitcoincash.BitcoinCashCoinmateExtension">
         <exchange prefix="bch_coinmate" name="Coinmate Exchange (ext)">
             <param name="clientID" />
             <param name="publicKey" />

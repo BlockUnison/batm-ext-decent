@@ -1,4 +1,4 @@
-package com.generalbytes.batm.server.extensions.extra.bch_coinmate
+package com.generalbytes.batm.server.extensions.extra.coinmate
 
 import com.generalbytes.batm.common.adapters.ExchangeAdapter
 import com.generalbytes.batm.common.domain.{Attempt, Task}

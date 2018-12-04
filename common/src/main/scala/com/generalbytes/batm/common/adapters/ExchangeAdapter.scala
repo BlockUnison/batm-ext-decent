@@ -21,7 +21,7 @@ class ExchangeAdapter[F[_] : Monad : Interpreter : Translator](xch: Exchange[F])
   override def getPreferredFiatCurrency: String = xch.preferredFiat.name
 
   override def getCryptoBalance(cryptoCurrency: String): BigDecimal =
-    interpret(xch.getBalance(Currency.withName(cryptoCurrency).getOrThrow)).bigDecimal
+    interpret(xch.getBalance(Currency.withName(cryptoCurrency).getOrThrow).map(_.bigDecimal))
 
   override def getFiatBalance(fiatCurrency: String): BigDecimal =
     interpret(xch.getBalance(Currency.withName(fiatCurrency).getOrThrow).map(_.bigDecimal))
