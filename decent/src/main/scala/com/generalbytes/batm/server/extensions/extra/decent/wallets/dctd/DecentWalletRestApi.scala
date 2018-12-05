@@ -15,7 +15,8 @@ import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.client.dsl.io._
 import org.http4s.dsl.io._
 
-class DecentWalletRestApi(url: Uri, credentials: DecentWalletRestApi.DecentWalletCredentials) extends Wallet[Task] with ClientFactory[Task] with LoggingSupport {
+class DecentWalletRestApi(url: Uri, credentials: DecentWalletRestApi.DecentWalletCredentials)
+  extends Wallet[Task] with ClientFactory[Task] with LoggingSupport {
   import DecentWalletRestApi._
 
   override val cryptoCurrency: CryptoCurrency = Currency.Decent

@@ -1,16 +1,13 @@
 package com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex
 
-import cats.effect.{ConcurrentEffect, Effect}
+import cats.effect.ConcurrentEffect
 import cats.instances.list._
 import cats.syntax.eq._
-import cats.syntax.flatMap._
 import cats.syntax.functor._
 import cats.syntax.semigroup._
 import cats.syntax.traverse._
-import cats.{Applicative, Eval, Later, Monad, Now, Semigroup}
-import com.generalbytes.batm.common.domain.{ErrorApplicative, ExchangeRate}
-import com.generalbytes.batm.common._
-import com.generalbytes.batm.common.domain._
+import cats.{Applicative, Eval, Later, Now, Semigroup}
+import com.generalbytes.batm.common.domain.{ExchangeRate, _}
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.utils.LoggingSupport
 import com.generalbytes.batm.common.utils.Util._
@@ -30,22 +27,32 @@ class BittrexRateSourceWrapper[F[_]: ConcurrentEffect](intermediate: List[Curren
       Later(new FallbackBittrexTicker[F](currencyPair)).map(_.currentRates.map(getRateSelector(orderType)))
   }
 
+  private def isCurrencyPairSupported(currencyPair: CurrencyPair): Boolean =
+    (cryptoCurrencies.toSet[Currency].contains(currencyPair.base) || fiatCurrencies.toSet[Currency].contains(currencyPair.base)) &&
+    (cryptoCurrencies.toSet[Currency].contains(currencyPair.counter) || fiatCurrencies.toSet[Currency].contains(currencyPair.counter))
+
   private def getCurrencySteps(currencyPair: CurrencyPair, between: List[Currency]): List[Currency] =
     currencyPair.counter :: (currencyPair.base :: between.reverse).reverse
 
   private def getRate(orderType: OrderType, currencyPair: CurrencyPair): F[ExchangeRate] = {
-    val progression = getCurrencySteps(currencyPair, intermediate)
+    if (!isCurrencyPairSupported(currencyPair)) {
+      raise[F](err"Currency pair $currencyPair is not supported")
+    } else {
+      val progression = getCurrencySteps(currencyPair, intermediate)
 
-    val currencyPairs = (progression zip progression.tail).map((CurrencyPair.apply _).tupled).filter(cp => cp.base =!= cp.counter)
-    logger.debug(currencyPairs.map(_.toString).mkString(" "))
+      val currencyPairs = (progression zip progression.tail)
+        .map((CurrencyPair.apply _).tupled)
+        .filter(cp => cp.base =!= cp.counter)
+      logger.debug(currencyPairs.map(_.toString).mkString(" "))
 
-    val rates = for {
-      cp <- currencyPairs
-    } yield createTicker(orderType, cp).value
+      val rates = for {
+        cp <- currencyPairs
+      } yield createTicker(orderType, cp).value
 
-    for {
-      rs <- rates.sequence
-    } yield rs.foldLeft(BigDecimal.valueOf(1L))(_ |+| _)
+      for {
+        rs <- rates.sequence
+      } yield rs.foldLeft(BigDecimal.valueOf(1L))(_ |+| _)
+    }
   }
 
   override def getExchangeRateForSell(currencyPair: CurrencyPair): F[ExchangeRate] =

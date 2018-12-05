@@ -3,13 +3,11 @@ package com.generalbytes.batm.server.extensions.extra.decent.sources.dct_bittrex
 import cats.effect.ConcurrentEffect
 import cats.implicits._
 import com.generalbytes.batm.common.domain._
-import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.common.implicits._
 import com.generalbytes.batm.common.utils.LoggingSupport
+import com.generalbytes.batm.common.utils.Util._
 import com.generalbytes.batm.server.extensions.extra.decent.utils.ClientFactory
 import io.circe.{Decoder, DecodingFailure}
-import io.circe._
-import io.circe.syntax._
 import org.http4s.Uri
 import org.http4s.circe.CirceEntityDecoder._
 

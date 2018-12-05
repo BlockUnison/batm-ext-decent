@@ -39,7 +39,7 @@ object Currency {
   trait Default[T <: Currency] {
     val value: T
   }
-  val all: Set[Currency] = Set(Decent, Bitcoin, Euro, USDollar)
+  val all: Set[Currency] = Set(Decent, Bitcoin, BitcoinCash, Euro, USDollar)
 
   val allMap: Map[String, Currency] = all.map(c => c.name -> c).toMap
   implicit val dct: Default[DCT] = new Default[DCT] { val value: DCT = Decent }

@@ -20,8 +20,8 @@ trait BittrexRateSourceFactory extends RateSourceFactory with LoggingSupport {
 
   def createRateSource(loginInfo: String): Attempt[IRateSourceAdvanced] =
     parseLoginInfo(log(loginInfo)) map { intermediates =>
-      new RateSourceAdapter[Task](
-        new BittrexRateSourceWrapper(intermediates)
+      new RateSourceAdapter(
+        new BittrexRateSourceWrapper[Task](intermediates)
       )
     } toRight err"Could not create exchange from the parameters: $loginInfo"
 }
