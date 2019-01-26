@@ -7,7 +7,7 @@ import com.generalbytes.batm.server.extensions.extra.decent.factories.{BittrexEx
 
 // WARN: DON'T change the name. Name must end with the word "Extension", because GeneralBytes' API is retarded
 // and looks for extensions by suffix "Extension" (yes, really, I'm not kidding).
-class DecentExtension extends ExtensionAdapter(new DecentExtension.Impl())
+abstract class DecentExtension extends ExtensionAdapter(new DecentExtension.Impl())
 
 object DecentExtension {
   class Impl extends Extension

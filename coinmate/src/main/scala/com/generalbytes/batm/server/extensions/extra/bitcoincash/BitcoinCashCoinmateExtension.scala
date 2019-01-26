@@ -5,7 +5,7 @@ import com.generalbytes.batm.common.domain.{CryptoCurrency, Currency, Extension}
 import com.generalbytes.batm.common.factories.{DummyAddressValidatorFactory, DummyWalletFactory}
 import com.generalbytes.batm.server.extensions.extra.coinmate.{CoinmateExchangeFactory, CoinmateRateSourceFactory}
 
-class BitcoinCashCoinmateExtension extends ExtensionAdapter(new BitcoinCashCoinmateExtension.Impl)
+abstract class BitcoinCashCoinmateExtension extends ExtensionAdapter(new BitcoinCashCoinmateExtension.Impl)
 
 object BitcoinCashCoinmateExtension {
   class Impl extends Extension
