@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extensions>
-    <extension class="com.generalbytes.batm.server.extensions.extra.decent.DecentExtension">
+    <extension class="com.generalbytes.batm.server.extensions.extra.decent.AbstractDecentExtension">
         <wallet prefix="dctd" name="DCT Wallet Adapter">
             <param name="protocol" />
             <param name="user" />

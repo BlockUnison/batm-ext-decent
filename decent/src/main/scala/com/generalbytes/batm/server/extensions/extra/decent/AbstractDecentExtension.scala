@@ -6,10 +6,10 @@ import com.generalbytes.batm.common.factories.DummyAddressValidatorFactory
 import com.generalbytes.batm.server.extensions.extra.decent.factories.{BittrexExchangeFactory, BittrexRateSourceFactory, DecentHotWalletFactory}
 
 // WARN: DON'T change the name. Name must end with the word "Extension", because GeneralBytes' API is retarded
-// and looks for extensions by suffix "Extension" (yes, really, I'm not kidding).
-abstract class DecentExtension extends ExtensionAdapter(new DecentExtension.Impl())
+// and looks for extensions by suffix "Extension" (yes, really, *facepalm*)
+abstract class AbstractDecentExtension extends ExtensionAdapter(new AbstractDecentExtension.Impl())
 
-object DecentExtension {
+object AbstractDecentExtension {
   class Impl extends Extension
     with BittrexRateSourceFactory
     with BittrexExchangeFactory
